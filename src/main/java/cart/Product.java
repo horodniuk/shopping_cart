@@ -1,16 +1,21 @@
 package cart;
 
-import java.math.BigDecimal;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+@Getter
+@NoArgsConstructor
 public class Product {
     private String name;
     private BigDecimal price;
-    private int quantiti;
+    private int quantity;
 
-    public Product(String name, BigDecimal price, int quantiti) {
+    public Product(String name, BigDecimal price, int quantity) {
         this.name = name;
         this.price = price;
-        this.quantiti = quantiti;
+        this.quantity = quantity;
     }
 
     public String getName() {
@@ -29,12 +34,12 @@ public class Product {
         this.price = price;
     }
 
-    public int getQuantiti() {
-        return quantiti;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setQuantiti(int quantiti) {
-        this.quantiti = quantiti;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     @Override
@@ -42,7 +47,7 @@ public class Product {
         return "Product{" +
                "name='" + name + '\'' +
                ", price=" + price +
-               ", quantiti=" + quantiti +
+               ", quantiti=" + quantity +
                '}';
     }
 }

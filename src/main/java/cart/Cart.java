@@ -20,7 +20,7 @@ public class Cart {
        if (checkStorage(productName, quantiti)) {
            BigDecimal price = storageMap.get(productName).getPrice();
            if (!cartMap.isEmpty() && cartMap.containsKey(productName)) {
-               int newQuantiti = cartMap.get(productName).getQuantiti() + quantiti;
+               int newQuantiti = cartMap.get(productName).getQuantity() + quantiti;
                cartMap.put(productName, new Product(productName, price, newQuantiti));
                printToConsole(quantiti, productName);
            } else {

@@ -1,6 +1,9 @@
 package storage;
 
 import cart.Product;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -33,10 +36,17 @@ public class StorageWithJson implements Storage {
      */
     @Override
     public Map<String, Product> load(String file) {
-        Map<String, Product> products = new HashMap<>();
-        products.put("bear", new Product("bear", new BigDecimal(50.0), 30));
-        products.put("cola", new Product("cola", new BigDecimal(20.0), 20));
-        products.put("soap", new Product("soap", new BigDecimal(30.0), 10));
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Product> products = null;
+        try {
+            products = objectMapper.readValue(file, new TypeReference<>() {
+            });
+        } catch (JsonProcessingException exception) {
+            exception.printStackTrace();
+        }
+//        products.put("bear", new Product("bear", new BigDecimal(50.0), 30));
+//        products.put("cola", new Product("cola", new BigDecimal(20.0), 20));
+//        products.put("soap", new Product("soap", new BigDecimal(30.0), 10));
 
         return products;
     }
