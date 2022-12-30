@@ -3,15 +3,16 @@ package cart;
 import storage.Storage;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+/**
+ * класс Корзина нужен как контейнер для хранения и работы с данными
+ */
 public class Cart {
-
-    private Map <String, Product> storageMap;
-    private Map <String, Product> cartMap;
+    private Map <String, Product> storageMap; // контейнер для хранения данных корзины
+    private Map <String, Product> cartMap;    // хранится данные о кол-ве продуктов на складе
     public Cart(Storage storage) {
-        this.cartMap = new HashMap<>();
+        this.cartMap = new LinkedHashMap<>();
         this.storageMap = storage.getStorage();
     }
 
@@ -33,14 +34,28 @@ public class Cart {
         System.out.println(quantiti +" "+ productName + " vas added");
     }
 
+    public BigDecimal totalPrice() {
+        List<Product> list = new ArrayList<>(cartMap.values());
+        return list.stream()
+                .map(x -> x.getPrice().multiply(x.getPrice()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    }
+
+    /**
+     * в разработке
+     */
     public void price(){
         // example discount:00.00,price:XX.50
     }
 
+    /**
+     *  Задача: имплементировать метод checkStorage
+     *  проверить если ли товар с таким названием на складе
+     *  проверить наличие на складе есть есть true, удаляем со склада,
+     *  если нет выводим в консоль, что не хватает кол-ва - возвращаем false
+     */
     private boolean checkStorage(String productName, int quantiti) {
-        // проверить если вообще такой товар
-        // проверить наличие на складе есть есть true, удаляем со склада,
-        // если нет выводим в консоль, что не хватает кол-ва - возвращаем false
         return true;
     }
 
