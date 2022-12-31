@@ -19,11 +19,11 @@ public class InteractiveModeRunner implements ModeRunner {
      */
     public void start() {
         System.out.println("Запускаем Interactive mode");
-        Cart cart = new Cart(new StorageWithJson(pathToStorage));
+//        Cart cart = new Cart(new StorageWithJson(pathToStorage));
         while (true){
             String commandStr = new Scanner(System.in).nextLine();
             if(commandStr.equals("finish")) return;
-            parseCommandLine(commandStr, cart);
+//            parseCommandLine(commandStr, cart);
         }
     }
 

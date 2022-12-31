@@ -4,6 +4,7 @@ import cart.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,14 +31,15 @@ public class StorageWithJsonTest {
     @Test
     void testLoad_whenFileIsParsed() {
         //Arrange
-        String file = "src/main/resources/shopping_products_storage.json";
-        Product product = new Product(name,price,quantity);
-        Map<String,Product> expectedMap = new HashMap<>();
-        expectedMap.put(product.getName(),product);
+        File file = new File("src/main/resources/shopping_products_storage.json");
+        Product product = new Product(name, price, quantity);
+        Map<String, Product> expectedMap = new HashMap<>();
+        expectedMap.put(product.getName(), product);
         StorageWithJson storageWithJson = new StorageWithJson(file);
+
         //Act
-        Map <String,Product> actualMap = storageWithJson.load(file);
+        Map<String, Product> actualMap = storageWithJson.load(file);
         //Assert
-assertEquals(expectedMap.containsKey("bear"),actualMap.containsKey("bear"));
+        assertEquals(expectedMap.containsKey("bear"), actualMap.containsKey("bear"));
     }
 }

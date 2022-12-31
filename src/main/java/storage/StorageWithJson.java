@@ -5,20 +5,23 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 
 /**
  * реализация склада с товарами на основе файла json
- *
  */
 public class StorageWithJson implements Storage {
-    private String file;
+    private File file;
     private Map<String, Product> storageProducts;
 
-    public StorageWithJson(String file) {
+    public StorageWithJson(File file) {
         this.file = file;
         this.storageProducts = load(file);
     }
@@ -28,27 +31,27 @@ public class StorageWithJson implements Storage {
      * Сейчас он заполнен напрямую для демонстрации работы
      * нужно что бы на выходе мы получили Map c данными которые хранятся в resources по адресу
      * sourse root -- > shopping_products_storage.json
-     *
+     * <p>
      * доп.cсылки
      * https://www.youtube.com/watch?v=YKUqIo7iXtA
      * и еще
      * https://howtodoinjava.com/java/library/json-simple-read-write-json-examples/
      */
     @Override
-    public Map<String, Product> load(String file) {
+    public Map<String, Product> load(File file) {
         ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Product> products = null;
+        List<Product> productList;
+        Map<String, Product> productMap = new LinkedHashMap<>();
         try {
-            products = objectMapper.readValue(file, new TypeReference<>() {
+            productList = objectMapper.readValue(file, new TypeReference<>() {
             });
-        } catch (JsonProcessingException exception) {
+            for (Product product : productList) {
+                productMap.put(product.getName(), product);
+            }
+        } catch (IOException exception) {
             exception.printStackTrace();
         }
-//        products.put("bear", new Product("bear", new BigDecimal(50.0), 30));
-//        products.put("cola", new Product("cola", new BigDecimal(20.0), 20));
-//        products.put("soap", new Product("soap", new BigDecimal(30.0), 10));
-
-        return products;
+        return productMap;
     }
 
     /**
@@ -57,7 +60,7 @@ public class StorageWithJson implements Storage {
      * Сейчас он заполнен напрямую для демонстрации работы
      * данные со склада Map нужно записать в файл, которые хранятся в resources по адресу
      * sourse root --> shopping_products_storage.json
-     *
+     * <p>
      * доп.cсылки
      * https://www.geeksforgeeks.org/how-to-convert-map-to-json-to-hashmap-in-java/
      */
@@ -75,7 +78,7 @@ public class StorageWithJson implements Storage {
     @Override
     public String toString() {
         return "StorageWithJson{" +
-               "storageProducts=" + storageProducts +
-               '}';
+                "storageProducts=" + storageProducts +
+                '}';
     }
 }

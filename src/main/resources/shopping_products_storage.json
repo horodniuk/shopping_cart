@@ -1,5 +1,4 @@
-{
-  "products": [
+[
     {
       "name": "bear",
       "price": 50.0,
@@ -15,5 +14,5 @@
       "price": 30.0,
       "quantity": 10
     }
-  ]
-}
+]
+

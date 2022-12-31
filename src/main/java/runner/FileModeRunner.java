@@ -37,7 +37,7 @@ public class FileModeRunner implements ModeRunner {
     @Override
     public void start() {
         System.out.println("Запускаем File mode");
-        Cart cart = new Cart(new StorageWithJson(pathToStorage));
+//        Cart cart = new Cart(new StorageWithJson(pathToStorage));
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(pathToCommand));
@@ -45,7 +45,7 @@ public class FileModeRunner implements ModeRunner {
             while (line != null) {
                 // System.out.println(line);
                 //вместо вывода на консоль строк из файла нужно парсить каждую строчку
-                parseCommandLine(line, cart);
+//                parseCommandLine(line, cart);
                 line = reader.readLine();
             }
 
