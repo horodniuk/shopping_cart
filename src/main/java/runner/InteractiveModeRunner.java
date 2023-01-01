@@ -1,10 +1,16 @@
 package runner;
 
 import cart.Cart;
+import discount.Discount_BUY_1_GET_30_PERCENT_OFF;
+import discount.Discount_BUY_3_GET_1_FREE;
 import storage.StorageWithJson;
 
 import java.util.Scanner;
-
+/**
+ * В этом класе пользователь вводит команды в консоль а наша задача считать эте команды
+ * и если такие команды существуют - выполнить их. (смотреть метод parseCommandLine())
+ * предворительно работаем с корзиной
+ */
 public class InteractiveModeRunner implements ModeRunner {
     private String pathToStorage;
 
@@ -18,7 +24,9 @@ public class InteractiveModeRunner implements ModeRunner {
      * работать с корзиной и выводить реузьтаты в консоль
      */
     public void start() {
-        System.out.println("Запускаем Interactive mode");
+        System.out.println("Запускаем режим Interactive mode.");
+        showTooltipWithCommands();
+        System.out.println( "Введите команду в консоль:");
         Cart cart = new Cart(new StorageWithJson(pathToStorage));
         while (true){
             String commandStr = new Scanner(System.in).nextLine();
@@ -39,15 +47,34 @@ public class InteractiveModeRunner implements ModeRunner {
      */
     @Override
     public void parseCommandLine(String line, Cart cart) {
-        if (line.equals("add bear 5")){
+        if (line.equals("add bear 5")) {
             cart.add("bear", 5);
             return;
         }
-        if (line.equals("price")){
+        if (line.equals("add cola 1")) {
+            cart.add("cola", 1);
+            return;
+        }
+        if (line.equals("discount buy_3_get_1_free bear")) {
+            cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), "bear");
+            return;
+        }
+        if (line.equals("discount buy_1_get_30_percentage soap")) {
+            cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "soap");
+            return;
+        }
+        if (line.equals("price")) {
             cart.price();
         } else{
             System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
         }
     }
 
+    private void showTooltipWithCommands() {
+        System.out.println("\"price\" - вывести сумму товара");
+        System.out.println("\"add bear 5\" - добавить товар в корзину. Структура: add [название продукта] [кол-во продукта]");
+        System.out.println("\"discount buy_1_get_30_percentage cola\" - применить скидку. Структура: discount [название скидки] [название продукта]");
+        System.out.println("\"discount buy_3_get_1_free bear\" - применить скидку. Структура: discount [название скидки] [название продукта]");
+        System.out.println("\"finish\" - завершить работу");
+    }
 }

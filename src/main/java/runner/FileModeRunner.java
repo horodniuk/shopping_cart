@@ -1,6 +1,8 @@
 package runner;
 
 import cart.Cart;
+import discount.Discount_BUY_1_GET_30_PERCENT_OFF;
+import discount.Discount_BUY_3_GET_1_FREE;
 import storage.StorageWithJson;
 
 import java.io.BufferedReader;
@@ -8,11 +10,10 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * В этом класе мы считываем данные с файла команд и выводим результат на консоль
+ * В этом класе мы считываем построчно команды с файла и если такие команды существуют -
+ * выполняем их. (смотреть метод parseCommandLine())
  * предворительно работаем с корзиной
  */
-
-
 public class FileModeRunner implements ModeRunner {
     private String pathToStorage;
     private String pathToCommand;
@@ -36,7 +37,8 @@ public class FileModeRunner implements ModeRunner {
      */
     @Override
     public void start() {
-        System.out.println("Запускаем File mode");
+        System.out.println("Запускаем режим File mode." +
+                           " Команды будут считываться с файла\" " + pathToCommand);
         Cart cart = new Cart(new StorageWithJson(pathToStorage));
         BufferedReader reader;
         try {
@@ -76,8 +78,18 @@ public class FileModeRunner implements ModeRunner {
         if (line.equals("add cola 1")) {
             cart.add("cola", 1);
         }
+        if (line.equals("discount buy_3_get_1_free bear")) {
+            cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), "bear");
+        }
+        if (line.equals("discount buy_1_get_30_percentage soap")) {
+            cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "soap");
+        }
         if (line.equals("price")) {
             cart.price();
         }
+    }
+
+    public String getPathToCommand() {
+        return pathToCommand;
     }
 }
