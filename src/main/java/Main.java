@@ -15,8 +15,36 @@ public class Main {
      * запускаем программу, пользователь доллжен ввести режим игры (Interactive mode или File mode)
      */
     public static void main(String[] args) {
-
         start();
+
+    /* тест Discount per Product "If two discount are applied at the same product, only the more recent one stands"
+    Cart cart = new Cart(new StorageWithJson("/"));
+    cart.add("bear", 10);
+    cart.add("soap", 10);
+
+    cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), "soap");
+    cart.price();
+    System.out.println(cart.getDiscountMap());
+
+    cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), "bear");
+    cart.price();
+    System.out.println(cart.getDiscountMap());
+
+    cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "bear");
+    cart.price();
+    System.out.println(cart.getDiscountMap());
+
+    cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), "bear");
+    cart.price();
+    System.out.println(cart.getDiscountMap());
+
+    cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "bear");
+    cart.price();
+    System.out.println(cart.getDiscountMap());
+
+    cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), "soap");
+    cart.price();
+    System.out.println(cart.getDiscountMap());*/
 
     /*  // тест Discount_BUY_3_GET_1_FREE
     Cart cart = new Cart(new StorageWithJson("/"));
