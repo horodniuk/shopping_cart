@@ -7,8 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,9 +43,7 @@ public class StorageWithJson implements Storage {
         try {
             productList = objectMapper.readValue(file, new TypeReference<>() {
             });
-            for (Product product : productList) {
-                productMap.put(product.getName(), product);
-            }
+            productList.forEach(product -> productMap.put(product.getName(), product));
         } catch (IOException exception) {
             exception.printStackTrace();
         }
