@@ -31,7 +31,7 @@ public class Cart {
      * метод updatePrice() - обновляем price (общую стоимость корзины)
      */
     public void add(String productName, int quantity) {
-        if (checkProductAndQuantitiInStorage(productName, quantity)) {
+        if (checkProductAndQuantityInStorage(productName, quantity)) {
             BigDecimal tempPrice = storageMap.get(productName).getPrice();
             if (!cartMap.isEmpty() && cartMap.containsKey(productName)) {
                 int newQuantiti = cartMap.get(productName).getQuantity() + quantity;
@@ -73,7 +73,7 @@ public class Cart {
      *  выводим в консоль что скидка добавлена
      */
     public void applyDiscount(Discount discountType, String productName){
-       if (isProductExistsInCart(productName) && checkProductAndQuantitiInStorage(productName, 1)){
+       if (isProductExistsInCart(productName) && checkProductAndQuantityInStorage(productName, 1)){
            BigDecimal discountProductValue = discountType.getDiscount(productName, cartMap);
            if (discountProductValue.intValue() != 0){
                discount = updateDiscount(productName, discountProductValue);
@@ -121,8 +121,11 @@ public class Cart {
      * если нет выводим в консоль, что не хватает кол-ва - возвращаем false
      * Сейчас метод просто проверяет есть товар на складе или нет
      */
-    private boolean checkProductAndQuantitiInStorage(String productName, int quantiti) {
-        return storageMap.containsKey(productName);
+    private boolean checkProductAndQuantityInStorage(String productName, int quantity) {
+        if (storageMap.containsKey(productName)){
+            return storageMap.get(productName).getQuantity() >= quantity;
+        }
+        return false;
     }
 
     public Map<String, Product> getStorageMap() {
