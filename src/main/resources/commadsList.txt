@@ -1,11 +1,11 @@
 add bear 5
 add cola 1
 price
-discount buy_3_get_1_free soap
+discount buy_3_get_1_free bear
 price
 add soap 2
 price
-discount buy_1_get_30_percentage
+discount buy_1_get_30_percentage cola
 add milk 1
 price
 finish

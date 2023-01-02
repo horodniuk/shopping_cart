@@ -1,15 +1,63 @@
+import cart.Cart;
+import discount.Discount_BUY_1_GET_30_PERCENT_OFF;
+import discount.Discount_BUY_3_GET_1_FREE;
 import runner.FileModeRunner;
 import runner.InteractiveModeRunner;
+import storage.StorageWithJson;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Main {
-    public static void main(String[] args) {
     /**
      * запускаем программу, пользователь доллжен ввести режим игры (Interactive mode или File mode)
      */
-    start();
+    public static void main(String[] args) {
+        start();
+
+    /* тест Discount per Product "If two discount are applied at the same product, only the more recent one stands"
+    Cart cart = new Cart(new StorageWithJson("/"));
+    cart.add("bear", 10);
+    cart.add("soap", 10);
+
+    cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), "soap");
+    cart.price();
+    System.out.println(cart.getDiscountMap());
+
+    cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), "bear");
+    cart.price();
+    System.out.println(cart.getDiscountMap());
+
+    cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "bear");
+    cart.price();
+    System.out.println(cart.getDiscountMap());
+
+    cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), "bear");
+    cart.price();
+    System.out.println(cart.getDiscountMap());
+
+    cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "bear");
+    cart.price();
+    System.out.println(cart.getDiscountMap());
+
+    cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), "soap");
+    cart.price();
+    System.out.println(cart.getDiscountMap());*/
+
+    /*  // тест Discount_BUY_3_GET_1_FREE
+    Cart cart = new Cart(new StorageWithJson("/"));
+    cart.add("bear", 3);
+    cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), "bear");
+    cart.price();*/
+
+    /* // тест Discount_BUY_3_GET_1_FREE
+    Cart cart = new Cart(new StorageWithJson("/"));
+    cart.add("bear", 3);
+    cart.add("soap", 1);
+    cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "soap");
+    cart.price();*/
     }
 
     /**
@@ -25,12 +73,12 @@ public class Main {
      */
     private static void start() {
         while (true) {
-            System.out.println("Выберите режим");
-            System.out.println("Interactive mode режим - введите название файла с товарами(формат json). Пример-\"shopping_products_storage.json\"");
-            System.out.println("File mode режим - введите название файла с товарами(формат json) и файл с командами через пробел. Пример-\"shopping_products_storage.json commadsList.txt\"");
+            System.out.println("Выберите режим:");
+            System.out.println("Interactive mode режим - введите \"shopping_products_storage.json\"");
+            System.out.println("File mode режим - введите \"shopping_products_storage.json commadsList.txt\"");
             String str = new Scanner(System.in).nextLine();
             // проверка на существование файла json
-            if (new File("src/main/resources/" + str).exists()) {
+            if (new File("src/main/resources/" + str).exists() && !Pattern.matches("[\s]", str)) {
                 new InteractiveModeRunner("src/main/resources/" + str).start();
                 return;
             }
