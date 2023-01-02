@@ -16,10 +16,11 @@ import java.util.Map;
  * реализация склада с товарами на основе файла json
  */
 public class StorageWithJson implements Storage {
-    private File file;
+    private String file;
     private Map<String, Product> storageProducts;
+    private File jsonFile;
 
-    public StorageWithJson(File file) {
+    public StorageWithJson(String file) {
         this.file = file;
         this.storageProducts = load(file);
     }
@@ -36,7 +37,8 @@ public class StorageWithJson implements Storage {
      * https://howtodoinjava.com/java/library/json-simple-read-write-json-examples/
      */
     @Override
-    public Map<String, Product> load(File file) {
+    public Map<String, Product> load(String file) {
+        jsonFile = new File(file);
         ObjectMapper objectMapper = new ObjectMapper();
         List<Product> productList;
         Map<String, Product> productMap = new LinkedHashMap<>();
