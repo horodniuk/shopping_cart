@@ -1,7 +1,9 @@
 package storage;
 
 import cart.Product;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -15,6 +17,6 @@ import java.util.Map;
  */
 public interface Storage {
    Map<String, Product> load(String file);
-   void write (Map<String, Product> sorage);
+   void write (Map<String, Product> storage);
    Map<String, Product> getStorage();
 }

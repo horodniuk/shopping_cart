@@ -1,19 +1,18 @@
-{
-  "products": [
+[
     {
       "name": "bear",
       "price": 50.0,
-      "quantiti": 30
+      "quantity": 30
     },
     {
       "name": "cola",
       "price": 20.0,
-      "quantiti": 20
+      "quantity": 20
     },
     {
       "name": "soap",
       "price": 30.0,
-      "quantiti": 10
+      "quantity": 10
     }
-  ]
-}
+]
+
