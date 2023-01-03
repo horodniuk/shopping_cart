@@ -6,6 +6,7 @@ import discount.Discount_BUY_3_GET_1_FREE;
 import storage.StorageWithJson;
 
 import java.util.Scanner;
+
 /**
  * В этом класе пользователь вводит команды в консоль а наша задача считать эте команды
  * и если такие команды существуют - выполнить их. (смотреть метод parseCommandLine())
@@ -26,17 +27,16 @@ public class InteractiveModeRunner implements ModeRunner {
     public void start() {
         System.out.println("Запускаем режим Interactive mode.");
         showTooltipWithCommands();
-        System.out.println( "Введите команду в консоль:");
+        System.out.println("Введите команду в консоль:");
         Cart cart = new Cart(new StorageWithJson(pathToStorage));
-        while (true){
+        while (true) {
             String commandStr = new Scanner(System.in).nextLine();
-            if(commandStr.equals("finish")) return;
+            if (commandStr.equals("finish")) return;
             parseCommandLine(commandStr, cart);
         }
     }
 
     /**
-     *
      * Сейчас прописан код в котором данные указаны напрямую
      * Это для демонстрации работы
      * Нужно прописать метод что он работал со всеми командами которые указаны в тех. задании
@@ -47,26 +47,35 @@ public class InteractiveModeRunner implements ModeRunner {
      */
     @Override
     public void parseCommandLine(String line, Cart cart) {
-        if (line.equals("add bear 5")) {
-            cart.add("bear", 5);
-            return;
-        }
-        if (line.equals("add cola 1")) {
-            cart.add("cola", 1);
-            return;
-        }
-        if (line.equals("discount buy_3_get_1_free bear")) {
-            cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), "bear");
-            return;
-        }
-        if (line.equals("discount buy_1_get_30_percentage soap")) {
-            cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "soap");
-            return;
-        }
-        if (line.equals("price")) {
-            cart.price();
-        } else{
-            System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
+        /*
+          Переводим все символы строки в нижний регистр и разбиваем строку на массив подстрок.
+          lineArray[0] - это название метода, например add(), price() или discount().
+          lineArray[1] - это наименование продукта для добавления (в случае запуска метода add()) или наименование
+          скидки (в случае запуска метода discount()).
+          lineArray[2] - это количество продуктов для добавления в корзику (в случае метода add()) или наименование
+          продукта к которому нужно применить скидку (в случае метода discount()).
+          в случае если lineArray[0] - add, добавил проверку, является ли lineArray[2] числом.
+          в случае если lineArray[0] - discount, добавил проверку, верное ли название скидки находится в lineArray[1].
+         */
+        String[] lineArray = line.toLowerCase().split(" ");
+
+        switch (lineArray[0]) {
+            case "add" -> {
+                if (Character.isDigit(lineArray[2].chars().sum())) {
+                    cart.add(lineArray[1], Integer.parseInt(lineArray[2]));
+                } else System.out.println("Please enter the correct quantity of Product. For example - 5");
+            }
+            case "price" -> cart.price();
+            case "discount" -> {
+                if (lineArray[1].equals("buy_3_get_1_free")) {
+                    cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), lineArray[2]);
+                }
+                if (lineArray[1].equals("buy_1_get_30_percentage")) {
+                    cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), lineArray[2]);
+                } else System.out.println("You entered the wrong type of discount. Try next command, for example," +
+                        "\"discount buy_3_get_1_free soap\"");
+            }
+            default -> System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
         }
     }
 
