@@ -8,6 +8,7 @@ import storage.StorageWithJson;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * В этом класе мы считываем построчно команды с файла и если такие команды существуют -
@@ -26,19 +27,18 @@ public class FileModeRunner implements ModeRunner {
     /**
      * Описание
      * В File Mode создаем корзину и считываем построчно команды из файла
-     *
-     *  доп.ссылки
-     *  https://www.digitalocean.com/community/tutorials/java-read-file-line-by-line
-     *
+     * <p>
+     * доп.ссылки
+     * https://www.digitalocean.com/community/tutorials/java-read-file-line-by-line
+     * <p>
      * Задача
      * Нужно реализовать метод parseCommandLine() который в зависимости от комманды будет
      * работать с корзиной и выводить реузьтаты в консоль
-     *
      */
     @Override
     public void start() {
         System.out.println("Запускаем режим File mode." +
-                           " Команды будут считываться с файла\" " + pathToCommand);
+                " Команды будут считываться с файла\" " + pathToCommand);
         Cart cart = new Cart(new StorageWithJson(pathToStorage));
         BufferedReader reader;
         try {
@@ -47,6 +47,7 @@ public class FileModeRunner implements ModeRunner {
             while (line != null) {
                 // System.out.println(line);
                 //вместо вывода на консоль строк из файла нужно парсить каждую строчку
+                if (line.equals("finish")) return;
                 parseCommandLine(line, cart);
                 line = reader.readLine();
             }
@@ -58,7 +59,6 @@ public class FileModeRunner implements ModeRunner {
     }
 
     /**
-     *
      * Сейчас прописан код в котором данные указаны напрямую
      * Это для демонстрации работы
      * Нужно прописать метод что он работал со всеми командами которые указаны в тех. задании
@@ -66,26 +66,30 @@ public class FileModeRunner implements ModeRunner {
      * названия продукта"bear" и кол-ва "5" и проверить
      * есть ли такой продукт,
      * есть ли его достаточное кол-во и после выполнить команду, например  cart.add("bear", 5)
-     *
-     *  тестовый лист с командами создан в resources по адресу
-     *  sourse root --> commadsList.txt
+     * <p>
+     * тестовый лист с командами создан в resources по адресу
+     * sourse root --> commadsList.txt
      */
     @Override
     public void parseCommandLine(String line, Cart cart) {
-        if (line.equals("add bear 5")) {
-            cart.add("bear", 5);
-        }
-        if (line.equals("add cola 1")) {
-            cart.add("cola", 1);
-        }
-        if (line.equals("discount buy_3_get_1_free bear")) {
-            cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), "bear");
-        }
-        if (line.equals("discount buy_1_get_30_percentage soap")) {
-            cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "soap");
-        }
-        if (line.equals("price")) {
-            cart.price();
+        String[] lineArray = line.split(" ");
+
+        switch (lineArray[0]) {
+            case "add":
+                cart.add(lineArray[1], Integer.parseInt(lineArray[2]));
+                break;
+            case "price":
+                cart.price();
+                break;
+            case "discount":
+                if (lineArray[1].equals("buy_3_get_1_free")) {
+                    cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), lineArray[2]);
+                } else {
+                    cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), lineArray[2]);
+                }
+                break;
+            default:
+                System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
         }
     }
 
