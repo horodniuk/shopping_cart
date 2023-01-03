@@ -6,6 +6,4 @@ price
 add soap 2
 price
 discount buy_1_get_30_percentage cola
-add milk 1
 price
-finish
