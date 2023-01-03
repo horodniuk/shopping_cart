@@ -78,7 +78,7 @@ public class InteractiveModeRunner implements ModeRunner {
             default -> System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
         }
     }
-
+    // метод делаю я Ден
     private void showTooltipWithCommands() {
         System.out.println("\"price\" - вывести сумму товара");
         System.out.println("\"add bear 5\" - добавить товар в корзину. Структура: add [название продукта] [кол-во продукта]");
