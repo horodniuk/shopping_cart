@@ -68,17 +68,17 @@ public class InteractiveModeRunner implements ModeRunner {
                     return;
                 }
                 int quantityProductsNeeded = Integer.parseInt(line.replaceAll("\\D", ""));
-                if (checkNameProduct(cart.getStorageMap(), lineArray[1]) && quantityProductsNeeded != 0) {
+                if (checkProductName(cart.getStorageMap(), lineArray[1]) && quantityProductsNeeded != 0) {
                     cart.add(lineArray[1], quantityProductsNeeded);
                 } else System.out.println("Please enter the correct quantity and name of Product. " +
                         "For example - 5 and bear");
             }
             case "price" -> cart.price();
             case "discount" -> {
-                if (lineArray[1].equals("buy_3_get_1_free") && checkNameProduct(cart.getStorageMap(), lineArray[2]))
+                if (lineArray[1].equals("buy_3_get_1_free") && checkProductName(cart.getStorageMap(), lineArray[2]))
                     cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), lineArray[2]);
                 else if (lineArray[1].equals("buy_1_get_30_percentage") &&
-                        checkNameProduct(cart.getStorageMap(), lineArray[2]))
+                        checkProductName(cart.getStorageMap(), lineArray[2]))
                     cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), lineArray[2]);
                 else System.out.println("You entered the wrong type of discount. Try next command, for example," +
                             "\"discount buy_3_get_1_free soap\"");
@@ -87,8 +87,8 @@ public class InteractiveModeRunner implements ModeRunner {
         }
     }
 
-    private static boolean checkNameProduct(Map<String, Product> cart, String lineArray) {
-        return cart.containsKey(lineArray);
+    private static boolean checkProductName(Map<String, Product> cart, String productName) {
+        return cart.containsKey(productName);
     }
 
     private void showTooltipWithCommands() {
