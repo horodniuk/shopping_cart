@@ -47,26 +47,24 @@ public class InteractiveModeRunner implements ModeRunner {
      */
     @Override
     public void parseCommandLine(String line, Cart cart) {
-        if (line.equals("add bear 5")) {
-            cart.add("bear", 5);
-            return;
-        }
-        if (line.equals("add cola 1")) {
-            cart.add("cola", 1);
-            return;
-        }
-        if (line.equals("discount buy_3_get_1_free bear")) {
-            cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), "bear");
-            return;
-        }
-        if (line.equals("discount buy_1_get_30_percentage soap")) {
-            cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "soap");
-            return;
-        }
-        if (line.equals("price")) {
-            cart.price();
-        } else{
-            System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
+        String[] lineArray = line.split(" ");
+
+        switch (lineArray[0]) {
+            case "add":
+                cart.add(lineArray[1], Integer.parseInt(lineArray[2]));
+                break;
+            case "price":
+                cart.price();
+                break;
+            case "discount":
+                if (lineArray[1].equals("buy_3_get_1_free")) {
+                    cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), lineArray[2]);
+                } else {
+                    cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), lineArray[2]);
+                }
+                break;
+            default:
+                System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
         }
     }
 
