@@ -1,6 +1,7 @@
 package runner;
 
 import cart.Cart;
+import cart.Product;
 import discount.Discount_BUY_1_GET_30_PERCENT_OFF;
 import discount.Discount_BUY_3_GET_1_FREE;
 import storage.StorageWithJson;
@@ -8,6 +9,7 @@ import storage.StorageWithJson;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * В этом класе мы считываем построчно команды с файла и если такие команды существуют -
@@ -87,21 +89,32 @@ public class FileModeRunner implements ModeRunner {
 
         switch (lineArray[0]) {
             case "add" -> {
-                if (Character.isDigit(lineArray[2].chars().sum())) {
-                    cart.add(lineArray[1], Integer.parseInt(lineArray[2]));
-                } else System.out.println("Please enter the correct quantity of Product. For example - 5");
+                if (lineArray.length < 3) {
+                    System.out.println("Please enter the correct quantity of Product.");
+                    return;
+                }
+                int quantityProductsNeeded = Integer.parseInt(line.replaceAll("\\D", ""));
+                if (checkNameProduct(cart.getStorageMap(), lineArray[1]) && quantityProductsNeeded != 0) {
+                    cart.add(lineArray[1], quantityProductsNeeded);
+                } else System.out.println("Please enter the correct quantity and name of Product. " +
+                        "For example - 5 and bear");
             }
             case "price" -> cart.price();
             case "discount" -> {
-                if (lineArray[1].equals("buy_3_get_1_free"))
+                if (lineArray[1].equals("buy_3_get_1_free") && checkNameProduct(cart.getStorageMap(), lineArray[2]))
                     cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), lineArray[2]);
-                else if (lineArray[1].equals("buy_1_get_30_percentage"))
+                else if (lineArray[1].equals("buy_1_get_30_percentage") &&
+                        checkNameProduct(cart.getStorageMap(), lineArray[2]))
                     cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), lineArray[2]);
                 else System.out.println("You entered the wrong type of discount. Try next command, for example," +
                             "\"discount buy_3_get_1_free soap\"");
             }
             default -> System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
         }
+    }
+
+    private static boolean checkNameProduct(Map<String, Product> cart, String lineArray) {
+        return cart.containsKey(lineArray);
     }
 
     public String getPathToCommand() {
