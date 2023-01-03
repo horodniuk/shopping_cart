@@ -47,6 +47,7 @@ public class FileModeRunner implements ModeRunner {
             while (line != null) {
                 // System.out.println(line);
                 //вместо вывода на консоль строк из файла нужно парсить каждую строчку
+                if (line.equals("finish")) return;
                 parseCommandLine(line, cart);
                 line = reader.readLine();
             }
