@@ -34,14 +34,21 @@ public class Cart {
         if (checkProductAndQuantityInStorage(productName, quantity)) {
             BigDecimal tempPrice = storageMap.get(productName).getPrice();
             if (!cartMap.isEmpty() && cartMap.containsKey(productName)) {
-                int newQuantiti = cartMap.get(productName).getQuantity() + quantity;
-                cartMap.put(productName, new Product(productName, tempPrice, newQuantiti));
+                int newQuantity = cartMap.get(productName).getQuantity() + quantity;
+                cartMap.put(productName, new Product(productName, tempPrice, newQuantity));
+                extractedQuantityProducts(productName, quantity);
             } else {
                 cartMap.put(productName, new Product(productName, tempPrice, quantity));
+                extractedQuantityProducts(productName, quantity);
             }
             printToConsole(quantity, productName);
             price = updatePrice();
+            System.out.println(cartMap);
         };
+    }
+
+    private void extractedQuantityProducts(String productName, int quantity) {
+        storageMap.get(productName).setQuantity(storageMap.get(productName).getQuantity()-quantity);
     }
 
     private void printToConsole(int quantity, String productName) {
@@ -122,10 +129,10 @@ public class Cart {
      * Сейчас метод просто проверяет есть товар на складе или нет
      */
     private boolean checkProductAndQuantityInStorage(String productName, int quantity) {
-        if (storageMap.containsKey(productName)){
-            return storageMap.get(productName).getQuantity() >= quantity;
+        if(storageMap.get(productName).getQuantity()<=0){
+            System.out.println("На складе отсутствует "+productName);
         }
-        return false;
+        return storageMap.get(productName).getQuantity() >= quantity;
     }
 
     public Map<String, Product> getStorageMap() {

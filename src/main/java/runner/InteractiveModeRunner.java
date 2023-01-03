@@ -47,8 +47,16 @@ public class InteractiveModeRunner implements ModeRunner {
      */
     @Override
     public void parseCommandLine(String line, Cart cart) {
-        if (line.equals("add bear 5")) {
-            cart.add("bear", 5);
+        //////////
+        String s=line.replaceAll("[^0-9]","");
+        int r=Integer.parseInt(s);
+        System.out.println(r);
+        String after=line.replaceAll("add*","").replaceAll("\\d","").trim();
+        System.out.println(after);
+
+        /////////
+        if (line.equals("add bear 30")) {
+            cart.add("bear", 30);
             return;
         }
         if (line.equals("add cola 1")) {
