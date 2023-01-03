@@ -47,7 +47,15 @@ public class InteractiveModeRunner implements ModeRunner {
      */
     @Override
     public void parseCommandLine(String line, Cart cart) {
-        String[] lineArray = line.split(" ");
+        /*
+          Переводим все символы строки в нижний регистр и разбиваем строку на массив подстрок.
+          lineArray[0] - это название метода, например add(), price() или discount().
+          lineArray[1] - это наименование продукта для добавления (в случае запуска метода add()) или наименование
+          скидки (в случае запуска метода discount()).
+          lineArray[2] - это количество продуктов для добавления в корзику (в случае метода add()) или наименование
+          продукта к которому нужно применить скидку (в случае метода discount()).
+         */
+        String[] lineArray = line.toLowerCase().split(" ");
 
         switch (lineArray[0]) {
             case "add":
