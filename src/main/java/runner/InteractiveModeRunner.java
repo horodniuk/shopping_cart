@@ -67,13 +67,12 @@ public class InteractiveModeRunner implements ModeRunner {
             }
             case "price" -> cart.price();
             case "discount" -> {
-                if (lineArray[1].equals("buy_3_get_1_free")) {
+                if (lineArray[1].equals("buy_3_get_1_free"))
                     cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), lineArray[2]);
-                }
-                if (lineArray[1].equals("buy_1_get_30_percentage")) {
+                else if (lineArray[1].equals("buy_1_get_30_percentage"))
                     cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), lineArray[2]);
-                } else System.out.println("You entered the wrong type of discount. Try next command, for example," +
-                        "\"discount buy_3_get_1_free soap\"");
+                else System.out.println("You entered the wrong type of discount. Try next command, for example," +
+                            "\"discount buy_3_get_1_free soap\"");
             }
             default -> System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
         }
