@@ -36,12 +36,16 @@ public class Cart {
             if (!cartMap.isEmpty() && cartMap.containsKey(productName)) {
                 int newQuantiti = cartMap.get(productName).getQuantity() + quantity;
                 cartMap.put(productName, new Product(productName, tempPrice, newQuantiti));
+                extractedQuantityProducts(productName, quantity);
             } else {
                 cartMap.put(productName, new Product(productName, tempPrice, quantity));
+                extractedQuantityProducts(productName, quantity);
             }
             printToConsole(quantity, productName);
             price = updatePrice();
-        };
+            System.out.println(this);
+        }
+        ;
     }
 
     private void printToConsole(int quantity, String productName) {
@@ -51,6 +55,7 @@ public class Cart {
     // вывод на консоль в формате discount:00.00,price:XX.50
     public void price() {
         System.out.println(String.format("discount:%s, price:%s", discount, price));
+        System.out.println(this);
     }
 
     public BigDecimal totalPriceWithoutDiscont() {
@@ -61,6 +66,7 @@ public class Cart {
         }
         return sum.setScale(2);
     }
+
     /*
      * Описание метода
      * параметры метода - Тип скидки и название продукта
@@ -72,16 +78,16 @@ public class Cart {
      * добавляем в карту со скидками название продукта и скидку (BigDecimal) на него.
      *  выводим в консоль что скидка добавлена
      */
-    public void applyDiscount(Discount discountType, String productName){
-       if (isProductExistsInCart(productName) && checkProductAndQuantityInStorage(productName, 1)){
-           BigDecimal discountProductValue = discountType.getDiscount(productName, cartMap);
-           if (discountProductValue.intValue() != 0){
-               discount = updateDiscount(productName, discountProductValue);
-               price = updatePrice();
-               discountMap.put(productName, discountProductValue);
-               System.out.println("discount added");
-           }
-       }
+    public void applyDiscount(Discount discountType, String productName) {
+        if (isProductExistsInCart(productName) && checkProductAndQuantityInStorage(productName, 1)) {
+            BigDecimal discountProductValue = discountType.getDiscount(productName, cartMap);
+            if (discountProductValue.intValue() != 0) {
+                discount = updateDiscount(productName, discountProductValue);
+                price = updatePrice();
+                discountMap.put(productName, discountProductValue);
+                System.out.println("discount added");
+            }
+        }
     }
 
     /*
@@ -94,11 +100,11 @@ public class Cart {
      * return - плюсуем скидку на продукт в общую сумму скидок
      */
     private BigDecimal updateDiscount(String productName, BigDecimal discountProductValue) {
-        if (discountMap.containsKey(productName)){
-           BigDecimal oldDiscountValueProduct = discountMap.get(productName);
-           discount = discount.subtract(oldDiscountValueProduct);
+        if (discountMap.containsKey(productName)) {
+            BigDecimal oldDiscountValueProduct = discountMap.get(productName);
+            discount = discount.subtract(oldDiscountValueProduct);
         }
-           return discount.add(discountProductValue);
+        return discount.add(discountProductValue);
     }
 
     private BigDecimal updatePrice() {
@@ -114,6 +120,11 @@ public class Cart {
         }
     }
 
+    private void extractedQuantityProducts(String productName, int quantity) {
+        storageMap.get(productName).setQuantity(storageMap.get(productName).getQuantity() - quantity);
+    }
+
+
     /**
      * Задача: имплементировать метод checkStorage
      * проверить если ли товар с таким названием на складе
@@ -122,11 +133,13 @@ public class Cart {
      * Сейчас метод просто проверяет есть товар на складе или нет
      */
     private boolean checkProductAndQuantityInStorage(String productName, int quantity) {
-        if (storageMap.containsKey(productName)){
-            return storageMap.get(productName).getQuantity() >= quantity;
+        if (storageMap.get(productName).getQuantity() <= 0 || storageMap.get(productName).getQuantity() < quantity) {
+            System.out.println("На складе отсутствует " + productName + " в количестве " + quantity +
+                    " на данный момент есть следующей количество: " + storageMap.get(productName).getQuantity());
         }
-        return false;
+        return storageMap.get(productName).getQuantity() >= quantity;
     }
+
 
     public Map<String, Product> getStorageMap() {
         return storageMap;
@@ -151,7 +164,11 @@ public class Cart {
     @Override
     public String toString() {
         return "Cart{" +
-               "cartMap=" + cartMap +
-               '}';
+                "cartMap=" + cartMap +
+                ", storageMap=" + storageMap +
+                ", discountMap=" + discountMap +
+                ", price=" + price +
+                ", discount=" + discount +
+                '}';
     }
 }
