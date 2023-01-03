@@ -73,32 +73,35 @@ public class FileModeRunner implements ModeRunner {
      */
     @Override
     public void parseCommandLine(String line, Cart cart) {
-        /*
+       /*
           Переводим все символы строки в нижний регистр и разбиваем строку на массив подстрок.
           lineArray[0] - это название метода, например add(), price() или discount().
           lineArray[1] - это наименование продукта для добавления (в случае запуска метода add()) или наименование
           скидки (в случае запуска метода discount()).
           lineArray[2] - это количество продуктов для добавления в корзику (в случае метода add()) или наименование
           продукта к которому нужно применить скидку (в случае метода discount()).
+          в случае если lineArray[0] - add, добавил проверку, является ли lineArray[2] числом.
+          в случае если lineArray[0] - discount, добавил проверку, верное ли название скидки находится в lineArray[1].
          */
         String[] lineArray = line.toLowerCase().split(" ");
 
         switch (lineArray[0]) {
-            case "add":
-                cart.add(lineArray[1], Integer.parseInt(lineArray[2]));
-                break;
-            case "price":
-                cart.price();
-                break;
-            case "discount":
+            case "add" -> {
+                if (Character.isDigit(lineArray[2].chars().sum())) {
+                    cart.add(lineArray[1], Integer.parseInt(lineArray[2]));
+                } else System.out.println("Please enter the correct quantity of Product. For example - 5");
+            }
+            case "price" -> cart.price();
+            case "discount" -> {
                 if (lineArray[1].equals("buy_3_get_1_free")) {
                     cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), lineArray[2]);
-                } else {
-                    cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), lineArray[2]);
                 }
-                break;
-            default:
-                System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
+                if (lineArray[1].equals("buy_1_get_30_percentage")) {
+                    cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), lineArray[2]);
+                } else System.out.println("You entered the wrong type of discount. Try next command, for example," +
+                        "\"discount buy_3_get_1_free soap\"");
+            }
+            default -> System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
         }
     }
 

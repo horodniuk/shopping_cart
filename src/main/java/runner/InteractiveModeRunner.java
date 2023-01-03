@@ -6,6 +6,7 @@ import discount.Discount_BUY_3_GET_1_FREE;
 import storage.StorageWithJson;
 
 import java.util.Scanner;
+
 /**
  * В этом класе пользователь вводит команды в консоль а наша задача считать эте команды
  * и если такие команды существуют - выполнить их. (смотреть метод parseCommandLine())
@@ -26,17 +27,16 @@ public class InteractiveModeRunner implements ModeRunner {
     public void start() {
         System.out.println("Запускаем режим Interactive mode.");
         showTooltipWithCommands();
-        System.out.println( "Введите команду в консоль:");
+        System.out.println("Введите команду в консоль:");
         Cart cart = new Cart(new StorageWithJson(pathToStorage));
-        while (true){
+        while (true) {
             String commandStr = new Scanner(System.in).nextLine();
-            if(commandStr.equals("finish")) return;
+            if (commandStr.equals("finish")) return;
             parseCommandLine(commandStr, cart);
         }
     }
 
     /**
-     *
      * Сейчас прописан код в котором данные указаны напрямую
      * Это для демонстрации работы
      * Нужно прописать метод что он работал со всеми командами которые указаны в тех. задании
@@ -54,25 +54,28 @@ public class InteractiveModeRunner implements ModeRunner {
           скидки (в случае запуска метода discount()).
           lineArray[2] - это количество продуктов для добавления в корзику (в случае метода add()) или наименование
           продукта к которому нужно применить скидку (в случае метода discount()).
+          в случае если lineArray[0] - add, добавил проверку, является ли lineArray[2] числом.
+          в случае если lineArray[0] - discount, добавил проверку, верное ли название скидки находится в lineArray[1].
          */
         String[] lineArray = line.toLowerCase().split(" ");
 
         switch (lineArray[0]) {
-            case "add":
-                cart.add(lineArray[1], Integer.parseInt(lineArray[2]));
-                break;
-            case "price":
-                cart.price();
-                break;
-            case "discount":
+            case "add" -> {
+                if (Character.isDigit(lineArray[2].chars().sum())) {
+                    cart.add(lineArray[1], Integer.parseInt(lineArray[2]));
+                } else System.out.println("Please enter the correct quantity of Product. For example - 5");
+            }
+            case "price" -> cart.price();
+            case "discount" -> {
                 if (lineArray[1].equals("buy_3_get_1_free")) {
                     cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), lineArray[2]);
-                } else {
-                    cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), lineArray[2]);
                 }
-                break;
-            default:
-                System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
+                if (lineArray[1].equals("buy_1_get_30_percentage")) {
+                    cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), lineArray[2]);
+                } else System.out.println("You entered the wrong type of discount. Try next command, for example," +
+                        "\"discount buy_3_get_1_free soap\"");
+            }
+            default -> System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
         }
     }
 
