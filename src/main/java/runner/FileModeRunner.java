@@ -12,9 +12,8 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * В этом класе мы считываем построчно команды с файла и если такие команды существуют -
- * выполняем их. (смотреть метод parseCommandLine())
- * предворительно работаем с корзиной
+ * Считываем построчно команды с файла и если такие команды существуют -
+ * выполняем их. (смотреть метод excecuteCommand())
  */
 public class FileModeRunner implements ModeRunner {
     private String pathToStorage;
@@ -26,16 +25,7 @@ public class FileModeRunner implements ModeRunner {
     }
 
     /**
-     * Описание
-     * В File Mode создаем корзину и считываем построчно команды из файла
-     *
-     *  доп.ссылки
-     *  https://www.digitalocean.com/community/tutorials/java-read-file-line-by-line
-     *
-     * Задача
-     * Нужно реализовать метод parseCommandLine() который в зависимости от комманды будет
-     * работать с корзиной и выводить реузьтаты в консоль
-     *
+     * Считываем построчно команды из файла.
      */
     @Override
     public void start() {
@@ -47,10 +37,7 @@ public class FileModeRunner implements ModeRunner {
             reader = new BufferedReader(new FileReader(pathToCommand));
             String line = reader.readLine();
             while (line != null) {
-                // System.out.println(line);
-                //вместо вывода на консоль строк из файла нужно парсить каждую строчку
-                if (line.equals("finish")) return;
-                parseCommandLine(line, cart);
+                if (line.length() > 0) excecuteCommand(line, cart);
                 line = reader.readLine();
             }
 
@@ -60,22 +47,25 @@ public class FileModeRunner implements ModeRunner {
         }
     }
 
-    /**
+    /*
+     * выполнено
+     * Задача
+     * Нужно прописать метод который будет выполнять команды, которые указаны в тех.задании
+     * Например: Если на вход подается строка "add bear 5" нужно распарсить для получения
+     * названия продукта"bear" и кол-ва "5" и проверить есть ли такой продукт,
+     * есть ли его достаточное кол-во и после выполнить команду.
+     * например:
+     * add bear 5 --> cart.add("bear", 5)
+     * add soap 2 --> cart.add("soap", 2)
+     * discount buy_1_get_30_percentage cola --> applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "cola")
+     * discount buy_3_get_1_free bear --> applyDiscount(new Discount_BUY_3_GET_1_FREE(), "bear")
      *
-     * Сейчас прописан код в котором данные указаны напрямую
-     * Это для демонстрации работы
-     * Нужно прописать метод что он работал со всеми командами которые указаны в тех. задании
-     * Например: Если навход подается строка "add bear 5" нужно распарсить для получения
-     * названия продукта"bear" и кол-ва "5" и проверить
-     * есть ли такой продукт,
-     * есть ли его достаточное кол-во и после выполнить команду, например  cart.add("bear", 5)
-     *
-     *  тестовый лист с командами создан в resources по адресу
-     *  sourse root --> commadsList.txt
+     * тестовый лист с командами создан в resources по адресу sourse root --> commadsList.txt
      */
     @Override
-    public void parseCommandLine(String line, Cart cart) {
+    public void excecuteCommand(String line, Cart cart) {
        /*
+          Описание метода
           Переводим все символы строки в нижний регистр и разбиваем строку на массив подстрок.
           lineArray[0] - это название метода, например add(), price() или discount().
           lineArray[1] - это наименование продукта для добавления (в случае запуска метода add()) или наименование
@@ -91,7 +81,7 @@ public class FileModeRunner implements ModeRunner {
             case "add" -> addProductFromLine(line, cart, lineArray);
             case "price" -> cart.price();
             case "discount" -> addDiscountFromLine(cart, lineArray);
-            default -> System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
+            default -> System.out.println("неизвестная команда, попробуйте еще раз, например \"add bear 5\"");
         }
     }
 
@@ -99,10 +89,10 @@ public class FileModeRunner implements ModeRunner {
         if (lineArray[1].equals("buy_3_get_1_free") && checkProductName(cart.getStorageMap(), lineArray[2]))
             cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), lineArray[2]);
         else if (lineArray[1].equals("buy_1_get_30_percentage") &&
-                checkProductName(cart.getStorageMap(), lineArray[2]))
+                 checkProductName(cart.getStorageMap(), lineArray[2]))
             cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), lineArray[2]);
         else System.out.println("You entered the wrong type of discount. Try next command, for example," +
-                    "\"discount buy_3_get_1_free soap\"");
+                                "\"discount buy_3_get_1_free soap\"");
     }
 
     private static void addProductFromLine(String line, Cart cart, String[] lineArray) {
@@ -114,7 +104,7 @@ public class FileModeRunner implements ModeRunner {
         if (checkProductName(cart.getStorageMap(), lineArray[1]) && quantityProductsNeeded != 0) {
             cart.add(lineArray[1], quantityProductsNeeded);
         } else System.out.println("Please enter the correct quantity and name of Product. " +
-                "For example - 5 and bear");
+                                  "For example - 5 and bear");
     }
 
     private static boolean checkProductName(Map<String, Product> cart, String productName) {
