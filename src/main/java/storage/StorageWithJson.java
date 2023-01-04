@@ -4,9 +4,12 @@ import cart.Product;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +21,7 @@ public class StorageWithJson implements Storage {
     private String file;
     private Map<String, Product> storageProducts;
     private File jsonFile;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     public StorageWithJson(String file) {
         this.file = file;
@@ -36,7 +40,6 @@ public class StorageWithJson implements Storage {
     @Override
     public Map<String, Product> load(String file) {
         jsonFile = new File(file);
-        ObjectMapper objectMapper = new ObjectMapper();
         List<Product> productList;
         Map<String, Product> productMap = new LinkedHashMap<>();
         try {
@@ -60,7 +63,12 @@ public class StorageWithJson implements Storage {
      */
     @Override
     public void write(Map<String, Product> storage) {
-        System.out.println("обновить файл json");
+        jsonFile = new File(file);
+        try {
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, storage.values());
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
 

@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,5 +43,23 @@ public class StorageWithJsonTest {
         Map<String, Product> actualMap = storageWithJson.load(file);
         //Assert
         assertEquals(expectedMap.containsKey("bear"), actualMap.containsKey("bear"));
+    }
+
+    @Test
+    void testWrite() {
+        //Arrange
+        List<Product> productList = new LinkedList<>();
+        productList.add(new Product("bear", BigDecimal.valueOf(10),20));
+        productList.add(new Product("soap", BigDecimal.valueOf(20),10));
+        productList.add(new Product("paper", BigDecimal.valueOf(10),40));
+
+        Map<String,Product> productMap = new HashMap<>();
+        productMap.put(productList.get(0).getName(),productList.get(0));
+        productMap.put(productList.get(1).getName(),productList.get(1));
+        productMap.put(productList.get(2).getName(),productList.get(2));
+        //Act
+
+        //Assert
+
     }
 }
