@@ -71,7 +71,6 @@ public class StorageWithJson implements Storage {
         }
     }
 
-
     @Override
     public Map<String, Product> getStorage() {
         return storageProducts;
