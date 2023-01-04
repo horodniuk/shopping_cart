@@ -1,7 +1,7 @@
-add Baltika 7 5
+add beer 5
 add cola 1
 price
-discount buy_3_get_1_free Baltika 7
+discount buy_3_get_1_free beer
 price
 add soap 2
 price

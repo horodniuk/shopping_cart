@@ -40,13 +40,13 @@ public class InteractiveModeRunner implements ModeRunner {
      * выполнено
      * Задача
      * Нужно прописать метод который будет выполнять команды, которые указаны в тех.задании
-     * Например: Если на вход подается строка "add cola 5" нужно распарсить для получения
-     * названия продукта "cola" и кол-ва "5" и проверить есть ли такой продукт,
+     * Например: Если на вход подается строка "add beer 5" нужно распарсить для получения
+     * названия продукта "beer" и кол-ва "5" и проверить есть ли такой продукт,
      * есть ли его достаточное кол-во и после выполнить команду.
      * например:
-     * add cola 5 --> cart.add("cola", 5)
+     * add beer 5 --> cart.add("beer", 5)
      * add soap 2 --> cart.add("soap", 2)
-     * discount buy_1_get_30_percentage cola --> applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "cola")
+     * discount buy_1_get_30_percentage beer --> applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "beer")
      * discount buy_3_get_1_free soap --> applyDiscount(new Discount_BUY_3_GET_1_FREE(), "soap")
      */
     @Override
@@ -56,7 +56,7 @@ public class InteractiveModeRunner implements ModeRunner {
         if (line.equals("price")) {
             cart.price();
         } else{
-            System.out.println("неизвесная команда, попробуйте еще раз, например \"add cola 5\"");
+            System.out.println("неизвесная команда, попробуйте еще раз, например \"add beer 5\"");
         }
     }
 
@@ -66,9 +66,9 @@ public class InteractiveModeRunner implements ModeRunner {
     private void showTooltipWithCommands() {
         System.out.println("Инструкция:");
         System.out.println("\"price\" - вывести сумму товара");
-        System.out.println("\"add cola 5\" - добавить товар в корзину. Структура: add [название продукта] [кол-во продукта]");
-        System.out.println("\"discount buy_1_get_30_percentage cola\" - применить скидку. Структура: discount [название скидки] [название продукта]");
-        System.out.println("\"discount buy_3_get_1_free bear\" - применить скидку. Структура: discount [название скидки] [название продукта]");
+        System.out.println("\"add beer 5\" - добавить товар в корзину. Структура: add [название продукта] [кол-во продукта]");
+        System.out.println("\"discount buy_1_get_30_percentage beer\" - применить скидку. Структура: discount [название скидки] [название продукта]");
+        System.out.println("\"discount buy_3_get_1_free beer\" - применить скидку. Структура: discount [название скидки] [название продукта]");
         System.out.println("\"finish\" - завершить работу");
     }
 }

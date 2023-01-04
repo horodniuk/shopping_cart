@@ -18,6 +18,14 @@ public class CartCommandParser {
         this.products = cart.getStorageMap().keySet().stream().toList(); // получаем все название товаров в хранилище
         this.discounds = List.of("buy_1_get_30_percentage", "buy_3_get_1_free"); // название скидок;
     }
+
+
+    /*
+    * шаблон рег.выражения делим на три группы  (group(1))(group(2))(group(3))
+    * (group(1)) - название команды: add или price
+    * (group(2)) - в случае add это название товара, в случае discount - название скидки
+    * (group(3)) - в случае add это кол-во товара, в случае discount - название товара
+    */
     public boolean parse(String line) {
         // Example: add bear 5, add cola 1, add soap 2
         String productRegEx = "^(add) (" + createRegExValues(products) +") ([0-9]+)";
