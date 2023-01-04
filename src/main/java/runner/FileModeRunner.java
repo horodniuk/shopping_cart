@@ -1,6 +1,7 @@
 package runner;
 
 import cart.Cart;
+import cart.CartCommandParser;
 import cart.Product;
 import discount.Discount_BUY_1_GET_30_PERCENT_OFF;
 import discount.Discount_BUY_3_GET_1_FREE;
@@ -51,64 +52,26 @@ public class FileModeRunner implements ModeRunner {
      * выполнено
      * Задача
      * Нужно прописать метод который будет выполнять команды, которые указаны в тех.задании
-     * Например: Если на вход подается строка "add bear 5" нужно распарсить для получения
-     * названия продукта"bear" и кол-ва "5" и проверить есть ли такой продукт,
+     * Например: Если на вход подается строка "add beer 5" нужно распарсить для получения
+     * названия продукта"beer" и кол-ва "5" и проверить есть ли такой продукт,
      * есть ли его достаточное кол-во и после выполнить команду.
      * например:
-     * add bear 5 --> cart.add("bear", 5)
+     * add beer 5 --> cart.add("beer", 5)
      * add soap 2 --> cart.add("soap", 2)
-     * discount buy_1_get_30_percentage cola --> applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "cola")
-     * discount buy_3_get_1_free bear --> applyDiscount(new Discount_BUY_3_GET_1_FREE(), "bear")
+     * discount buy_1_get_30_percentage beer --> applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "beer")
+     * discount buy_3_get_1_free soap --> applyDiscount(new Discount_BUY_3_GET_1_FREE(), "soap")
      *
      * тестовый лист с командами создан в resources по адресу sourse root --> commadsList.txt
      */
     @Override
     public void excecuteCommand(String line, Cart cart) {
-       /*
-          Описание метода
-          Переводим все символы строки в нижний регистр и разбиваем строку на массив подстрок.
-          lineArray[0] - это название метода, например add(), price() или discount().
-          lineArray[1] - это наименование продукта для добавления (в случае запуска метода add()) или наименование
-          скидки (в случае запуска метода discount()).
-          lineArray[2] - это количество продуктов для добавления в корзику (в случае метода add()) или наименование
-          продукта к которому нужно применить скидку (в случае метода discount()).
-          в случае если lineArray[0] - add, добавил проверку, является ли lineArray[2] числом.
-          в случае если lineArray[0] - discount, добавил проверку, верное ли название скидки находится в lineArray[1].
-         */
-        String[] lineArray = line.toLowerCase().split(" ");
-
-        switch (lineArray[0]) {
-            case "add" -> addProductFromLine(line, cart, lineArray);
-            case "price" -> cart.price();
-            case "discount" -> addDiscountFromLine(cart, lineArray);
-            default -> System.out.println("неизвестная команда, попробуйте еще раз, например \"add bear 5\"");
+        CartCommandParser cartCommandParser = new CartCommandParser(cart);
+        if (cartCommandParser.parse(line)) return;
+        if ((line.equals("price"))) {
+            cart.price();
+        } else {
+            System.out.println("неизвестная команда - " + line);
         }
-    }
-
-    private static void addDiscountFromLine(Cart cart, String[] lineArray) {
-        if (lineArray[1].equals("buy_3_get_1_free") && checkProductName(cart.getStorageMap(), lineArray[2]))
-            cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), lineArray[2]);
-        else if (lineArray[1].equals("buy_1_get_30_percentage") &&
-                 checkProductName(cart.getStorageMap(), lineArray[2]))
-            cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), lineArray[2]);
-        else System.out.println("You entered the wrong type of discount. Try next command, for example," +
-                                "\"discount buy_3_get_1_free soap\"");
-    }
-
-    private static void addProductFromLine(String line, Cart cart, String[] lineArray) {
-        if (lineArray.length < 3) {
-            System.out.println("Please enter the quantity of Product. For example - 5");
-            return;
-        }
-        int quantityProductsNeeded = Integer.parseInt(line.replaceAll("\\D", ""));
-        if (checkProductName(cart.getStorageMap(), lineArray[1]) && quantityProductsNeeded != 0) {
-            cart.add(lineArray[1], quantityProductsNeeded);
-        } else System.out.println("Please enter the correct quantity and name of Product. " +
-                                  "For example - 5 and bear");
-    }
-
-    private static boolean checkProductName(Map<String, Product> cart, String productName) {
-        return cart.containsKey(productName);
     }
 
     public String getPathToCommand() {
