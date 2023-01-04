@@ -78,7 +78,7 @@ public class Cart {
     /*
      * Описание метода
      * параметры метода - Тип скидки и название продукта
-     * проверяем есть ли товар с таким названием и в нужном кол-ве на складе и есть ли в корзине
+     * проверяем есть ли товар с таким названием в корзине
      * если есть получаем значение скидки (discountProductValue)
      * если значение скидки не 0, значит скидка сработала тогда:
      * обновляем общую сумму скидки в корзине (discount)
@@ -87,7 +87,7 @@ public class Cart {
      * выводим в консоль - скидка добавлена
      */
     public void applyDiscount(Discount discountType, String productName) {
-        if (isProductExistsInCart(productName) && checkProductAndQuantityInStorage(productName, 1)) {
+        if (isProductExistsInCart(productName)) {
             BigDecimal discountProductValue = discountType.getDiscount(productName, cartMap).setScale(2);
             if (discountProductValue.intValue() != 0) {
                 discount = updateDiscount(productName, discountProductValue);

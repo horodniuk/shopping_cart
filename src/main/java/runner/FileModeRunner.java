@@ -52,13 +52,13 @@ public class FileModeRunner implements ModeRunner {
      * выполнено
      * Задача
      * Нужно прописать метод который будет выполнять команды, которые указаны в тех.задании
-     * Например: Если на вход подается строка "add cola 5" нужно распарсить для получения
-     * названия продукта"cola" и кол-ва "5" и проверить есть ли такой продукт,
+     * Например: Если на вход подается строка "add beer 5" нужно распарсить для получения
+     * названия продукта"beer" и кол-ва "5" и проверить есть ли такой продукт,
      * есть ли его достаточное кол-во и после выполнить команду.
      * например:
-     * add cola 5 --> cart.add("cola", 5)
+     * add beer 5 --> cart.add("beer", 5)
      * add soap 2 --> cart.add("soap", 2)
-     * discount buy_1_get_30_percentage cola --> applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "cola")
+     * discount buy_1_get_30_percentage beer --> applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "beer")
      * discount buy_3_get_1_free soap --> applyDiscount(new Discount_BUY_3_GET_1_FREE(), "soap")
      *
      * тестовый лист с командами создан в resources по адресу sourse root --> commadsList.txt
