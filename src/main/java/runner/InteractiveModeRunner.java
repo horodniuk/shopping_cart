@@ -78,12 +78,15 @@ public class InteractiveModeRunner implements ModeRunner {
             default -> System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
         }
     }
-    // метод делаю я Ден
+    // update showTooltipWithCommands
     private void showTooltipWithCommands() {
-        System.out.println("\"price\" - вывести сумму товара");
-        System.out.println("\"add bear 5\" - добавить товар в корзину. Структура: add [название продукта] [кол-во продукта]");
-        System.out.println("\"discount buy_1_get_30_percentage cola\" - применить скидку. Структура: discount [название скидки] [название продукта]");
-        System.out.println("\"discount buy_3_get_1_free bear\" - применить скидку. Структура: discount [название скидки] [название продукта]");
-        System.out.println("\"finish\" - завершить работу");
+        System.out.printf("%38s\n","prise");
+        System.out.printf("%s\n","Bывести сумму товара");
+        System.out.printf("%47s\n","add [bear] [5]");
+        System.out.printf("%s\n","Структура: add [название продукта] [кол-во продукта]");
+        System.out.printf("%68s","discount [buy_3_get_1_free] [beer] ");
+        System.out.printf("%2s\n","or discount [buy_1_get_30_percentage] [cola]");
+        System.out.printf("%s\n","Применить скидку. Структура: discount [название скидки] [название продукта]");
+        System.out.printf("%60s\n","finish - (завершить работу)");
     }
 }
