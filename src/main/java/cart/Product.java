@@ -1,10 +1,10 @@
 package cart;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+
 @Getter
 @NoArgsConstructor
 public class Product {
@@ -47,7 +47,7 @@ public class Product {
         return "Product{" +
                "name='" + name + '\'' +
                ", price=" + price +
-               ", quantiti=" + quantity +
+               ", quantity=" + quantity +
                '}';
     }
 }

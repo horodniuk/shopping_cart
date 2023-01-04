@@ -1,7 +1,6 @@
 package storage;
 
 import cart.Product;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -25,16 +24,14 @@ public class StorageWithJson implements Storage {
         this.storageProducts = load(file);
     }
 
-    /**
+    /*
+     * выполнено
      * Задача: переписать метод load() с проверками и написать к нему тесты
-     * Сейчас он заполнен напрямую для демонстрации работы
      * нужно что бы на выходе мы получили Map c данными которые хранятся в resources по адресу
-     * sourse root -- > shopping_products_storage.json
-     * <p>
+     * sourse root --> shopping_products_storage.json
      * доп.cсылки
      * https://www.youtube.com/watch?v=YKUqIo7iXtA
-     * и еще
-     * https://howtodoinjava.com/java/library/json-simple-read-write-json-examples/
+     * и еще https://howtodoinjava.com/java/library/json-simple-read-write-json-examples/
      */
     @Override
     public Map<String, Product> load(String file) {
@@ -52,10 +49,9 @@ public class StorageWithJson implements Storage {
         return productMap;
     }
 
-    /**
+    /*
      * Эту задачу нужно уточнить
      * Задача: имплементировать метод write() с проверками и написать к нему тесты
-     * Сейчас он заполнен напрямую для демонстрации работы
      * данные со склада Map нужно записать в файл, которые хранятся в resources по адресу
      * sourse root --> shopping_products_storage.json
      * <p>

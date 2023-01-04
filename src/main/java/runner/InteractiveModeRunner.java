@@ -10,9 +10,8 @@ import java.util.Map;
 import java.util.Scanner;
 
 /**
- * В этом класе пользователь вводит команды в консоль а наша задача считать эте команды
- * и если такие команды существуют - выполнить их. (смотреть метод parseCommandLine())
- * предворительно работаем с корзиной
+ * Считываем построчно команды из консоли и если такие команды существуют -
+ * выполняем их. (смотреть метод excecuteCommand())
  */
 public class InteractiveModeRunner implements ModeRunner {
     private String pathToStorage;
@@ -22,9 +21,7 @@ public class InteractiveModeRunner implements ModeRunner {
     }
 
     /**
-     * Задача
-     * Нужно реализовать метод parseCommandLine который в зависимости от комманды будет
-     * работать с корзиной и выводить реузьтаты в консоль
+     * Считываем построчно команды из консоли.
      */
     public void start() {
         System.out.println("Запускаем режим Interactive mode.");
@@ -32,23 +29,27 @@ public class InteractiveModeRunner implements ModeRunner {
         System.out.println("Введите команду в консоль:");
         Cart cart = new Cart(new StorageWithJson(pathToStorage));
         while (true) {
-            String commandStr = new Scanner(System.in).nextLine();
-            if (commandStr.equals("finish")) return;
-            parseCommandLine(commandStr, cart);
+            String line = new Scanner(System.in).nextLine();
+            if(line.equals("finish")) return;
+            excecuteCommand(line, cart);
         }
     }
 
-    /**
-     * Сейчас прописан код в котором данные указаны напрямую
-     * Это для демонстрации работы
-     * Нужно прописать метод что он работал со всеми командами которые указаны в тех. задании
-     * Например: Если навход подается строка "add bear 5" нужно распарсить для получения
-     * названия продукта"bear" и кол-ва "5" и проверить
-     * есть ли такой продукт,
-     * есть ли его достаточное кол-во и после выполнить команду, например  cart.add("bear", 5)
+    /*
+     * выполнено
+     * Задача
+     * Нужно прописать метод который будет выполнять команды, которые указаны в тех.задании
+     * Например: Если на вход подается строка "add bear 5" нужно распарсить для получения
+     * названия продукта "bear" и кол-ва "5" и проверить есть ли такой продукт,
+     * есть ли его достаточное кол-во и после выполнить команду.
+     * например:
+     * add bear 5 --> cart.add("bear", 5)
+     * add soap 2 --> cart.add("soap", 2)
+     * discount buy_1_get_30_percentage cola --> applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "cola")
+     * discount buy_3_get_1_free bear --> applyDiscount(new Discount_BUY_3_GET_1_FREE(), "bear")
      */
     @Override
-    public void parseCommandLine(String line, Cart cart) {
+    public void excecuteCommand(String line, Cart cart) {
         /*
           Переводим все символы строки в нижний регистр и разбиваем строку на массив подстрок.
           lineArray[0] - это название метода, например add(), price() или discount().
@@ -95,7 +96,11 @@ public class InteractiveModeRunner implements ModeRunner {
         return cart.containsKey(productName);
     }
 
+    /**
+     * Показать пользователю инструкцию
+     */
     private void showTooltipWithCommands() {
+        System.out.println("Инструкция:");
         System.out.println("\"price\" - вывести сумму товара");
         System.out.println("\"add bear 5\" - добавить товар в корзину. Структура: add [название продукта] [кол-во продукта]");
         System.out.println("\"discount buy_1_get_30_percentage cola\" - применить скидку. Структура: discount [название скидки] [название продукта]");
