@@ -22,7 +22,7 @@ public class CartCommandParser {
 
     /*
     * шаблон рег.выражения делим на три группы  (group(1))(group(2))(group(3))
-    * (group(1)) - название команды: add или price
+    * (group(1)) - название команды: add или discount
     * (group(2)) - в случае add это название товара, в случае discount - название скидки
     * (group(3)) - в случае add это кол-во товара, в случае discount - название товара
     */
