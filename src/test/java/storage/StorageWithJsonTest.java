@@ -29,7 +29,7 @@ public class StorageWithJsonTest {
     @Test
     void testLoad_whenFileIsParsed() {
         //Arrange
-        String file = "src/main/resources/shopping_products_storage.json";
+        String file = "src/test/resources/shopping_products_storage.json";
         Product product = new Product(name, price, quantity);
         Map<String, Product> expectedMap = new HashMap<>();
         expectedMap.put(product.getName(), product);
