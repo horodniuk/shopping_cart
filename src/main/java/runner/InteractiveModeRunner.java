@@ -78,15 +78,17 @@ public class InteractiveModeRunner implements ModeRunner {
             default -> System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
         }
     }
-    // update showTooltipWithCommands
+    //The method prints the instruction to the console.
     private void showTooltipWithCommands() {
-        System.out.printf("%38s\n","prise");
-        System.out.printf("%s\n","Bывести сумму товара");
-        System.out.printf("%47s\n","add [bear] [5]");
-        System.out.printf("%s\n","Структура: add [название продукта] [кол-во продукта]");
-        System.out.printf("%68s","discount [buy_3_get_1_free] [beer] ");
-        System.out.printf("%2s\n","or discount [buy_1_get_30_percentage] [cola]");
-        System.out.printf("%s\n","Применить скидку. Структура: discount [название скидки] [название продукта]");
-        System.out.printf("%60s\n","finish - (завершить работу)");
+        System.out.println("\n---------------------------------INSTRUCTION-------------------------------------------");
+        System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"add beer 5\"", "- add item to cart.",  "Structure:",
+                "add [product name] [product quantity]");
+        System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"discount buy_1_get_30_percentage beer\"",
+                "- apply discount.", "Structure:","discount [discount name] [product name]");
+        System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"buy_1_get_30_percentage cola\"",
+                "- apply discount.", "Structure:","discount [discount name] [product name]");
+        System.out.printf("\n%-40s  %-30s ", "\"prise\"", "- find out the price.");
+        System.out.printf("\n%-40s  %-30s ", "\"finish\"", "- grocery shopping completed.");
+        System.out.println("\n---------------------------------------------------------------------------------------");
     }
 }
