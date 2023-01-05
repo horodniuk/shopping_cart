@@ -80,7 +80,8 @@ public class InteractiveModeRunner implements ModeRunner {
     }
     //The method prints the instruction to the console.
     private void showTooltipWithCommands() {
-        System.out.println("\n---------------------------------INSTRUCTION-------------------------------------------");
+        System.out.println("\n---------------------------------INSTRUCTION-------------------------------------------" +
+                "-----------------------------------------");
         System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"add beer 5\"", "- add item to cart.",  "Structure:",
                 "add [product name] [product quantity]");
         System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"discount buy_1_get_30_percentage beer\"",
@@ -89,6 +90,8 @@ public class InteractiveModeRunner implements ModeRunner {
                 "- apply discount.", "Structure:","discount [discount name] [product name]");
         System.out.printf("\n%-40s  %-30s ", "\"prise\"", "- find out the price.");
         System.out.printf("\n%-40s  %-30s ", "\"finish\"", "- grocery shopping completed.");
-        System.out.println("\n---------------------------------------------------------------------------------------");
+        System.out.println("");
+        System.out.println("\n---------------------------------------------------------------------------------------" +
+                "-----------------------------------------");
     }
 }
