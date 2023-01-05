@@ -16,11 +16,14 @@ public class CartCommandParser {
     public CartCommandParser(Cart cart) {
         this.cart = cart;
         this.products = cart.getStorageMap().keySet().stream().toList(); // getting all names of products from storage
-        this.discounts = List.of("buy_1_get_30_percentage", "buy_3_get_1_free"); // discounts names;
+        this.discounts = List.of("buy_1_get_30_percentage", "buy_3_get_1_free"); // discounts commands;
     }
 
 
     /*
+     * if commands "add beer 5" -> structures add [product name][product quantity]
+     * if commands "buy_1_get_30_percentage cola" -> structures add [discount name][product name]
+     *
      * pattern of regular expression we divide in three groups (group(1))(group(2))(group(3))
      * (group(1)) - command name: add or discount
      * (group(2)) - in case 'add' it is a product name, in case 'discount' - name of discount

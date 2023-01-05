@@ -29,8 +29,7 @@ public class StorageWithJson implements Storage {
     }
 
     /*
-     * finished
-     * Task: rewrite method load() with checks and write tests for it
+     * Task (completed): rewrite method load() with checks and write tests for it
      * in the end we must get a Map with data? which are stored in resources by address
      * source root --> shopping_products_storage.json
      */
@@ -50,7 +49,7 @@ public class StorageWithJson implements Storage {
     }
 
     /*
-     * this task must be clarified
+     * This task must be clarified
      * Task: implement method write() with checks and write tests for it
      * data from storage Map must be written in file, which is stored in resources by address
      * source root --> shopping_products_storage.json

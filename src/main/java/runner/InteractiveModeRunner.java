@@ -33,8 +33,7 @@ public class InteractiveModeRunner implements ModeRunner {
     }
 
     /*
-     * finished
-     * Task
+     * Task (completed)
      * We must make method which will be performing commands, which are included in technical task
      * For example: If we get String "add beer 5" we must parse it to get
      * name of product "beer" and quantity "5" and check if we have such product,

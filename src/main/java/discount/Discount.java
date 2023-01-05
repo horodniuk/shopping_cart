@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public interface Discount {
     /**
-     * method getDiscount() should return sum of discount depending on realisation
+     * Method getDiscount() should return sum of discount depending on realisation
      * parameters:
      * product name;
      * cart - cart with products;

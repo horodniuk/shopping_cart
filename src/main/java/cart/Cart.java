@@ -77,7 +77,7 @@ public class Cart {
 
     /*
      * Method description
-     * method parameters - type of discount and name of product
+     * Method parameters - type of discount and name of product
      * checking if product with such name exists in cart
      * if true - we get discount value (discountProductValue)
      * if discount value not 0, then discount worked and then:
@@ -100,8 +100,8 @@ public class Cart {
     }
 
     /**
-     * method description
-     * method parameters - name of product and amount of discount applied to product
+     * Method description
+     * Method parameters - name of product and amount of discount applied to product
      * checking if name of product exists as key in map with discounts.
      * If true then discount was already applied in this product, then we must subtract old discount
      * (oldDiscountValueProduct) from total discount on all products in cart(discount)
@@ -143,8 +143,7 @@ public class Cart {
 
 
     /**
-     * completed
-     * Task: implement method checkProductAndQuantityInStorage
+     * Task (completed): implement method checkProductAndQuantityInStorage
      * checking if product with this name exists in storage
      * check availability in storage, if available then return true,
      * if not - then we output to console, message that there is not enough quantity - and return false

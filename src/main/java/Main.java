@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class Main {
     /**
-     * after start of the program, user must choose mode (Interactive mode or File mode)
+     * After start of the program, user must choose mode (Interactive mode or File mode)
      */
     public static void main(String[] args) {
         start();

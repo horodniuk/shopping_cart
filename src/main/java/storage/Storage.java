@@ -5,13 +5,13 @@ import cart.Product;
 import java.util.Map;
 
 /*
- * method load() loads data in our Map
+ * Method load() loads data in our Map
  * if we parse file json - then we get container Map with filled with data from this file,
  * if we parse file with connecting to database - it will have its own realisation,
  * but in the end we will also get Map filled from database (not sure for now)
  *
- * method write() - writes updated data to the file
- * method getStorage() - getter of Map with data
+ * Method write() - writes updated data to the file
+ * Method getStorage() - getter of Map with data
  */
 public interface Storage {
     Map<String, Product> load(String file);
