@@ -7,43 +7,43 @@ import java.util.Scanner;
 
 public class Main {
     /**
-     * запускаем программу, пользователь должен выбрать режим игры (Interactive mode или File mode)
+     * After start of the program, user must choose mode (Interactive mode or File mode)
      */
     public static void main(String[] args) {
         start();
     }
 
     /*
-     * Метод в бесконечном цикле запрашивает название файла у пользователя.
+     * Method in endless cycle is asking user to enter file name.
      *
-     * Если пользователь ввел в коммандной строке только корректное название файла .json -
-     *  запускается new InteractiveModeRunner#start
+     * If User entered in command line only correct name of json file -
+     *  then starts new InteractiveModeRunner#start
      *
-     * Если пользователь ввел в коммандной строке назване файла json и через пробел навание файла .txt с командами -
-     *   запускается new FileModeRunner#start
+     * If User entered in command line json file name and through space name of .txt file with commands -
+     *   then starts new FileModeRunner#start
      */
     private static void start() {
         while (true) {
-            System.out.println("Выберите режим:");
-            System.out.println("Interactive mode режим - введите \"shopping_products_storage.json\"");
-            System.out.println("File mode режим - введите \"shopping_products_storage.json commadsList.txt\"");
+            System.out.println("Choose mode:");
+            System.out.println("Interactive mode - enter \"shopping_products_storage.json\"");
+            System.out.println("File mode - enter \"shopping_products_storage.json commandsList.txt\"");
 
             String line = new Scanner(System.in).nextLine();
-            // проверка на существование файла json
+            // checking if json file exists
             if (line.equals("shopping_products_storage.json") && new File("src/main/resources/" + line).exists()) {
                 new InteractiveModeRunner("src/main/resources/" + line).start();
                 break;
             }
-            // проверка на существование файла json и файла с командами
+            // checking if json file and file with commands exist
             String[] strArray = line.split(" ");
             String pathToStorageProduct = "src/main/resources/" + strArray[0];
             String pathToCommandList = "src/main/resources/" + strArray[strArray.length - 1];
             if (new File(pathToStorageProduct).exists() && new File(pathToCommandList).exists() &&
-                line.contains("shopping_products_storage.json commadsList.txt")) {
+                    line.contains("shopping_products_storage.json commandsList.txt")) {
                 new FileModeRunner(pathToStorageProduct, pathToCommandList).start();
                 break;
             }
-            System.out.println("Вы ввели некоректные данные");
+            System.out.println("You entered incorrect data");
         }
     }
 }
