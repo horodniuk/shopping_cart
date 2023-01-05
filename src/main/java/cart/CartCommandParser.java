@@ -10,28 +10,29 @@ import java.util.regex.Pattern;
 
 public class CartCommandParser {
     private Cart cart;
-    private List<String> discounds;
+    private List<String> discounts;
     private List<String> products;
 
     public CartCommandParser(Cart cart) {
         this.cart = cart;
-        this.products = cart.getStorageMap().keySet().stream().toList(); // получаем все название товаров в хранилище
-        this.discounds = List.of("buy_1_get_30_percentage", "buy_3_get_1_free"); // название скидок;
+        this.products = cart.getStorageMap().keySet().stream().toList(); // getting all names of products from storage
+        this.discounts = List.of("buy_1_get_30_percentage", "buy_3_get_1_free"); // discounts names;
     }
 
 
     /*
-    * шаблон рег.выражения делим на три группы  (group(1))(group(2))(group(3))
-    * (group(1)) - название команды: add или discount
-    * (group(2)) - в случае add это название товара, в случае discount - название скидки
-    * (group(3)) - в случае add это кол-во товара, в случае discount - название товара
-    */
+     * pattern of regular expression we divide in three groups (group(1))(group(2))(group(3))
+     * (group(1)) - command name: add or discount
+     * (group(2)) - in case 'add' it is a product name, in case 'discount' - name of discount
+     * (group(3)) - in case 'add' it is product quantity, in case 'discount' - name of product
+     */
     public boolean parse(String line) {
         // Example: add bear 5, add cola 1, add soap 2
-        String productRegEx = "^(add) (" + createRegExValues(products) +") ([0-9]+)";
+        String productRegEx = "^(add) (" + createRegExValues(products) + ") ([0-9]+)";
 
         //Example: discount buy_1_get_30_percentage cola,  discount buy_3_get_1_free bear
-        String discountRegEx = "^(discount) (" + createRegExValues(discounds) + ") (" + createRegExValues(products) + ")";
+        String discountRegEx = "^(discount) (" + createRegExValues(discounts) + ") ("
+                + createRegExValues(products) + ")";
 
         Matcher productCommandPatternMatcher = Pattern.compile(productRegEx).matcher(line);
         Matcher discountCommandPatternMatcher = Pattern.compile(discountRegEx).matcher(line);
@@ -42,7 +43,7 @@ public class CartCommandParser {
             cart.add(productName, countProduct);
             return true;
         }
-        if (discountCommandPatternMatcher.find()){
+        if (discountCommandPatternMatcher.find()) {
             String productName = discountCommandPatternMatcher.group(3);
             Discount currentDiscount = parseDiscount(discountCommandPatternMatcher.group(2));
             cart.applyDiscount(currentDiscount, productName);
@@ -53,12 +54,12 @@ public class CartCommandParser {
     }
 
     /*
-     * в зависимости от названия скидки  создать объект скидки
+     * depending on discount name we create discount object
      * buy_1_get_30_percentage -> Discount_BUY_1_GET_30_PERCENT_OFF();
      * buy_3_get_1_free -> Discount_BUY_3_GET_1_FREE();
      */
-    private Discount parseDiscount(String nameComand) {
-        if (nameComand.equals("buy_1_get_30_percentage")){
+    private Discount parseDiscount(String nameCommand) {
+        if (nameCommand.equals("buy_1_get_30_percentage")) {
             return new Discount_BUY_1_GET_30_PERCENT_OFF();
         } else {
             return new Discount_BUY_3_GET_1_FREE();
@@ -66,8 +67,9 @@ public class CartCommandParser {
     }
 
     /*
-     * из листа конвертируем в сроку, что бы применить в регулярном выражении
-     * Например List.of("buy_1_get_30_percentage", "buy_3_get_1_free") -> "buy_1_get_30_percentage|buy_3_get_1_free"
+     * from list converting to String, to apply in regular expression
+     * For example: List.of("buy_1_get_30_percentage", "buy_3_get_1_free") ->
+     * "buy_1_get_30_percentage|buy_3_get_1_free"
      */
     private String createRegExValues(List<String> values) {
         return String.join("|", values);

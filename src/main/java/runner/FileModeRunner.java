@@ -2,19 +2,15 @@ package runner;
 
 import cart.Cart;
 import cart.CartCommandParser;
-import cart.Product;
-import discount.Discount_BUY_1_GET_30_PERCENT_OFF;
-import discount.Discount_BUY_3_GET_1_FREE;
 import storage.StorageWithJson;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Map;
 
 /**
- * Считываем построчно команды с файла и если такие команды существуют -
- * выполняем их. (смотреть метод excecuteCommand())
+ * Reading commands line by line from file and if such commands exist -
+ * perform them. (look method executeCommand())
  */
 public class FileModeRunner implements ModeRunner {
     private String pathToStorage;
@@ -26,19 +22,18 @@ public class FileModeRunner implements ModeRunner {
     }
 
     /**
-     * Считываем построчно команды из файла.
+     * Reading commands line by line from file.
      */
     @Override
     public void start() {
-        System.out.println("Запускаем режим File mode." +
-                           " Команды будут считываться с файла\" " + pathToCommand);
+        System.out.println("Starting File mode." + " Commands will be read from file\" " + pathToCommand);
         Cart cart = new Cart(new StorageWithJson(pathToStorage));
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(pathToCommand));
             String line = reader.readLine();
             while (line != null) {
-                if (line.length() > 0) excecuteCommand(line, cart);
+                if (line.length() > 0) executeCommand(line, cart);
                 line = reader.readLine();
             }
 
@@ -49,28 +44,28 @@ public class FileModeRunner implements ModeRunner {
     }
 
     /*
-     * выполнено
-     * Задача
-     * Нужно прописать метод который будет выполнять команды, которые указаны в тех.задании
-     * Например: Если на вход подается строка "add beer 5" нужно распарсить для получения
-     * названия продукта"beer" и кол-ва "5" и проверить есть ли такой продукт,
-     * есть ли его достаточное кол-во и после выполнить команду.
-     * например:
+     * finished
+     * Task
+     * We must make method which will be performing commands, which are included in technical task
+     * For example: If we get String "add beer 5" we must parse it to get
+     * name of product "beer" and quantity "5" and check if we have such product,
+     * in such quantity and after perform the command.
+     * for example:
      * add beer 5 --> cart.add("beer", 5)
      * add soap 2 --> cart.add("soap", 2)
      * discount buy_1_get_30_percentage beer --> applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "beer")
      * discount buy_3_get_1_free soap --> applyDiscount(new Discount_BUY_3_GET_1_FREE(), "soap")
      *
-     * тестовый лист с командами создан в resources по адресу sourse root --> commadsList.txt
+     * test list with commands is located in resources by address source root --> commandsList.txt
      */
     @Override
-    public void excecuteCommand(String line, Cart cart) {
+    public void executeCommand(String line, Cart cart) {
         CartCommandParser cartCommandParser = new CartCommandParser(cart);
         if (cartCommandParser.parse(line)) return;
         if ((line.equals("price"))) {
             cart.price();
         } else {
-            System.out.println("неизвестная команда - " + line);
+            System.out.println("unknown command - " + line);
         }
     }
 

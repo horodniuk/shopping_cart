@@ -6,14 +6,14 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 /**
- * интерфейс для подсчета скидок по разным формулам
+ * interface for calculation of discounts with different formulas
  */
 public interface Discount {
     /**
-     * метод getDiscount() должен возвращать сумму скидки в зависимости от реализации
-     * парамеры:
-     * product name - название продукта;
-     * cart - корзина из товарами;
+     * method getDiscount() should return sum of discount depending on realisation
+     * parameters:
+     * product name;
+     * cart - cart with products;
      */
     BigDecimal getDiscount(String productName, Map<String, Product> cart);
 }

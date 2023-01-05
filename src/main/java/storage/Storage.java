@@ -1,22 +1,22 @@
 package storage;
 
 import cart.Product;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
-import java.io.File;
 import java.util.Map;
 
 /*
- * метод load() загружает данные данные в нашу карту (Map)
- * если парсим файл json - получаем контейнер Map c заполнеными данными с этого файла,
- * если парсим файл с подключением к базе данных - там своя будет реализация,
- * но на выходе также будет Map заполнена из базы данных (это не точно)
+ * method load() loads data in our Map
+ * if we parse file json - then we get container Map with filled with data from this file,
+ * if we parse file with connecting to database - it will have its own realisation,
+ * but in the end we will also get Map filled from database (not sure for now)
  *
- * метод write() - записываем данные обратно в файл после изменений
- * метод getStorage() - получение карты с данными
+ * method write() - writes updated data to the file
+ * method getStorage() - getter of Map with data
  */
 public interface Storage {
-   Map<String, Product> load(String file);
-   void write (Map<String, Product> storage);
-   Map<String, Product> getStorage();
+    Map<String, Product> load(String file);
+
+    void write(Map<String, Product> storage);
+
+    Map<String, Product> getStorage();
 }

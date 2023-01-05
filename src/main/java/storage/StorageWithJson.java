@@ -15,7 +15,7 @@ import java.util.Map;
 
 
 /**
- * реализация склада с товарами на основе файла json
+ * Realisation of storage with products based on json file
  */
 public class StorageWithJson implements Storage {
     private String file;
@@ -29,13 +29,10 @@ public class StorageWithJson implements Storage {
     }
 
     /*
-     * выполнено
-     * Задача: переписать метод load() с проверками и написать к нему тесты
-     * нужно что бы на выходе мы получили Map c данными которые хранятся в resources по адресу
-     * sourse root --> shopping_products_storage.json
-     * доп.cсылки
-     * https://www.youtube.com/watch?v=YKUqIo7iXtA
-     * и еще https://howtodoinjava.com/java/library/json-simple-read-write-json-examples/
+     * finished
+     * Task: rewrite method load() with checks and write tests for it
+     * in the end we must get a Map with data? which are stored in resources by address
+     * source root --> shopping_products_storage.json
      */
     @Override
     public Map<String, Product> load(String file) {
@@ -53,13 +50,10 @@ public class StorageWithJson implements Storage {
     }
 
     /*
-     * Эту задачу нужно уточнить
-     * Задача: имплементировать метод write() с проверками и написать к нему тесты
-     * данные со склада Map нужно записать в файл, которые хранятся в resources по адресу
-     * sourse root --> shopping_products_storage.json
-     * <p>
-     * доп.cсылки
-     * https://www.geeksforgeeks.org/how-to-convert-map-to-json-to-hashmap-in-java/
+     * this task must be clarified
+     * Task: implement method write() with checks and write tests for it
+     * data from storage Map must be written in file, which is stored in resources by address
+     * source root --> shopping_products_storage.json
      */
     @Override
     public void write(Map<String, Product> storage) {
