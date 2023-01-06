@@ -16,17 +16,17 @@ public class Main {
     /*
      * Method in endless cycle is asking user to enter file name.
      *
-     * If User entered in command line only correct name of json file -
+     * If user entered in command line only correct name of json file -
      *  then starts new InteractiveModeRunner#start
      *
-     * If User entered in command line json file name and through space name of .txt file with commands -
+     * If user entered in command line json file name and through space name of .txt file with commands -
      *   then starts new FileModeRunner#start
      */
     private static void start() {
         while (true) {
             System.out.println("Choose mode:");
             System.out.println("Interactive mode - enter \"shopping_products_storage.json\"");
-            System.out.println("File mode - enter \"shopping_products_storage.json commandsList.txt\"");
+            System.out.println("File mode режим - введите \"shopping_products_storage.json commadsList.txt\"");
 
             String line = new Scanner(System.in).nextLine();
             // checking if json file exists
@@ -39,7 +39,7 @@ public class Main {
             String pathToStorageProduct = "src/main/resources/" + strArray[0];
             String pathToCommandList = "src/main/resources/" + strArray[strArray.length - 1];
             if (new File(pathToStorageProduct).exists() && new File(pathToCommandList).exists() &&
-                    line.contains("shopping_products_storage.json commandsList.txt")) {
+                    line.contains("shopping_products_storage.json commadsList.txt")) {
                 new FileModeRunner(pathToStorageProduct, pathToCommandList).start();
                 break;
             }
