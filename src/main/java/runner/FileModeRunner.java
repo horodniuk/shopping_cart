@@ -1,8 +1,7 @@
 package runner;
 
 import cart.Cart;
-import discount.Discount_BUY_1_GET_30_PERCENT_OFF;
-import discount.Discount_BUY_3_GET_1_FREE;
+import cart.CartCommandParser;
 import storage.StorageWithJson;
 
 import java.io.BufferedReader;
@@ -10,9 +9,8 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * В этом класе мы считываем построчно команды с файла и если такие команды существуют -
- * выполняем их. (смотреть метод parseCommandLine())
- * предворительно работаем с корзиной
+ * Reading commands line by line from file and if such commands exist -
+ * perform them. (look method executeCommand())
  */
 public class FileModeRunner implements ModeRunner {
     private String pathToStorage;
@@ -24,31 +22,18 @@ public class FileModeRunner implements ModeRunner {
     }
 
     /**
-     * Описание
-     * В File Mode создаем корзину и считываем построчно команды из файла
-     *
-     *  доп.ссылки
-     *  https://www.digitalocean.com/community/tutorials/java-read-file-line-by-line
-     *
-     * Задача
-     * Нужно реализовать метод parseCommandLine() который в зависимости от комманды будет
-     * работать с корзиной и выводить реузьтаты в консоль
-     *
+     * Reading commands line by line from file.
      */
     @Override
     public void start() {
-        System.out.println("Запускаем режим File mode." +
-                           " Команды будут считываться с файла\" " + pathToCommand);
+        System.out.println("Starting File mode." + " Commands will be read from file\" " + pathToCommand);
         Cart cart = new Cart(new StorageWithJson(pathToStorage));
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(pathToCommand));
             String line = reader.readLine();
             while (line != null) {
-                // System.out.println(line);
-                //вместо вывода на консоль строк из файла нужно парсить каждую строчку
-                if (line.equals("finish")) return;
-                parseCommandLine(line, cart);
+                if (line.length() > 0) executeCommand(line, cart);
                 line = reader.readLine();
             }
 
@@ -58,50 +43,28 @@ public class FileModeRunner implements ModeRunner {
         }
     }
 
-    /**
+    /*
+     * Task (completed)
+     * We must make method which will be performing commands, which are included in technical task
+     * For example: If we get String "add beer 5" we must parse it to get
+     * name of product "beer" and quantity "5" and check if we have such product,
+     * in such quantity and after perform the command.
+     * for example:
+     * add beer 5 --> cart.add("beer", 5)
+     * add soap 2 --> cart.add("soap", 2)
+     * discount buy_1_get_30_percentage beer --> applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "beer")
+     * discount buy_3_get_1_free soap --> applyDiscount(new Discount_BUY_3_GET_1_FREE(), "soap")
      *
-     * Сейчас прописан код в котором данные указаны напрямую
-     * Это для демонстрации работы
-     * Нужно прописать метод что он работал со всеми командами которые указаны в тех. задании
-     * Например: Если навход подается строка "add bear 5" нужно распарсить для получения
-     * названия продукта"bear" и кол-ва "5" и проверить
-     * есть ли такой продукт,
-     * есть ли его достаточное кол-во и после выполнить команду, например  cart.add("bear", 5)
-     *
-     *  тестовый лист с командами создан в resources по адресу
-     *  sourse root --> commadsList.txt
+     * test list with commands is located in resources by address source root --> commandsList.txt
      */
     @Override
-    public void parseCommandLine(String line, Cart cart) {
-       /*
-          Переводим все символы строки в нижний регистр и разбиваем строку на массив подстрок.
-          lineArray[0] - это название метода, например add(), price() или discount().
-          lineArray[1] - это наименование продукта для добавления (в случае запуска метода add()) или наименование
-          скидки (в случае запуска метода discount()).
-          lineArray[2] - это количество продуктов для добавления в корзику (в случае метода add()) или наименование
-          продукта к которому нужно применить скидку (в случае метода discount()).
-          в случае если lineArray[0] - add, добавил проверку, является ли lineArray[2] числом.
-          в случае если lineArray[0] - discount, добавил проверку, верное ли название скидки находится в lineArray[1].
-         */
-        String[] lineArray = line.toLowerCase().split(" ");
-
-        switch (lineArray[0]) {
-            case "add" -> {
-                if (Character.isDigit(lineArray[2].chars().sum())) {
-                    cart.add(lineArray[1], Integer.parseInt(lineArray[2]));
-                } else System.out.println("Please enter the correct quantity of Product. For example - 5");
-            }
-            case "price" -> cart.price();
-            case "discount" -> {
-                if (lineArray[1].equals("buy_3_get_1_free")) {
-                    cart.applyDiscount(new Discount_BUY_3_GET_1_FREE(), lineArray[2]);
-                }
-                if (lineArray[1].equals("buy_1_get_30_percentage")) {
-                    cart.applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), lineArray[2]);
-                } else System.out.println("You entered the wrong type of discount. Try next command, for example," +
-                        "\"discount buy_3_get_1_free soap\"");
-            }
-            default -> System.out.println("неизвесная команда, попробуйте еще раз, например \"add bear 5\"");
+    public void executeCommand(String line, Cart cart) {
+        CartCommandParser cartCommandParser = new CartCommandParser(cart);
+        if (cartCommandParser.parse(line)) return;
+        if ((line.equals("price"))) {
+            cart.price();
+        } else {
+            System.out.println("unknown command - " + line);
         }
     }
 

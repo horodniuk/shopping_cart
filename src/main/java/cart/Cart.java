@@ -8,12 +8,16 @@ import java.util.*;
 
 
 public class Cart {
-    private Map<String, Product> cartMap;     // контейнер для хранения данных корзины
-    private Map<String, Product> storageMap;  // хранится данные о кол-ве продуктов на складе
-    private Map<String, BigDecimal> discountMap; // контейнер с названием товаров, к которым применили скидку и значение скидки
-    private BigDecimal price = new BigDecimal(00.00).setScale(2);
-    private BigDecimal discount = new BigDecimal(00.00).setScale(2);
+    private Map<String, Product> cartMap;         // map of products, which are added in the cart
+    private Map<String, Product> storageMap;      // map of products, which are stored in storage
+    private Map<String, BigDecimal> discountMap;  // map of products, which are added in the cart and discounts applied
+    private BigDecimal price = new BigDecimal(00.00).setScale(2); // total price of products in cart (including discount)
+    private BigDecimal discount = new BigDecimal(00.00).setScale(2); // total amount of discount on products in cart
 
+    /**
+     * When creating the constructor of cart we fill the storageMap with products from the storage to check the name
+     * of products and their quantity before adding them in the cart.
+     */
     public Cart(Storage storage) {
         this.cartMap = new LinkedHashMap<>();
         this.storageMap = storage.getStorage();
@@ -21,39 +25,48 @@ public class Cart {
     }
 
     /*
-     * Описание метода
-     * параметры метода - назвнание продукта и колличество
-     * проверяем есть ли товар с таким названием и в нужном кол-ве на складе
-     * tempPrice - временная переменная для хранения цены продукта
-     * проверяем если корзина не пуста и там хранится продукт с данным названием - обновляем его кол-во
-     * в противоположном случае добавляем продукт в корзину
-     * метод printToConsole() - выводим данные на консоль
-     * метод updatePrice() - обновляем price (общую стоимость корзины)
+     * Method description - it should add products in the cart
+     * method parameters - name of product, and it's quantity
+     * we check if product with such name and in needed quantity exists in the storage
+     * tempPrice - temporary variable for storing price of product
+     * Further we are checking if cart is not empty and stores product with such name - then we update its quantity
+     * otherwise we add this product in cart
+     * method printToConsole() - we print data to console
+     * updateQuantityProductsInStorageMap() - we update quantity of product in storage
+     * method updatePrice() - we update price (total price of all products in cart)
      */
     public void add(String productName, int quantity) {
         if (checkProductAndQuantityInStorage(productName, quantity)) {
             BigDecimal tempPrice = storageMap.get(productName).getPrice();
             if (!cartMap.isEmpty() && cartMap.containsKey(productName)) {
-                int newQuantiti = cartMap.get(productName).getQuantity() + quantity;
-                cartMap.put(productName, new Product(productName, tempPrice, newQuantiti));
+                int newQuantity = cartMap.get(productName).getQuantity() + quantity;
+                cartMap.put(productName, new Product(productName, tempPrice, newQuantity));
             } else {
                 cartMap.put(productName, new Product(productName, tempPrice, quantity));
             }
             printToConsole(quantity, productName);
+            updateQuantityProductsInStorageMap(productName, quantity);
             price = updatePrice();
-        };
+        }
     }
 
+    // output data to the console according to the technical task
     private void printToConsole(int quantity, String productName) {
         System.out.println(quantity + " " + productName + "(s) vas added");
     }
 
-    // вывод на консоль в формате discount:00.00,price:XX.50
+    /**
+     * data output to console in next format: discount:00.00,price:XX.50
+     */
     public void price() {
         System.out.println(String.format("discount:%s, price:%s", discount, price));
+        System.out.println(this); // for logging, call of method toString on cart
     }
 
-    public BigDecimal totalPriceWithoutDiscont() {
+    /**
+     * total price of products without discounts
+     */
+    public BigDecimal totalPriceWithoutDiscount() {
         List<Product> list = new ArrayList<>(cartMap.values());
         var sum = BigDecimal.ZERO;
         for (Product product : list) {
@@ -61,53 +74,60 @@ public class Cart {
         }
         return sum.setScale(2);
     }
-    /*
-     * Описание метода
-     * параметры метода - Тип скидки и название продукта
-     * проверяем есть ли товар с таким названием и в нужном кол-ве на складе и есть ли в корзине
-     * если есть получаем значение скидки (discountProductValue)
-     * если значение скидки не 0, значит скидка сработала тогда:
-     * обновляем общую сумму скидки в корзине (discount)
-     * обновляем сумму в корзине (price)
-     * добавляем в карту со скидками название продукта и скидку (BigDecimal) на него.
-     *  выводим в консоль что скидка добавлена
-     */
-    public void applyDiscount(Discount discountType, String productName){
-       if (isProductExistsInCart(productName) && checkProductAndQuantityInStorage(productName, 1)){
-           BigDecimal discountProductValue = discountType.getDiscount(productName, cartMap);
-           if (discountProductValue.intValue() != 0){
-               discount = updateDiscount(productName, discountProductValue);
-               price = updatePrice();
-               discountMap.put(productName, discountProductValue);
-               System.out.println("discount added");
-           }
-       }
-    }
 
     /*
-     * Описание метода
-     * параметры метода - назвнание продукта и цена скидки на продукт
-     * проверяем есть ли название товара, как ключ в карте со скидками.
-     * Если есть то значит на данный товар применялась скидка,
-     * нужно старую скидку (oldDiscountValueProduct) отминусовать с общей скидки в корзине(discount)
-     * так как по заданию нам нужно вы
-     * return - плюсуем скидку на продукт в общую сумму скидок
+     * Method description
+     * Method parameters - type of discount and name of product
+     * checking if product with such name exists in cart
+     * if true - we get discount value (discountProductValue)
+     * if discount value not 0, then discount worked and then:
+     * we update total discount value in cart (discount)
+     * then update total price of products in cart (price)
+     * next we add in map with discounts product name and discount value on it (BigDecimal).
+     * output to console - discount added
+     */
+    public void applyDiscount(Discount discountType, String productName) {
+        if (isProductExistsInCart(productName)) {
+            BigDecimal discountProductValue = discountType.getDiscount(productName, cartMap).setScale(2);
+            if (discountProductValue.intValue() != 0) {
+                discount = updateDiscount(productName, discountProductValue);
+                price = updatePrice();
+                discountMap.put(productName, discountProductValue);
+                System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
+                        discountType.getClass().getSimpleName(), productName, discountProductValue);
+            }
+        }
+    }
+
+    /**
+     * Method description
+     * Method parameters - name of product and amount of discount applied to product
+     * checking if name of product exists as key in map with discounts.
+     * If true then discount was already applied in this product, then we must subtract old discount
+     * (oldDiscountValueProduct) from total discount on all products in cart(discount)
+     * Because according to the totalPriceWithoutDiscount - if two discounts are applied to one product -
+     * then we must apply only the last one.
+     * return - we add discount on this product to total discount on all products.
      */
     private BigDecimal updateDiscount(String productName, BigDecimal discountProductValue) {
-        if (discountMap.containsKey(productName)){
-           BigDecimal oldDiscountValueProduct = discountMap.get(productName);
-           discount = discount.subtract(oldDiscountValueProduct);
+        if (discountMap.containsKey(productName)) {
+            BigDecimal oldDiscountValueProduct = discountMap.get(productName);
+            discount = discount.subtract(oldDiscountValueProduct);
         }
-           return discount.add(discountProductValue);
+        return discount.add(discountProductValue).setScale(2);
     }
 
+    /**
+     * updating total price of products in cart
+     */
     private BigDecimal updatePrice() {
-        return totalPriceWithoutDiscont().subtract(discount);
+        return totalPriceWithoutDiscount().subtract(discount);
     }
 
     private boolean isProductExistsInCart(String productName) {
         if (!cartMap.containsKey(productName)) {
-            System.out.println("Товара " + productName + " нет в корзине. Поэтому на него нельзя применить скидку");
+            System.out.println("Product " + productName + " doesn't exist in cart. " +
+                    "Therefore discount cannot be applied.");
             return false;
         } else {
             return true;
@@ -115,18 +135,27 @@ public class Cart {
     }
 
     /**
-     * Задача: имплементировать метод checkStorage
-     * проверить если ли товар с таким названием на складе
-     * проверить наличие на складе есть есть true, удаляем со склада,
-     * если нет выводим в консоль, что не хватает кол-ва - возвращаем false
-     * Сейчас метод просто проверяет есть товар на складе или нет
+     * updating products quantity in storage
+     */
+    private void updateQuantityProductsInStorageMap(String productName, int quantity) {
+        storageMap.get(productName).setQuantity(storageMap.get(productName).getQuantity() - quantity);
+    }
+
+
+    /**
+     * Task (completed): implement method checkProductAndQuantityInStorage
+     * checking if product with this name exists in storage
+     * check availability in storage, if available then return true,
+     * if not - then we output to console, message that there is not enough quantity - and return false
      */
     private boolean checkProductAndQuantityInStorage(String productName, int quantity) {
-        if (storageMap.containsKey(productName)){
-            return storageMap.get(productName).getQuantity() >= quantity;
+        if (storageMap.get(productName).getQuantity() < quantity) {
+            System.out.printf("Storage doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
+                    productName, quantity, storageMap.get(productName).getQuantity());
         }
-        return false;
+        return storageMap.get(productName).getQuantity() >= quantity;
     }
+
 
     public Map<String, Product> getStorageMap() {
         return storageMap;
@@ -150,8 +179,13 @@ public class Cart {
 
     @Override
     public String toString() {
-        return "Cart{" +
-               "cartMap=" + cartMap +
-               '}';
+        return "~~~~~~~~~~~~~~~~~  CART (LOG) ~~~~~~~~~~~~~~~~~\n" +
+                "cartMap=" + cartMap +
+                ",\n storageMap=" + storageMap +
+                ",\n discountMap=" + discountMap +
+                ",\n price=" + price +
+                ",\n discount=" + discount +
+                ",\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
+                '\n';
     }
 }

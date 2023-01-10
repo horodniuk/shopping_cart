@@ -2,16 +2,17 @@ package runner;
 
 import cart.Cart;
 
-/**
+/*
+ * Interface for working with different modes of data output to the console
+ * method start() - starts reading and executing commands depending on mode
+ * For example:
+ * if it is Interactive mode - we read the commands from console
+ * if it is File mode - we read the commands from file
  *
- * Созали интерфейс для работы с разными режимами вывода данных в консоль
- * метод start() - запускает работу для получения данных,
- * если это Interactive mode - даем возможность вводить данные в консоль,
- * если это File mode - парсим файл с командами,
- *
- * метод parseCommandLine() - на основе данных вызываем необходимые комманды объекта корзины (Cart)
+ * method executeCommand() - executes commands based on the read data (object of Cart)
  */
 public interface ModeRunner {
     void start();
-    void parseCommandLine(String line, Cart cart);
+
+    void executeCommand(String line, Cart cart);
 }
