@@ -59,13 +59,18 @@ public class InteractiveModeRunner implements ModeRunner {
      * Show instruction to Customer
      */
     private void showTooltipWithCommands() {
-        System.out.println("Instruction:");
-        System.out.println("\"price\" - show price of products in cart");
-        System.out.println("\"add beer 5\" - add product in cart. Structure: add [product name] [product quantity]");
-        System.out.println("\"discount buy_1_get_30_percentage beer\" - apply discount. " +
-                "Structure: discount [discount name] [product name]");
-        System.out.println("\"discount buy_3_get_1_free beer\" - apply discount. " +
-                "Structure: discount [discount name] [product name]");
-        System.out.println("\"finish\" - finish work");
+        System.out.println("\n---------------------------------INSTRUCTION-------------------------------------------" +
+                "-----------------------------------------");
+        System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"add beer 5\"", "- add item to cart.",  "Structure:",
+                "add [product name] [product quantity]");
+        System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"discount buy_1_get_30_percentage beer\"",
+                "- apply discount.", "Structure:","discount [discount name] [product name]");
+        System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"discount buy_3_get_1_free cola\"",
+                "- apply discount.", "Structure:","discount [discount name] [product name]");
+        System.out.printf("\n%-40s  %-30s ", "\"prise\"", "- find out the price.");
+        System.out.printf("\n%-40s  %-30s ", "\"finish\"", "- grocery shopping completed.");
+        System.out.println("");
+        System.out.println("\n---------------------------------------------------------------------------------------" +
+                    "-----------------------------------------");
     }
 }
