@@ -4,9 +4,13 @@ import discount.Discount;
 import discount.Discount_BUY_1_GET_30_PERCENT_OFF;
 import discount.Discount_BUY_3_GET_1_FREE;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class CartCommandParser {
     private Cart cart;
@@ -29,31 +33,25 @@ public class CartCommandParser {
      * (group(2)) - in case 'add' it is a product name, in case 'discount' - name of discount
      * (group(3)) - in case 'add' it is product quantity, in case 'discount' - name of product
      */
-    public boolean parse(String line) {
-        // Example: add bear 5, add cola 1, add soap 2
-        String productRegEx = "^(add) (" + createRegExValues(products) + ") ([0-9]+)";
-
-        //Example: discount buy_1_get_30_percentage cola,  discount buy_3_get_1_free bear
-        String discountRegEx = "^(discount) (" + createRegExValues(discounts) + ") ("
-                + createRegExValues(products) + ")";
-
-        Matcher productCommandPatternMatcher = Pattern.compile(productRegEx).matcher(line);
-        Matcher discountCommandPatternMatcher = Pattern.compile(discountRegEx).matcher(line);
-
-        if (productCommandPatternMatcher.find()) {
-            String productName = productCommandPatternMatcher.group(2);
-            int countProduct = Integer.parseInt(productCommandPatternMatcher.group(3));
-            cart.add(productName, countProduct);
-            return true;
+    public Optional<ParsedCommand> parse(String line) {
+        Optional<ParsedCommand> parsedCommandOptional = Optional.empty();
+        for (Command currentCommand : values()) {
+            if (currentCommand.matches(line)) {
+                final Matcher matcher = currentCommand.getRegex().matcher(line);
+                List<String> arguments =  getArgumentsWithMather(matcher);
+                return Optional.of(new ParsedCommand(currentCommand, arguments));
+            }
         }
-        if (discountCommandPatternMatcher.find()) {
-            String productName = discountCommandPatternMatcher.group(3);
-            Discount currentDiscount = parseDiscount(discountCommandPatternMatcher.group(2));
-            cart.applyDiscount(currentDiscount, productName);
-            return true;
-        } else {
-            return false;
+        return parsedCommandOptional;
+    }
+
+    private List<String> getArgumentsWithMather(Matcher matcher) {
+        List<String> list = new ArrayList<>();
+        if(matcher.find()){
+            int countGroup = matcher.groupCount();
+            list = IntStream.rangeClosed(1, countGroup).mapToObj(matcher::group).collect(Collectors.toList());
         }
+        return list;
     }
 
     /*
