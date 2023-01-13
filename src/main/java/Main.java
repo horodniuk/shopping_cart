@@ -30,14 +30,15 @@ public class Main {
 
             String line = new Scanner(System.in).nextLine();
             // checking if json file exists
-            if (line.equals("shopping_products_storage.json") && new File("src/main/resources/" + line).exists()) {
-                new InteractiveModeRunner("src/main/resources/" + line).start();
+            String absolutePath="src/main/resources/";//CORRECTION №1(Korbut)
+            if (line.equals("shopping_products_storage.json") && new File(absolutePath + line).exists()) {
+                new InteractiveModeRunner(absolutePath + line).start();
                 break;
             }
             // checking if json file and file with commands exist
             String[] strArray = line.split(" ");
-            String pathToStorageProduct = "src/main/resources/" + strArray[0];
-            String pathToCommandList = "src/main/resources/" + strArray[strArray.length - 1];
+            String pathToStorageProduct = absolutePath + strArray[0];
+            String pathToCommandList = absolutePath + strArray[strArray.length - 1];
             if (new File(pathToStorageProduct).exists() && new File(pathToCommandList).exists() &&
                     line.contains("shopping_products_storage.json commadsList.txt")) {
                 new FileModeRunner(pathToStorageProduct, pathToCommandList).start();
