@@ -31,7 +31,7 @@ public class StorageWithJson implements Storage {
     /*
      * Task (completed): rewrite method load() with checks and write tests for it
      * in the end we must get a Map with data? which are stored in resources by address
-     * source root --> shopping_products_storage.json
+     * source root --> storage.json
      */
     @Override
     public Map<String, Product> load(String file) {
@@ -52,7 +52,7 @@ public class StorageWithJson implements Storage {
      * This task must be clarified
      * Task: implement method write() with checks and write tests for it
      * data from storage Map must be written in file, which is stored in resources by address
-     * source root --> shopping_products_storage.json
+     * source root --> storage.json
      */
     @Override
     public void write(Map<String, Product> storage) {
