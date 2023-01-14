@@ -29,25 +29,31 @@ public class Main {
         while (true) {
             System.out.println("Choose mode:");
             System.out.println("Interactive mode - enter \"shopping_products_storage.json\"");
-            System.out.println("File mode режим - введите \"shopping_products_storage.json commadsList.txt\"");
+            System.out.println("File mode режим - enter \"shopping_products_storage.json commadsList.txt\"");
 
             String line = new Scanner(System.in).nextLine();
-            // checking if json file exists
-            if (line.equals("shopping_products_storage.json") && new File(SRC_MAIN_RESOURCES + line).exists()) {
-                new InteractiveModeRunner(SRC_MAIN_RESOURCES + line).start();
-                break;
-            }
-            // checking if json file and file with commands exist
+
             String[] strArray = line.split(" ");
             String pathToStorageProduct = SRC_MAIN_RESOURCES + strArray[0];
             String pathToCommandList = SRC_MAIN_RESOURCES + strArray[strArray.length - 1];
-            if (new File(pathToStorageProduct).exists() && new File(pathToCommandList).exists() &&
+            // checking if json file exists
+            if (!isFileJsExists(pathToStorageProduct)) {
+                throw new RuntimeException("File " + line + " not found!");
+            } else if (line.equals("shopping_products_storage.json")) {
+                new InteractiveModeRunner(SRC_MAIN_RESOURCES + line).start();
+            }
+            // checking if file with commands exist
+            else if (new File(pathToCommandList).exists() &&
                     line.contains("shopping_products_storage.json commadsList.txt")) {
                 new FileModeRunner(pathToStorageProduct, pathToCommandList).start();
-                break;
+            } else {
+                System.out.println("You entered incorrect data");
             }
-            System.out.println("You entered incorrect data");
         }
+    }
+
+    private static boolean isFileJsExists(String pathToStorageProduct) {
+        return new File(pathToStorageProduct).exists();
     }
 }
 
