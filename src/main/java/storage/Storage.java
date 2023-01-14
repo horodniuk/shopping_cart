@@ -14,15 +14,9 @@ import java.util.Map;
  * Method getStorage() - getter of Map with data
  */
 public interface Storage {
-    Map<String, Product> load();
+    Map<String, Product> load(String file);
 
     void write(Map<String, Product> storage);
-
-    void addProduct();
-
-    void removeProduct();
-
-    void reserveProduct();
 
     Map<String, Product> getStorage();
 }

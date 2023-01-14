@@ -17,14 +17,14 @@ import java.util.Map;
  */
 @ToString
 public class StorageWithJson implements Storage {
-    private String path;
+    private String file;
     private Map<String, Product> storageProducts;
     private File jsonFile;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     public StorageWithJson(String path) {
-        this.path = path;
-        this.storageProducts = load();
+        this.file = path;
+        this.storageProducts = load(file);
     }
 
     /*
@@ -33,8 +33,8 @@ public class StorageWithJson implements Storage {
      * source root --> shopping_products_storage.json
      */
     @Override
-    public Map<String, Product> load() {
-        jsonFile = new File(path);
+    public Map<String, Product> load(String file) {
+        jsonFile = new File(file);
         List<Product> productList;
         Map<String, Product> productMap = new LinkedHashMap<>();
         try {
@@ -55,7 +55,7 @@ public class StorageWithJson implements Storage {
      */
     @Override
     public void write(Map<String, Product> storage) {
-        jsonFile = new File(path);
+        jsonFile = new File(file);
         try {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, storage.values());
         } catch (IOException exception) {
@@ -69,13 +69,7 @@ public class StorageWithJson implements Storage {
         return storageProducts;
     }
 
-    private boolean checkProductAndQuantityInStorage(String productName, int quantity) {
-        if (storageMap.get(productName).getQuantity() < quantity) {
-            System.out.printf("Storage doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
-                    productName, quantity, storageMap.get(productName).getQuantity());
-        }
-        return storageMap.get(productName).getQuantity() >= quantity;
-    }
+
 
     @Override
     public String toString() {

@@ -13,6 +13,4 @@ import cart.Cart;
  */
 public interface ModeRunner {
     void start();
-
-    void executeCommand(String line, Cart cart);
 }
