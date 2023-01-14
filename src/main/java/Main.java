@@ -6,6 +6,9 @@ import java.util.Scanner;
 
 
 public class Main {
+
+    public static final String SRC_MAIN_RESOURCES = "src/main/resources/";
+
     /**
      * After start of the program, user must choose mode (Interactive mode or File mode)
      */
@@ -30,14 +33,14 @@ public class Main {
 
             String line = new Scanner(System.in).nextLine();
             // checking if json file exists
-            if (line.equals("shopping_products_storage.json") && new File("src/main/resources/" + line).exists()) {
-                new InteractiveModeRunner("src/main/resources/" + line).start();
+            if (line.equals("shopping_products_storage.json") && new File(SRC_MAIN_RESOURCES + line).exists()) {
+                new InteractiveModeRunner(SRC_MAIN_RESOURCES + line).start();
                 break;
             }
             // checking if json file and file with commands exist
             String[] strArray = line.split(" ");
-            String pathToStorageProduct = "src/main/resources/" + strArray[0];
-            String pathToCommandList = "src/main/resources/" + strArray[strArray.length - 1];
+            String pathToStorageProduct = SRC_MAIN_RESOURCES + strArray[0];
+            String pathToCommandList = SRC_MAIN_RESOURCES + strArray[strArray.length - 1];
             if (new File(pathToStorageProduct).exists() && new File(pathToCommandList).exists() &&
                     line.contains("shopping_products_storage.json commadsList.txt")) {
                 new FileModeRunner(pathToStorageProduct, pathToCommandList).start();
