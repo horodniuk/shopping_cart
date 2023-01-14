@@ -22,8 +22,8 @@ public class StorageWithJson implements Storage {
     private File jsonFile;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public StorageWithJson(String path) {
-        this.file = path;
+    public StorageWithJson(String file) {
+        this.file = file;
         this.storageProducts = load(file);
     }
 

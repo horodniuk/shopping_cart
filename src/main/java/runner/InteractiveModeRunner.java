@@ -29,10 +29,9 @@ public class InteractiveModeRunner implements ModeRunner {
         while (true) {
             String line = new Scanner(System.in).nextLine();
             textModeRunner.executeCommand(line, cart);
-            if (line.equals("finish"))  return;
+            if (line.equals("finish")) return;
         }
     }
-
 
     /**
      * Show instruction to Customer
@@ -40,16 +39,16 @@ public class InteractiveModeRunner implements ModeRunner {
     private void showTooltipWithCommands() {
         System.out.println("\n---------------------------------INSTRUCTION-------------------------------------------" +
                 "-----------------------------------------");
-        System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"add beer 5\"", "- add item to cart.",  "Structure:",
+        System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"add beer 5\"", "- add item to cart.", "Structure:",
                 "add [product name] [product quantity]");
         System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"discount buy_1_get_30_percentage beer\"",
-                "- apply discount.", "Structure:","discount [discount name] [product name]");
+                "- apply discount.", "Structure:", "discount [discount name] [product name]");
         System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"discount buy_3_get_1_free cola\"",
-                "- apply discount.", "Structure:","discount [discount name] [product name]");
+                "- apply discount.", "Structure:", "discount [discount name] [product name]");
         System.out.printf("\n%-40s  %-30s ", "\"prise\"", "- find out the price.");
         System.out.printf("\n%-40s  %-30s ", "\"finish\"", "- grocery shopping completed.");
         System.out.println("");
         System.out.println("\n---------------------------------------------------------------------------------------" +
-                    "-----------------------------------------");
+                "-----------------------------------------");
     }
 }
