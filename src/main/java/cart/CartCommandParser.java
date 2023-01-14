@@ -3,6 +3,7 @@ package cart;
 import discount.Discount;
 import discount.Discount_BUY_1_GET_30_PERCENT_OFF;
 import discount.Discount_BUY_3_GET_1_FREE;
+import storage.Storage;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -29,7 +30,7 @@ public class CartCommandParser {
      * (group(2)) - in case 'add' it is a product name, in case 'discount' - name of discount
      * (group(3)) - in case 'add' it is product quantity, in case 'discount' - name of product
      */
-    public boolean parse(String line) {
+    public boolean parse(String line, Storage storage) {
         // Example: add bear 5, add cola 1, add soap 2
         String productRegEx = "^(add) (" + createRegExValues(products) + ") ([0-9]+)";
 
@@ -43,7 +44,7 @@ public class CartCommandParser {
         if (productCommandPatternMatcher.find()) {
             String productName = productCommandPatternMatcher.group(2);
             int countProduct = Integer.parseInt(productCommandPatternMatcher.group(3));
-            cart.add(productName, countProduct);
+            cart.add(productName, countProduct, storage);
             return true;
         }
         if (discountCommandPatternMatcher.find()) {

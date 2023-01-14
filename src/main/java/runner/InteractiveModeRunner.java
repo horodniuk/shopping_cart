@@ -2,6 +2,7 @@ package runner;
 
 import cart.Cart;
 import cart.CartCommandParser;
+import storage.Storage;
 import storage.StorageWithJson;
 
 import java.util.Scanner;
@@ -24,11 +25,12 @@ public class InteractiveModeRunner implements ModeRunner {
         System.out.println("Starting Interactive mode.");
         showTooltipWithCommands();
         System.out.println("Enter the command in console:");
-        Cart cart = new Cart(new StorageWithJson(pathToStorage));
+        StorageWithJson storage = new StorageWithJson(pathToStorage);
+        Cart cart = new Cart(storage);
         while (true) {
             String line = new Scanner(System.in).nextLine();
             if (line.equals("finish")) return;
-            executeCommand(line, cart);
+            executeCommand(line, cart, storage);
         }
     }
 
@@ -45,9 +47,9 @@ public class InteractiveModeRunner implements ModeRunner {
      * discount buy_3_get_1_free soap --> applyDiscount(new Discount_BUY_3_GET_1_FREE(), "soap")
      */
     @Override
-    public void executeCommand(String line, Cart cart) {
+    public void executeCommand(String line, Cart cart, Storage storage) {
         CartCommandParser cartCommandParser = new CartCommandParser(cart);
-        if (cartCommandParser.parse(line)) return;
+        if (cartCommandParser.parse(line, storage)) return;
         if (line.equals("price")) {
             cart.price();
         } else {
@@ -61,16 +63,16 @@ public class InteractiveModeRunner implements ModeRunner {
     private void showTooltipWithCommands() {
         System.out.println("\n---------------------------------INSTRUCTION-------------------------------------------" +
                 "-----------------------------------------");
-        System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"add beer 5\"", "- add item to cart.",  "Structure:",
+        System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"add beer 5\"", "- add item to cart.", "Structure:",
                 "add [product name] [product quantity]");
         System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"discount buy_1_get_30_percentage beer\"",
-                "- apply discount.", "Structure:","discount [discount name] [product name]");
+                "- apply discount.", "Structure:", "discount [discount name] [product name]");
         System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"discount buy_3_get_1_free cola\"",
-                "- apply discount.", "Structure:","discount [discount name] [product name]");
+                "- apply discount.", "Structure:", "discount [discount name] [product name]");
         System.out.printf("\n%-40s  %-30s ", "\"prise\"", "- find out the price.");
         System.out.printf("\n%-40s  %-30s ", "\"finish\"", "- grocery shopping completed.");
         System.out.println("");
         System.out.println("\n---------------------------------------------------------------------------------------" +
-                    "-----------------------------------------");
+                "-----------------------------------------");
     }
 }
