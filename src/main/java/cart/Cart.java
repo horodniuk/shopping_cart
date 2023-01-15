@@ -148,8 +148,6 @@ public class Cart {
         }
         return storageMap.get(productName).getQuantity() >= quantity;
     }
-
-
     public Map<String, Product> getStorageMap() {
         return storageMap;
     }

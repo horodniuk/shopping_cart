@@ -1,8 +1,6 @@
 package runner;
 
 import cart.Cart;
-import cart.CartCommandParser;
-import storage.Storage;
 import storage.StorageWithJson;
 
 import java.util.Scanner;
@@ -27,33 +25,11 @@ public class InteractiveModeRunner implements ModeRunner {
         System.out.println("Enter the command in console:");
         StorageWithJson storage = new StorageWithJson(pathToStorage);
         Cart cart = new Cart(storage);
+        TextModeRunner textModeRunner = new TextModeRunner();
         while (true) {
             String line = new Scanner(System.in).nextLine();
+            textModeRunner.executeCommand(line, cart, storage);
             if (line.equals("finish")) return;
-            executeCommand(line, cart, storage);
-        }
-    }
-
-    /*
-     * Task (completed)
-     * We must make method which will be performing commands, which are included in technical task
-     * For example: If we get String "add beer 5" we must parse it to get
-     * name of product "beer" and quantity "5" and check if we have such product,
-     * in such quantity and after perform the command.
-     * for example:
-     * add beer 5 --> cart.add("beer", 5)
-     * add soap 2 --> cart.add("soap", 2)
-     * discount buy_1_get_30_percentage beer --> applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "beer")
-     * discount buy_3_get_1_free soap --> applyDiscount(new Discount_BUY_3_GET_1_FREE(), "soap")
-     */
-    @Override
-    public void executeCommand(String line, Cart cart, Storage storage) {
-        CartCommandParser cartCommandParser = new CartCommandParser(cart);
-        if (cartCommandParser.parse(line, storage)) return;
-        if (line.equals("price")) {
-            cart.price();
-        } else {
-            System.out.println("Unknown command, try again, for example \"add beer 5\"");
         }
     }
 

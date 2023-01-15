@@ -3,13 +3,11 @@ package storage;
 import cart.Product;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.ToString;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +15,7 @@ import java.util.Map;
 /**
  * Realisation of storage with products based on json file
  */
+@ToString
 public class StorageWithJson implements Storage {
     private String file;
     private Map<String, Product> storageProducts;
@@ -75,12 +74,5 @@ public class StorageWithJson implements Storage {
     @Override
     public Map<String, Product> getStorage() {
         return storageProducts;
-    }
-
-    @Override
-    public String toString() {
-        return "StorageWithJson{" +
-                "storageProducts=" + storageProducts +
-                '}';
     }
 }
