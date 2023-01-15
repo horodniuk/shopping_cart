@@ -36,9 +36,10 @@ public class StorageWithJson implements Storage {
     @Override
     public Map<String, Product> load(String file) {
         jsonFile = new File(file);
+        List<Product> productList;
         Map<String, Product> productMap = new LinkedHashMap<>();
         try {
-            List<Product> productList = objectMapper.readValue(jsonFile, new TypeReference<>() {
+            productList = objectMapper.readValue(jsonFile, new TypeReference<>() {
             });
             productList.forEach(product -> productMap.put(product.getName(), product));
         } catch (IOException exception) {
