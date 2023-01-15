@@ -14,4 +14,8 @@ public class CommandDiscount extends Command {
     private final Pattern regex = (Pattern.compile("^(discount) (" +
             createRegExValues(CartCommandParser.getDiscounts()) + ") ("
             + createRegExValues(CartCommandParser.getProducts()) + ")"));
+
+    public Boolean matches(String text) {
+        return regex.matcher(text).find();
+    }
 }

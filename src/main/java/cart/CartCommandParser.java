@@ -13,13 +13,11 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class CartCommandParser {
-    private Cart cart;
     private static List<String> discounts;
     private static List<String> products;
 
     public CartCommandParser(Cart cart) {
-        this.cart = cart;
-        products = cart.getStorageMap().keySet().stream().toList(); // getting all names of products from storage
+        products = cart.getStorage().getProductNames(); // getting all names of products from storage
         discounts = List.of("buy_1_get_30_percentage", "buy_3_get_1_free"); // discounts commands;
     }
 

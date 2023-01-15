@@ -3,10 +3,10 @@ package storage;
 import cart.Product;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.ToString;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +15,6 @@ import java.util.Map;
 /**
  * Realisation of storage with products based on json file
  */
-@ToString
 public class StorageWithJson implements Storage {
     private String file;
     private Map<String, Product> storageProducts;
@@ -63,16 +62,48 @@ public class StorageWithJson implements Storage {
         }
     }
 
+    @Override
+    public void addProduct(Product product) {
+        storageProducts.put(product.getName(), product);
+    }
+
+    @Override
+    public void removeProduct(Product product) {
+        storageProducts.remove(product.getName());
+    }
+
+    @Override
+    public void reserveProduct(Product product, int quantity) {
+
+    }
+
     /**
      * updating products quantity in storage
      */
     @Override
-    public void updateQuantityProductsInStorageMap(String productName, int quantity) {
+    public void updateQuantityProductsInStorage(String productName, int quantity) {
         storageProducts.get(productName).setQuantity(storageProducts.get(productName).getQuantity() - quantity);
     }
 
     @Override
-    public Map<String, Product> getStorage() {
+    public List<String> getProductNames() {
+        return storageProducts.keySet().stream().toList();
+    }
+
+    @Override
+    public BigDecimal getProductPrice(String productName) {
+        return storageProducts.get(productName).getPrice();
+    }
+
+    @Override
+    public Map<String, Product> getStorageMap() {
         return storageProducts;
+    }
+
+    @Override
+    public String toString() {
+        return "StorageWithJson{" +
+                "storageProducts=" + storageProducts +
+                '}';
     }
 }
