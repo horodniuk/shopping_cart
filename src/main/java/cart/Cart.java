@@ -2,6 +2,7 @@ package cart;
 
 import discount.Discount;
 import storage.Storage;
+import storage.StorageWithJson;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -35,7 +36,7 @@ public class Cart {
      * updateQuantityProductsInStorageMap() - we update quantity of product in storage
      * method updatePrice() - we update price (total price of all products in cart)
      */
-    public void add(String productName, int quantity) {
+    public void add(String productName, int quantity, Storage storage) {
         if (checkProductAndQuantityInStorage(productName, quantity)) {
             BigDecimal tempPrice = storageMap.get(productName).getPrice();
             if (!cartMap.isEmpty() && cartMap.containsKey(productName)) {
@@ -45,7 +46,7 @@ public class Cart {
                 cartMap.put(productName, new Product(productName, tempPrice, quantity));
             }
             printToConsole(quantity, productName);
-            updateQuantityProductsInStorageMap(productName, quantity);
+            storage.updateQuantityProductsInStorageMap(productName, quantity);
             price = updatePrice();
         }
     }
@@ -135,14 +136,6 @@ public class Cart {
     }
 
     /**
-     * updating products quantity in storage
-     */
-    private void updateQuantityProductsInStorageMap(String productName, int quantity) {
-        storageMap.get(productName).setQuantity(storageMap.get(productName).getQuantity() - quantity);
-    }
-
-
-    /**
      * Task (completed): implement method checkProductAndQuantityInStorage
      * checking if product with this name exists in storage
      * check availability in storage, if available then return true,
@@ -155,8 +148,6 @@ public class Cart {
         }
         return storageMap.get(productName).getQuantity() >= quantity;
     }
-
-
     public Map<String, Product> getStorageMap() {
         return storageMap;
     }
