@@ -4,7 +4,9 @@ import lombok.Getter;
 
 import java.util.regex.Pattern;
 
+@Getter
 public class CommandFinish extends Command {
-    @Getter
+
+    //Example: finish
     private final Pattern regex = (Pattern.compile("(^finish$)"));
 }
