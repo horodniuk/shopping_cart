@@ -5,9 +5,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.ToString;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,18 +66,16 @@ public class StorageWithJson implements Storage {
         }
     }
 
+    /**
+     * updating products quantity in storage
+     */
+    @Override
+    public void updateQuantityProductsInStorageMap(String productName, int quantity) {
+        storageProducts.get(productName).setQuantity(storageProducts.get(productName).getQuantity() - quantity);
+    }
 
     @Override
     public Map<String, Product> getStorage() {
         return storageProducts;
-    }
-
-
-
-    @Override
-    public String toString() {
-        return "StorageWithJson{" +
-                "storageProducts=" + storageProducts +
-                '}';
     }
 }

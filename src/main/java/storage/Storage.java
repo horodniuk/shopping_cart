@@ -18,5 +18,7 @@ public interface Storage {
 
     void write(Map<String, Product> storage);
 
+    void updateQuantityProductsInStorageMap(String productName, int quantity);
+
     Map<String, Product> getStorage();
 }
