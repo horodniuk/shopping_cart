@@ -1,7 +1,6 @@
 package runner;
 
 import cart.Cart;
-import cart.CartCommandParser;
 import storage.StorageWithJson;
 
 import java.util.Scanner;
@@ -24,11 +23,12 @@ public class InteractiveModeRunner implements ModeRunner {
         System.out.println("Starting Interactive mode.");
         showTooltipWithCommands();
         System.out.println("Enter the command in console:");
-        Cart cart = new Cart(new StorageWithJson(pathToStorage));
+        StorageWithJson storage = new StorageWithJson(pathToStorage);
+        Cart cart = new Cart(storage);
         TextModeRunner textModeRunner = new TextModeRunner();
         while (true) {
             String line = new Scanner(System.in).nextLine();
-            textModeRunner.executeCommand(line, cart);
+            textModeRunner.executeCommand(line, cart, storage);
             if (line.equals("finish")) return;
         }
     }

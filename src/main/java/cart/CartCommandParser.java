@@ -1,5 +1,6 @@
 package cart;
 
+import commands.*;
 import discount.Discount;
 import discount.Discount_BUY_1_GET_30_PERCENT_OFF;
 import discount.Discount_BUY_3_GET_1_FREE;
@@ -21,7 +22,6 @@ public class CartCommandParser {
         products = cart.getStorageMap().keySet().stream().toList(); // getting all names of products from storage
         discounts = List.of("buy_1_get_30_percentage", "buy_3_get_1_free"); // discounts commands;
     }
-
 
     /*
      * if commands "add beer 5" -> structures add [product name][product quantity]

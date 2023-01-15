@@ -1,6 +1,5 @@
 package runner;
 
-import cart.Cart;
 
 /*
  * Interface for working with different modes of data output to the console
