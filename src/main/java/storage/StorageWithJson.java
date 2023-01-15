@@ -64,6 +64,14 @@ public class StorageWithJson implements Storage {
         }
     }
 
+    /**
+     * updating products quantity in storage
+     */
+    @Override
+    public void updateQuantityProductsInStorageMap(String productName, int quantity) {
+        storageProducts.get(productName).setQuantity(storageProducts.get(productName).getQuantity() - quantity);
+    }
+
     @Override
     public Map<String, Product> getStorage() {
         return storageProducts;

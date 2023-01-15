@@ -2,6 +2,7 @@ package runner;
 
 import cart.Cart;
 import cart.CartCommandParser;
+import storage.Storage;
 import storage.StorageWithJson;
 
 import java.io.BufferedReader;
@@ -27,13 +28,14 @@ public class FileModeRunner implements ModeRunner {
     @Override
     public void start() {
         System.out.println("Starting File mode." + " Commands will be read from file\" " + pathToCommand);
-        Cart cart = new Cart(new StorageWithJson(pathToStorage));
+        StorageWithJson storage = new StorageWithJson(pathToStorage);
+        Cart cart = new Cart(storage);
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(pathToCommand));
             String line = reader.readLine();
             while (line != null) {
-                if (line.length() > 0) executeCommand(line, cart);
+                if (line.length() > 0) executeCommand(line, cart, storage);
                 line = reader.readLine();
             }
 
@@ -58,9 +60,9 @@ public class FileModeRunner implements ModeRunner {
      * test list with commands is located in resources by address source root --> commandsList.txt
      */
     @Override
-    public void executeCommand(String line, Cart cart) {
+    public void executeCommand(String line, Cart cart, Storage storage) {
         CartCommandParser cartCommandParser = new CartCommandParser(cart);
-        if (cartCommandParser.parse(line)) return;
+        if (cartCommandParser.parse(line, storage)) return;
         if ((line.equals("price"))) {
             cart.price();
         } else {
