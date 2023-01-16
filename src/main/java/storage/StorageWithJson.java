@@ -16,14 +16,13 @@ import java.util.Map;
  * Realisation of storage with products based on json file
  */
 public class StorageWithJson implements Storage {
-    private String file;
+    private String path;
     private Map<String, Product> storageProducts;
-    private File jsonFile;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public StorageWithJson(String file) {
-        this.file = file;
-        this.storageProducts = load(file);
+    public StorageWithJson(String path) {
+        this.path = path;
+        this.storageProducts = load(path);
     }
 
     /*
@@ -33,7 +32,7 @@ public class StorageWithJson implements Storage {
      */
     @Override
     public Map<String, Product> load(String file) {
-        jsonFile = new File(file);
+        File jsonFile = new File(path);
         List<Product> productList;
         Map<String, Product> productMap = new LinkedHashMap<>();
         try {
@@ -54,7 +53,7 @@ public class StorageWithJson implements Storage {
      */
     @Override
     public void write(Map<String, Product> storage) {
-        jsonFile = new File(file);
+        File jsonFile = new File(path);
         try {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, storage.values());
         } catch (IOException exception) {

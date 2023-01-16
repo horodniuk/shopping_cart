@@ -33,6 +33,8 @@ public class Main {
 
             String line = new Scanner(System.in).nextLine();
 
+            if (line.equals("finish")) return;
+
             String[] strArray = line.split(" ");
             String pathToStorageProduct = SRC_MAIN_RESOURCES + strArray[0];
             String pathToCommandList = SRC_MAIN_RESOURCES + strArray[strArray.length - 1];
