@@ -43,11 +43,13 @@ public class Main {
                 throw new RuntimeException("File " + line + " not found!");
             } else if (line.equals("shopping_products_storage.json")) {
                 new InteractiveModeRunner(SRC_MAIN_RESOURCES + line).start();
+                return;
             }
             // checking if file with commands exist
             else if (new File(pathToCommandList).exists() &&
                     line.contains("shopping_products_storage.json commadsList.txt")) {
                 new FileModeRunner(pathToStorageProduct, pathToCommandList).start();
+                return;
             } else {
                 System.out.println("You entered incorrect data");
             }
