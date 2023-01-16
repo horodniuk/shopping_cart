@@ -6,10 +6,9 @@ import storage.Storage;
 import java.math.BigDecimal;
 import java.util.*;
 
-
 public class Cart {
+    private Storage storage; // Storage containing map of products
     private Map<String, Product> cartMap;         // map of products, which are added in the cart
-    private Map<String, Product> storageMap;      // map of products, which are stored in storage
     private Map<String, BigDecimal> discountMap;  // map of products, which are added in the cart and discounts applied
     private BigDecimal price = new BigDecimal(00.00).setScale(2); // total price of products in cart (including discount)
     private BigDecimal discount = new BigDecimal(00.00).setScale(2); // total amount of discount on products in cart
@@ -20,7 +19,7 @@ public class Cart {
      */
     public Cart(Storage storage) {
         this.cartMap = new LinkedHashMap<>();
-        this.storageMap = storage.getStorage();
+        this.storage = storage;
         this.discountMap = new HashMap<>();
     }
 
@@ -35,9 +34,9 @@ public class Cart {
      * updateQuantityProductsInStorageMap() - we update quantity of product in storage
      * method updatePrice() - we update price (total price of all products in cart)
      */
-    public void add(String productName, int quantity) {
+    public void add(String productName, int quantity, Storage storage) {
         if (checkProductAndQuantityInStorage(productName, quantity)) {
-            BigDecimal tempPrice = storageMap.get(productName).getPrice();
+            BigDecimal tempPrice = storage.getProductPrice(productName);
             if (!cartMap.isEmpty() && cartMap.containsKey(productName)) {
                 int newQuantity = cartMap.get(productName).getQuantity() + quantity;
                 cartMap.put(productName, new Product(productName, tempPrice, newQuantity));
@@ -45,7 +44,7 @@ public class Cart {
                 cartMap.put(productName, new Product(productName, tempPrice, quantity));
             }
             printToConsole(quantity, productName);
-            updateQuantityProductsInStorageMap(productName, quantity);
+            storage.updateQuantityProductsInStorage(productName, quantity);
             price = updatePrice();
         }
     }
@@ -135,30 +134,21 @@ public class Cart {
     }
 
     /**
-     * updating products quantity in storage
-     */
-    private void updateQuantityProductsInStorageMap(String productName, int quantity) {
-        storageMap.get(productName).setQuantity(storageMap.get(productName).getQuantity() - quantity);
-    }
-
-
-    /**
      * Task (completed): implement method checkProductAndQuantityInStorage
      * checking if product with this name exists in storage
      * check availability in storage, if available then return true,
      * if not - then we output to console, message that there is not enough quantity - and return false
      */
     private boolean checkProductAndQuantityInStorage(String productName, int quantity) {
-        if (storageMap.get(productName).getQuantity() < quantity) {
+        if (storage.getStorageMap().get(productName).getQuantity() < quantity) {
             System.out.printf("Storage doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
-                    productName, quantity, storageMap.get(productName).getQuantity());
+                    productName, quantity, storage.getStorageMap().get(productName).getQuantity());
         }
-        return storageMap.get(productName).getQuantity() >= quantity;
+        return storage.getStorageMap().get(productName).getQuantity() >= quantity;
     }
 
-
-    public Map<String, Product> getStorageMap() {
-        return storageMap;
+    public Storage getStorage() {
+        return storage;
     }
 
     public Map<String, Product> getCartMap() {
@@ -181,11 +171,12 @@ public class Cart {
     public String toString() {
         return "~~~~~~~~~~~~~~~~~  CART (LOG) ~~~~~~~~~~~~~~~~~\n" +
                 "cartMap=" + cartMap +
-                ",\n storageMap=" + storageMap +
+                ",\n storage=" + storage +
                 ",\n discountMap=" + discountMap +
                 ",\n price=" + price +
                 ",\n discount=" + discount +
                 ",\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
                 '\n';
     }
+
 }
