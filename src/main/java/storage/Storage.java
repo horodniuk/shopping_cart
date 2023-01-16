@@ -20,13 +20,11 @@ public interface Storage {
 
     void write(Map<String, Product> storage);
 
-    void addProduct(Product product);
+    void addProduct(Product product, int quantity);
 
-    void removeProduct(Product product);
+    void removeProduct(String productName, int quantity);
 
     void reserveProduct(Product product, int quantity);
-
-    void updateQuantityProductsInStorage(String productName, int quantity);
 
     public List<String> getProductNames();
 

@@ -44,9 +44,25 @@ public class Cart {
                 cartMap.put(productName, new Product(productName, tempPrice, quantity));
             }
             printToConsole(quantity, productName);
-            storage.updateQuantityProductsInStorage(productName, quantity);
+            storage.removeProduct(productName, quantity);
             price = updatePrice();
         }
+    }
+
+    public void remove(String productName, int quantity) {
+        if (cartMap.containsKey(productName)) {
+            if (cartMap.get(productName).getQuantity() == quantity) {
+                cartMap.remove(productName);
+                storage.addProduct(cartMap.get(productName), quantity);
+            } else if (cartMap.get(productName).getQuantity() > quantity) {
+                cartMap.get(productName).setQuantity(cartMap.get(productName).getQuantity() - quantity);
+                storage.addProduct(cartMap.get(productName), quantity);
+            } else {
+                System.out.printf("Cart doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
+                        productName, quantity, cartMap.get(productName).getQuantity());
+            }
+
+        } else System.out.println("You don't have " + productName + " in cart. Please enter another Product.");
     }
 
     // output data to the console according to the technical task

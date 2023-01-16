@@ -37,6 +37,7 @@ public class TextModeRunner {
                 case "CommandDiscount" -> cart.applyDiscount(cartCommandParser.parseDiscount(arguments.get(1)),
                         arguments.get(2));
                 case "CommandAdd" -> cart.add(arguments.get(1), Integer.parseInt(arguments.get(2)));
+                case "CommandRemove" -> cart.remove(arguments.get(1), Integer.parseInt(arguments.get(2)));
                 case "CommandPrice" -> cart.price();
                 case "CommandFinish" -> System.out.println("Done");
             }
