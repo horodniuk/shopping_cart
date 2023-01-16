@@ -34,7 +34,7 @@ public class Cart {
      * updateQuantityProductsInStorageMap() - we update quantity of product in storage
      * method updatePrice() - we update price (total price of all products in cart)
      */
-    public void add(String productName, int quantity, Storage storage) {
+    public void add(String productName, int quantity) {
         if (checkProductAndQuantityInStorage(productName, quantity)) {
             BigDecimal tempPrice = storage.getProductPrice(productName);
             if (!cartMap.isEmpty() && cartMap.containsKey(productName)) {
