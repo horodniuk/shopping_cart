@@ -22,7 +22,7 @@ public class StorageWithJson implements Storage {
 
     public StorageWithJson(String path) {
         this.path = path;
-        this.storageProducts = load(path);
+        this.storageProducts = load();
     }
 
     /*
@@ -31,7 +31,7 @@ public class StorageWithJson implements Storage {
      * source root --> shopping_products_storage.json
      */
     @Override
-    public Map<String, Product> load(String file) {
+    public Map<String, Product> load() {
         File jsonFile = new File(path);
         Map<String, Product> productMap = new LinkedHashMap<>();
         try {

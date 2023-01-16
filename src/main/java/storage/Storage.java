@@ -16,7 +16,7 @@ import java.util.Map;
  * Method getStorage() - getter of Map with data
  */
 public interface Storage {
-    Map<String, Product> load(String file);
+    Map<String, Product> load();
 
     void write(Map<String, Product> storage);
 
@@ -28,9 +28,9 @@ public interface Storage {
 
     void updateQuantityProductsInStorage(String productName, int quantity);
 
-    public List<String> getProductNames();
+    List<String> getProductNames();
 
-    public BigDecimal getProductPrice(String productName);
+    BigDecimal getProductPrice(String productName);
 
     Map<String, Product> getStorageMap();
 }
