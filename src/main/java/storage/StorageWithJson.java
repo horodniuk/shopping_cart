@@ -88,6 +88,7 @@ public class StorageWithJson implements Storage {
      *
      * @return
      */
+    @Override
     public boolean isProductAvailable(String productName, int quantity) {
         if (getStorageMap().get(productName).getQuantity() < quantity) {
             System.out.printf("Storage doesn't contain %s in quantity %d right now there is only next quantity: %d%n",

@@ -26,9 +26,10 @@ public interface Storage {
 
     void reserveProduct(Product product, int quantity);
 
-    public List<String> getProductNames();
 
-    public BigDecimal getProductPrice(String productName);
+    List<String> getProductNames();
+
+    BigDecimal getProductPrice(String productName);
 
     Map<String, Product> getStorageMap();
 
