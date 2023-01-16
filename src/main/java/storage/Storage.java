@@ -31,4 +31,6 @@ public interface Storage {
     public BigDecimal getProductPrice(String productName);
 
     Map<String, Product> getStorageMap();
+
+    boolean isProductAvailable(String productName, int quantity);
 }

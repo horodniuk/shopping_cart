@@ -2,6 +2,7 @@ package cart;
 
 import discount.Discount;
 import storage.Storage;
+import storage.StorageWithJson;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -12,6 +13,7 @@ public class Cart {
     private Map<String, BigDecimal> discountMap;  // map of products, which are added in the cart and discounts applied
     private BigDecimal price = new BigDecimal(00.00).setScale(2); // total price of products in cart (including discount)
     private BigDecimal discount = new BigDecimal(00.00).setScale(2); // total amount of discount on products in cart
+
 
     /**
      * When creating the constructor of cart we fill the storageMap with products from the storage to check the name
@@ -35,7 +37,7 @@ public class Cart {
      * method updatePrice() - we update price (total price of all products in cart)
      */
     public void add(String productName, int quantity) {
-        if (checkProductAndQuantityInStorage(productName, quantity)) {
+        if (storage.isProductAvailable(productName, quantity)) {
             BigDecimal tempPrice = storage.getProductPrice(productName);
             if (!cartMap.isEmpty() && cartMap.containsKey(productName)) {
                 int newQuantity = cartMap.get(productName).getQuantity() + quantity;
@@ -149,19 +151,7 @@ public class Cart {
         }
     }
 
-    /**
-     * Task (completed): implement method checkProductAndQuantityInStorage
-     * checking if product with this name exists in storage
-     * check availability in storage, if available then return true,
-     * if not - then we output to console, message that there is not enough quantity - and return false
-     */
-    private boolean checkProductAndQuantityInStorage(String productName, int quantity) {
-        if (storage.getStorageMap().get(productName).getQuantity() < quantity) {
-            System.out.printf("Storage doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
-                    productName, quantity, storage.getStorageMap().get(productName).getQuantity());
-        }
-        return storage.getStorageMap().get(productName).getQuantity() >= quantity;
-    }
+
 
     public Storage getStorage() {
         return storage;

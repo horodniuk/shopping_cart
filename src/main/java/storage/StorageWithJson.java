@@ -80,6 +80,22 @@ public class StorageWithJson implements Storage {
 
     }
 
+    /**
+     * Task (completed): implement method checkProductAndQuantityInStorage
+     * checking if product with this name exists in storage
+     * check availability in storage, if available then return true,
+     * if not - then we output to console, message that there is not enough quantity - and return false
+     *
+     * @return
+     */
+    public boolean isProductAvailable(String productName, int quantity) {
+        if (getStorageMap().get(productName).getQuantity() < quantity) {
+            System.out.printf("Storage doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
+                    productName, quantity, getStorageMap().get(productName).getQuantity());
+        }
+        return getStorageMap().get(productName).getQuantity() >= quantity;
+    }
+
     @Override
     public List<String> getProductNames() {
         return storageProducts.keySet().stream().toList();
