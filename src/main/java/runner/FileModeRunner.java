@@ -34,6 +34,7 @@ public class FileModeRunner implements ModeRunner {
                 if (line.length() > 0) textModeRunner.executeCommand(line, cart);
                 line = reader.readLine();
             }
+            cart.finish();
         } catch (IOException e) {
             e.printStackTrace();
         }
