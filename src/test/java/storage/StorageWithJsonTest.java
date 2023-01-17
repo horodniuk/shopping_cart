@@ -36,7 +36,7 @@ public class StorageWithJsonTest {
         StorageWithJson storageWithJson = new StorageWithJson(file);
 
         //Act
-        Map<String, Product> actualMap = storageWithJson.load(file);
+        Map<String, Product> actualMap = storageWithJson.load();
         //Assert
         assertEquals(expectedMap.containsKey("bear"), actualMap.containsKey("bear"));
     }
