@@ -86,6 +86,14 @@ public class Cart {
     }
 
     /**
+     * finishes work and writes changes in StorageMap to Storage file or DataBase
+     */
+    public void finish() {
+        storage.write();
+        System.out.println("Done!");
+    }
+
+    /**
      * total price of products without discounts
      */
     public BigDecimal totalPriceWithoutDiscount() {

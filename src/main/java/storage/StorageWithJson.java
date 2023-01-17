@@ -51,10 +51,10 @@ public class StorageWithJson implements Storage {
      * source root --> shopping_products_storage.json
      */
     @Override
-    public void write(Map<String, Product> storage) {
+    public void write() {
         File jsonFile = new File(path);
         try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, storage.values());
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, storageProducts.values());
         } catch (IOException exception) {
             exception.printStackTrace();
         }
