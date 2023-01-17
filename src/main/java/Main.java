@@ -2,12 +2,13 @@ import runner.FileModeRunner;
 import runner.InteractiveModeRunner;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Scanner;
 
 
 public class Main {
 
-    public static final String SRC_MAIN_RESOURCES = "src/main/resources/";
 
     /**
      * After start of the program, user must choose mode (Interactive mode or File mode)
@@ -15,6 +16,7 @@ public class Main {
     public static void main(String[] args) {
         start();
     }
+
 
     /*
      * Method in endless cycle is asking user to enter file name.
@@ -26,40 +28,44 @@ public class Main {
      *   then starts new FileModeRunner#start
      */
     private static void start() {
-        while (true) {
-            System.out.println("Choose mode:");
-            System.out.println("Interactive mode - enter \"shopping_products_storage.json\"");
-            System.out.println("File mode режим - enter \"shopping_products_storage.json commadsList.txt\"");
+        final String RESOURCES_PATH = "src/main/resources/";
 
-            String line = new Scanner(System.in).nextLine();
+        System.out.println("Choose mode:");
+        System.out.println("Interactive mode - enter \"./market storage.json\"");
+        System.out.println("File mode режим - enter \"./market storage.json commadsList.txt\"");
 
-            if (line.equals("finish")) return;
+        String line = new Scanner(System.in).nextLine();
+        String[] strArray = line.split(" ");
 
-            String[] strArray = line.split(" ");
-            String pathToStorageProduct = SRC_MAIN_RESOURCES + strArray[0];
-            String pathToCommandList = SRC_MAIN_RESOURCES + strArray[strArray.length - 1];
-            // checking if json file exists
-            if (!isFileJsExists(pathToStorageProduct)) {
-                throw new RuntimeException("File " + line + " not found!");
-            } else if (line.equals("shopping_products_storage.json")) {
-                new InteractiveModeRunner(SRC_MAIN_RESOURCES + line).start();
-                return;
-            }
-            // checking if file with commands exist
-            else if (new File(pathToCommandList).exists() &&
-                    line.contains("shopping_products_storage.json commadsList.txt")) {
+        if (
+                (strArray.length == 2) &&   // проверка что только два элемента (папка и файл)
+                (Files.isDirectory(Path.of(RESOURCES_PATH + strArray[0]))) && // проверка что первый элемент - папка существует
+                (Files.exists(Path.of(RESOURCES_PATH + strArray[0] + "/" + strArray[1]))) // проверка что второй элемент - файл существует
+        ) {
+            String pathToStorageProduct = RESOURCES_PATH + strArray[0] + "/" + strArray[1];
+            new InteractiveModeRunner(pathToStorageProduct).start();
+        } else {
+            if (
+                    (strArray.length == 3) && // проверка что три элемента (папка, файл, файл)
+                    (Files.isDirectory(Path.of(RESOURCES_PATH + strArray[0]))) && // проверка что первый элемент - папка существует
+                    (Files.exists(Path.of(RESOURCES_PATH + strArray[0] + "/" + strArray[1]))) && // проверка что второй элемент - файл существует
+                    (Files.exists(Path.of(RESOURCES_PATH + strArray[0] + "/" + strArray[2]))) // проверка что третий элемент - файл существует
+            ) {
+                String pathToStorageProduct = RESOURCES_PATH + strArray[0] + "/" + strArray[1];
+                String pathToCommandList = RESOURCES_PATH + strArray[0] + "/" + strArray[2];
                 new FileModeRunner(pathToStorageProduct, pathToCommandList).start();
-                return;
             } else {
-                System.out.println("You entered incorrect data");
+                System.out.println("incorrectly command");
             }
         }
     }
-
-    private static boolean isFileJsExists(String pathToStorageProduct) {
-        return new File(pathToStorageProduct).exists();
-    }
 }
+
+
+
+
+
+
 
 
 
