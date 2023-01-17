@@ -2,7 +2,6 @@ package cart;
 
 import discount.Discount;
 import storage.Storage;
-import storage.StorageWithJson;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -45,15 +44,37 @@ public class Cart {
             } else {
                 cartMap.put(productName, new Product(productName, tempPrice, quantity));
             }
-            printToConsole(quantity, productName);
-            storage.updateQuantityProductsInStorage(productName, quantity);
+            addPrintToConsole(quantity, productName);
+            storage.removeProduct(productName, quantity);
             price = updatePrice();
         }
     }
 
+    public void remove(String productName, int quantity) {
+        if (cartMap.containsKey(productName)) {
+            if (cartMap.get(productName).getQuantity() == quantity) {
+                Product tempProduct = cartMap.get(productName);
+                removePrintToConsole(quantity, productName);
+                cartMap.remove(productName);
+                storage.addProduct(tempProduct, quantity);
+            } else if (cartMap.get(productName).getQuantity() > quantity) {
+                cartMap.get(productName).setQuantity(cartMap.get(productName).getQuantity() - quantity);
+                removePrintToConsole(quantity, productName);
+                storage.addProduct(cartMap.get(productName), quantity);
+            } else {
+                System.out.printf("Cart doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
+                        productName, quantity, cartMap.get(productName).getQuantity());
+            }
+
+        } else System.out.println("You don't have " + productName + " in cart. Please enter another Product.");
+    }
+
     // output data to the console according to the technical task
-    private void printToConsole(int quantity, String productName) {
+    private void addPrintToConsole(int quantity, String productName) {
         System.out.println(quantity + " " + productName + "(s) vas added");
+    }
+    private void removePrintToConsole(int quantity, String productName) {
+        System.out.println(quantity + " " + productName + "(s) vas removed");
     }
 
     /**
@@ -134,7 +155,6 @@ public class Cart {
             return true;
         }
     }
-
 
 
     public Storage getStorage() {

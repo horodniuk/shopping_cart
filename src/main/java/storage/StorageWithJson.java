@@ -61,26 +61,23 @@ public class StorageWithJson implements Storage {
     }
 
     @Override
-    public void addProduct(Product product) {
-        storageProducts.put(product.getName(), product);
+    public void addProduct(Product product, int quantity) {
+        if (storageProducts.containsKey(product.getName())) {
+            storageProducts.get(product.getName()).setQuantity(storageProducts.get(product.getName()).
+                    getQuantity() + quantity);
+        } else storageProducts.put(product.getName(), product);
     }
 
     @Override
-    public void removeProduct(Product product) {
-        storageProducts.remove(product.getName());
+    public void removeProduct(String productName, int quantity) {
+        if (storageProducts.get(productName).getQuantity() > quantity) {
+            storageProducts.get(productName).setQuantity(storageProducts.get(productName).getQuantity() - quantity);
+        } else storageProducts.remove(productName);
     }
 
     @Override
     public void reserveProduct(Product product, int quantity) {
 
-    }
-
-    /**
-     * updating products quantity in storage
-     */
-    @Override
-    public void updateQuantityProductsInStorage(String productName, int quantity) {
-        storageProducts.get(productName).setQuantity(storageProducts.get(productName).getQuantity() - quantity);
     }
 
     /**
@@ -91,6 +88,7 @@ public class StorageWithJson implements Storage {
      *
      * @return
      */
+    @Override
     public boolean isProductAvailable(String productName, int quantity) {
         if (getStorageMap().get(productName).getQuantity() < quantity) {
             System.out.printf("Storage doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
