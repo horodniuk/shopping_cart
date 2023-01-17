@@ -18,7 +18,7 @@ import java.util.Map;
 public interface Storage {
     Map<String, Product> load();
 
-    void write(Map<String, Product> storage);
+    void write();
 
     void addProduct(Product product, int quantity);
 
