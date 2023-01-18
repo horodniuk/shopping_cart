@@ -4,7 +4,6 @@ import cart.Cart;
 import cart.CartCommandParser;
 import cart.ParsedCommand;
 import commands.*;
-import storage.Storage;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +25,7 @@ public class TextModeRunner {
      * in case command add - argument 1 is product, argument 2 is quantity of this product;
      * in case command discount - argument 1 is discount type, argument 2 is product.
      */
-    public void executeCommand(String line, Cart cart, Storage storage) {
+    public void executeCommand(String line, Cart cart) {
         CartCommandParser cartCommandParser = new CartCommandParser(cart);
         Optional<ParsedCommand> parsedCommandOptional = cartCommandParser.parse(line);
         if (parsedCommandOptional.isEmpty())
@@ -37,9 +36,9 @@ public class TextModeRunner {
             switch (command.getClass().getSimpleName()) {
                 case "CommandDiscount" -> cart.applyDiscount(cartCommandParser.parseDiscount(arguments.get(1)),
                         arguments.get(2));
-                case "CommandAdd" -> cart.add(arguments.get(1), Integer.parseInt(arguments.get(2)), storage);
+                case "CommandAdd" -> cart.add(arguments.get(1), Integer.parseInt(arguments.get(2)));
                 case "CommandPrice" -> cart.price();
-                case "CommandFinish" -> System.out.println("Done");
+                case "CommandFinish" -> cart.finish();
             }
         }
     }

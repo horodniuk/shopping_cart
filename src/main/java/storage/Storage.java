@@ -2,6 +2,8 @@ package storage;
 
 import cart.Product;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 /*
@@ -14,11 +16,17 @@ import java.util.Map;
  * Method getStorage() - getter of Map with data
  */
 public interface Storage {
-    Map<String, Product> load(String file);
+    Map<String, Product> load();
 
-    void write(Map<String, Product> storage);
+    void write();
 
-    void updateQuantityProductsInStorageMap(String productName, int quantity);
+    void addProduct(Product product, int quantity);
 
-    Map<String, Product> getStorage();
+    void removeProduct(String productName, int quantity);
+
+    List<String> getProductNames();
+
+    BigDecimal getProductPrice(String productName);
+
+    boolean isProductAvailable(String productName, int quantity);
 }

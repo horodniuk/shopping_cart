@@ -2,8 +2,8 @@ package cart;
 
 import commands.*;
 import discount.Discount;
-import discount.Discount_BUY_1_GET_30_PERCENT_OFF;
-import discount.Discount_BUY_3_GET_1_FREE;
+import discount.Discount_buy_1_get_30_percent_off;
+import discount.Discount_buy_3_get_1_free;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +13,11 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class CartCommandParser {
-    private Cart cart;
     private static List<String> discounts;
     private static List<String> products;
 
     public CartCommandParser(Cart cart) {
-        this.cart = cart;
-        products = cart.getStorageMap().keySet().stream().toList(); // getting all names of products from storage
+        products = cart.getStorage().getProductNames(); // getting all names of products from storage
         discounts = List.of("buy_1_get_30_percentage", "buy_3_get_1_free"); // discounts commands;
     }
 
@@ -65,9 +63,9 @@ public class CartCommandParser {
      */
     public Discount parseDiscount(String nameCommand) {
         if (nameCommand.equals("buy_1_get_30_percentage")) {
-            return new Discount_BUY_1_GET_30_PERCENT_OFF();
+            return new Discount_buy_1_get_30_percent_off();
         } else {
-            return new Discount_BUY_3_GET_1_FREE();
+            return new Discount_buy_3_get_1_free();
         }
     }
 

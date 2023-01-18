@@ -2,18 +2,17 @@ package cart;
 
 import discount.Discount;
 import storage.Storage;
-import storage.StorageWithJson;
 
 import java.math.BigDecimal;
 import java.util.*;
 
-
 public class Cart {
+    private Storage storage; // Storage containing map of products
     private Map<String, Product> cartMap;         // map of products, which are added in the cart
-    private Map<String, Product> storageMap;      // map of products, which are stored in storage
     private Map<String, BigDecimal> discountMap;  // map of products, which are added in the cart and discounts applied
     private BigDecimal price = new BigDecimal(00.00).setScale(2); // total price of products in cart (including discount)
     private BigDecimal discount = new BigDecimal(00.00).setScale(2); // total amount of discount on products in cart
+
 
     /**
      * When creating the constructor of cart we fill the storageMap with products from the storage to check the name
@@ -21,7 +20,7 @@ public class Cart {
      */
     public Cart(Storage storage) {
         this.cartMap = new LinkedHashMap<>();
-        this.storageMap = storage.getStorage();
+        this.storage = storage;
         this.discountMap = new HashMap<>();
     }
 
@@ -32,28 +31,36 @@ public class Cart {
      * tempPrice - temporary variable for storing price of product
      * Further we are checking if cart is not empty and stores product with such name - then we update its quantity
      * otherwise we add this product in cart
-     * method printToConsole() - we print data to console
-     * updateQuantityProductsInStorageMap() - we update quantity of product in storage
+     * method addPrintToConsole() - we print data to console
+     * method storage.removeProduct() - we remove quantity of this product from storage
      * method updatePrice() - we update price (total price of all products in cart)
      */
-    public void add(String productName, int quantity, Storage storage) {
-        if (checkProductAndQuantityInStorage(productName, quantity)) {
-            BigDecimal tempPrice = storageMap.get(productName).getPrice();
-            if (!cartMap.isEmpty() && cartMap.containsKey(productName)) {
-                int newQuantity = cartMap.get(productName).getQuantity() + quantity;
-                cartMap.put(productName, new Product(productName, tempPrice, newQuantity));
-            } else {
-                cartMap.put(productName, new Product(productName, tempPrice, quantity));
-            }
-            printToConsole(quantity, productName);
-            storage.updateQuantityProductsInStorageMap(productName, quantity);
+    public void add(String productName, int quantity) {
+        if (storage.isProductAvailable(productName, quantity)) {
+            BigDecimal tempPrice = storage.getProductPrice(productName);
+            cartMap.compute(productName, (key, product) ->
+                    (isProductExistInCart(productName) ?
+                            new Product(productName, tempPrice, cartMap.get(productName).getQuantity() + quantity) :
+                            new Product(productName, tempPrice, quantity)));
+            addPrintToConsole(quantity, productName);
+            storage.removeProduct(productName, quantity);
             price = updatePrice();
         }
     }
 
-    // output data to the console according to the technical task
-    private void printToConsole(int quantity, String productName) {
+    private boolean isProductExistInCart(String productName) {
+        return !cartMap.isEmpty() && cartMap.containsKey(productName);
+    }
+
+
+
+    // output data (if product is added in cart) to the console according to the technical task
+    private void addPrintToConsole(int quantity, String productName) {
         System.out.println(quantity + " " + productName + "(s) vas added");
+    }
+    // output data (if product is removed from cart) to the console according to the technical task
+    private void removePrintToConsole(int quantity, String productName) {
+        System.out.println(quantity + " " + productName + "(s) vas removed");
     }
 
     /**
@@ -62,6 +69,14 @@ public class Cart {
     public void price() {
         System.out.println(String.format("discount:%s, price:%s", discount, price));
         System.out.println(this); // for logging, call of method toString on cart
+    }
+
+    /**
+     * finishes work and writes changes in StorageMap to Storage file or DataBase
+     */
+    public void finish() {
+        storage.write();
+        System.out.println("Done!");
     }
 
     /**
@@ -125,6 +140,13 @@ public class Cart {
         return totalPriceWithoutDiscount().subtract(discount);
     }
 
+    /**
+     * Method description
+     * Method parameters - name of product
+     * checking if name of product exists as key in Cart map.
+     * If it doesn't exist then we return false and outputs message to the console.
+     * If exists then we return true.
+     */
     private boolean isProductExistsInCart(String productName) {
         if (!cartMap.containsKey(productName)) {
             System.out.println("Product " + productName + " doesn't exist in cart. " +
@@ -135,21 +157,9 @@ public class Cart {
         }
     }
 
-    /**
-     * Task (completed): implement method checkProductAndQuantityInStorage
-     * checking if product with this name exists in storage
-     * check availability in storage, if available then return true,
-     * if not - then we output to console, message that there is not enough quantity - and return false
-     */
-    private boolean checkProductAndQuantityInStorage(String productName, int quantity) {
-        if (storageMap.get(productName).getQuantity() < quantity) {
-            System.out.printf("Storage doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
-                    productName, quantity, storageMap.get(productName).getQuantity());
-        }
-        return storageMap.get(productName).getQuantity() >= quantity;
-    }
-    public Map<String, Product> getStorageMap() {
-        return storageMap;
+
+    public Storage getStorage() {
+        return storage;
     }
 
     public Map<String, Product> getCartMap() {
@@ -172,11 +182,12 @@ public class Cart {
     public String toString() {
         return "~~~~~~~~~~~~~~~~~  CART (LOG) ~~~~~~~~~~~~~~~~~\n" +
                 "cartMap=" + cartMap +
-                ",\n storageMap=" + storageMap +
+                ",\n storage=" + storage +
                 ",\n discountMap=" + discountMap +
                 ",\n price=" + price +
                 ",\n discount=" + discount +
                 ",\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
                 '\n';
     }
+
 }
