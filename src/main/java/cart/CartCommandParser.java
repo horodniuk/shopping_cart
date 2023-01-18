@@ -21,14 +21,15 @@ public class CartCommandParser {
         discounts = List.of("buy_1_get_30_percentage", "buy_3_get_1_free"); // discounts commands;
     }
 
-    /*
-     * if commands "add beer 5" -> structures add [product name][product quantity]
-     * if commands "buy_1_get_30_percentage cola" -> structures add [discount name][product name]
-     *
-     * pattern of regular expression we divide in three groups (group(1))(group(2))(group(3))
-     * (group(1)) - command name: add or discount
-     * (group(2)) - in case 'add' it is a product name, in case 'discount' - name of discount
-     * (group(3)) - in case 'add' it is product quantity, in case 'discount' - name of product
+    /**
+     * Method description
+     * Method parameters - string, which we get after reading file or reading command console
+     * Initializing Optional of class ParsedCommand.
+     * we create list of Commands,
+     * after that with the help of cycle foreach we check if any command matches string line,
+     * if we find this command - then we get arguments with the help of method getArgumentsWithMatcher()
+     * and return Optional of class ParsedCommand which has parameters: found Command, and arguments.
+     * return - we return Optional of class ParsedCommand.
      */
     public Optional<ParsedCommand> parse(String line) {
         Optional<ParsedCommand> parsedCommandOptional = Optional.empty();
@@ -47,6 +48,15 @@ public class CartCommandParser {
         return parsedCommandOptional;
     }
 
+    /**
+     * Method description
+     * Method parameters - instance of class Matcher
+     * we create an empty ArrayList
+     * then we check if String line matches Pattern
+     * Next we create int countGroup which stores the numbers if groups in Pattern
+     * and collect in Arraylist using stream all the arguments by number of groups.
+     * return - we return list of arguments which correspond to pattern groups
+     */
     private List<String> getArgumentsWithMatcher(Matcher matcher) {
         List<String> list = new ArrayList<>();
         if (matcher.find()) {
