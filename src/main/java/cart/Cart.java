@@ -38,16 +38,18 @@ public class Cart {
     public void add(String productName, int quantity) {
         if (storage.isProductAvailable(productName, quantity)) {
             BigDecimal tempPrice = storage.getProductPrice(productName);
-            if (!cartMap.isEmpty() && cartMap.containsKey(productName)) {
-                int newQuantity = cartMap.get(productName).getQuantity() + quantity;
-                cartMap.put(productName, new Product(productName, tempPrice, newQuantity));
-            } else {
-                cartMap.put(productName, new Product(productName, tempPrice, quantity));
-            }
+            cartMap.compute(productName, (key, product) ->
+                    (isProductExistInCart(productName) ?
+                            new Product(productName, tempPrice, cartMap.get(productName).getQuantity() + quantity) :
+                            new Product(productName, tempPrice, quantity)));
             addPrintToConsole(quantity, productName);
             storage.removeProduct(productName, quantity);
             price = updatePrice();
         }
+    }
+
+    private boolean isProductExistInCart(String productName) {
+        return !cartMap.isEmpty() && cartMap.containsKey(productName);
     }
 
     /*
