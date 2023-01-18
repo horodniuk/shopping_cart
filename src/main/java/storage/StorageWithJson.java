@@ -52,7 +52,8 @@ public class StorageWithJson implements Storage {
      */
     @Override
     public void write() {
-        File jsonFile = new File(path);
+//        File jsonFile = new File(path);
+        File jsonFile = new File("src/main/resources/test.json");
         try {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, storageProducts.values());
         } catch (IOException exception) {
