@@ -24,14 +24,9 @@ public interface Storage {
 
     void removeProduct(String productName, int quantity);
 
-    void reserveProduct(Product product, int quantity);
-
-
     List<String> getProductNames();
 
     BigDecimal getProductPrice(String productName);
-
-    Map<String, Product> getStorageMap();
 
     boolean isProductAvailable(String productName, int quantity);
 }
