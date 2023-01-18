@@ -31,8 +31,8 @@ public class Cart {
      * tempPrice - temporary variable for storing price of product
      * Further we are checking if cart is not empty and stores product with such name - then we update its quantity
      * otherwise we add this product in cart
-     * method printToConsole() - we print data to console
-     * updateQuantityProductsInStorageMap() - we update quantity of product in storage
+     * method addPrintToConsole() - we print data to console
+     * method storage.removeProduct() - we remove quantity of this product from storage
      * method updatePrice() - we update price (total price of all products in cart)
      */
     public void add(String productName, int quantity) {
@@ -50,6 +50,22 @@ public class Cart {
         }
     }
 
+    /*
+     * Method description - it should remove products from cart
+     * method parameters - name of product, and it's quantity
+     * we check if product with such name and in needed quantity exists in the cart
+     * otherwise we print message to console - that this product doesn't exist in cart
+     *
+     * Further we are checking: if quantity of products equals quantity stored in cart, then
+     * we create tempProduct - temporary variable for storing product
+     * we start method removePrintToConsole(), remove this product from cart and adding it in storage.
+     * further we are checking if quantity of products lesser than quantity stored in cart
+     * if true - then we reduce amount of this product in cart and adding this amount to storage.
+     * otherwise we print message to console, that cart doesn't contain this product in needed quantity.
+     * method printToConsole() - we print data to console
+     * updateQuantityProductsInStorageMap() - we update quantity of product in storage
+     * method updatePrice() - we update price (total price of all products in cart)
+     */
     public void remove(String productName, int quantity) {
         if (cartMap.containsKey(productName)) {
             if (cartMap.get(productName).getQuantity() == quantity) {
@@ -69,10 +85,11 @@ public class Cart {
         } else System.out.println("You don't have " + productName + " in cart. Please enter another Product.");
     }
 
-    // output data to the console according to the technical task
+    // output data (if product is added in cart) to the console according to the technical task
     private void addPrintToConsole(int quantity, String productName) {
         System.out.println(quantity + " " + productName + "(s) vas added");
     }
+    // output data (if product is removed from cart) to the console according to the technical task
     private void removePrintToConsole(int quantity, String productName) {
         System.out.println(quantity + " " + productName + "(s) vas removed");
     }
@@ -154,6 +171,13 @@ public class Cart {
         return totalPriceWithoutDiscount().subtract(discount);
     }
 
+    /**
+     * Method description
+     * Method parameters - name of product
+     * checking if name of product exists as key in Cart map.
+     * If it doesn't exist then we return false and outputs message to the console.
+     * If exists then we return true.
+     */
     private boolean isProductExistsInCart(String productName) {
         if (!cartMap.containsKey(productName)) {
             System.out.println("Product " + productName + " doesn't exist in cart. " +
