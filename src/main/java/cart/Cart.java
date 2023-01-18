@@ -52,40 +52,7 @@ public class Cart {
         return !cartMap.isEmpty() && cartMap.containsKey(productName);
     }
 
-    /*
-     * Method description - it should remove products from cart
-     * method parameters - name of product, and it's quantity
-     * we check if product with such name and in needed quantity exists in the cart
-     * otherwise we print message to console - that this product doesn't exist in cart
-     *
-     * Further we are checking: if quantity of products equals quantity stored in cart, then
-     * we create tempProduct - temporary variable for storing product
-     * we start method removePrintToConsole(), remove this product from cart and adding it in storage.
-     * further we are checking if quantity of products lesser than quantity stored in cart
-     * if true - then we reduce amount of this product in cart and adding this amount to storage.
-     * otherwise we print message to console, that cart doesn't contain this product in needed quantity.
-     * method printToConsole() - we print data to console
-     * updateQuantityProductsInStorageMap() - we update quantity of product in storage
-     * method updatePrice() - we update price (total price of all products in cart)
-     */
-    public void remove(String productName, int quantity) {
-        if (cartMap.containsKey(productName)) {
-            if (cartMap.get(productName).getQuantity() == quantity) {
-                Product tempProduct = cartMap.get(productName);
-                removePrintToConsole(quantity, productName);
-                cartMap.remove(productName);
-                storage.addProduct(tempProduct, quantity);
-            } else if (cartMap.get(productName).getQuantity() > quantity) {
-                cartMap.get(productName).setQuantity(cartMap.get(productName).getQuantity() - quantity);
-                removePrintToConsole(quantity, productName);
-                storage.addProduct(cartMap.get(productName), quantity);
-            } else {
-                System.out.printf("Cart doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
-                        productName, quantity, cartMap.get(productName).getQuantity());
-            }
 
-        } else System.out.println("You don't have " + productName + " in cart. Please enter another Product.");
-    }
 
     // output data (if product is added in cart) to the console according to the technical task
     private void addPrintToConsole(int quantity, String productName) {

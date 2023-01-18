@@ -40,8 +40,6 @@ public class InteractiveModeRunner implements ModeRunner {
                 "-----------------------------------------");
         System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"add beer 5\"", "- add item to cart.", "Structure:",
                 "add [product name] [product quantity]");
-        System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"remove beer 5\"", "- remove item from cart.",
-                "Structure:", "remove [product name] [product quantity]");
         System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"discount buy_1_get_30_percentage beer\"",
                 "- apply discount.", "Structure:", "discount [discount name] [product name]");
         System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"discount buy_3_get_1_free cola\"",
