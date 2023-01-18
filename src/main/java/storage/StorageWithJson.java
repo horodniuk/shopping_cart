@@ -64,22 +64,21 @@ public class StorageWithJson implements Storage {
     @Override
     public void addProduct(Product product, int quantity) {
         if (storageProducts.containsKey(product.getName())) {
-            storageProducts.get(product.getName()).setQuantity(storageProducts.get(product.getName()).
-                    getQuantity() + quantity);
+            storageProducts.get(product.getName()).setQuantity(getQuantity(product.getName()) + quantity);
         } else storageProducts.put(product.getName(), product);
     }
 
     @Override
     public void removeProduct(String productName, int quantity) {
-        if (storageProducts.get(productName).getQuantity() > quantity) {
-            storageProducts.get(productName).setQuantity(storageProducts.get(productName).getQuantity() - quantity);
+        if (getQuantity(productName) > quantity) {
+            storageProducts.get(productName).setQuantity(getQuantity(productName) - quantity);
         } else storageProducts.remove(productName);
     }
 
-    @Override
+   /* @Override
     public void reserveProduct(Product product, int quantity) {
 
-    }
+    }*/
 
     /**
      * Task (completed): implement method checkProductAndQuantityInStorage
@@ -87,15 +86,23 @@ public class StorageWithJson implements Storage {
      * check availability in storage, if available then return true,
      * if not - then we output to console, message that there is not enough quantity - and return false
      *
-     * @return
      */
     @Override
     public boolean isProductAvailable(String productName, int quantity) {
-        if (getStorageMap().get(productName).getQuantity() < quantity) {
+        final var qetQuantityProductInStorage = getQuantity(productName);
+        if (qetQuantityProductInStorage < quantity) {
             System.out.printf("Storage doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
-                    productName, quantity, getStorageMap().get(productName).getQuantity());
+                    productName, quantity, qetQuantityProductInStorage);
         }
-        return getStorageMap().get(productName).getQuantity() >= quantity;
+        return qetQuantityProductInStorage >= quantity;
+    }
+
+
+    /*
+     * get quantity product in storage
+     */
+    private int getQuantity(String productName) {
+        return storageProducts.get(productName).getQuantity();
     }
 
     @Override
@@ -106,11 +113,6 @@ public class StorageWithJson implements Storage {
     @Override
     public BigDecimal getProductPrice(String productName) {
         return storageProducts.get(productName).getPrice();
-    }
-
-    @Override
-    public Map<String, Product> getStorageMap() {
-        return storageProducts;
     }
 
     @Override
