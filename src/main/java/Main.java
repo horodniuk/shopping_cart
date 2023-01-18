@@ -34,18 +34,18 @@ public class Main {
         String[] strArray = line.split(" ");
 
         if (
-                (strArray.length == 2) &&   // проверка что только два элемента (папка и файл)
-                isDirectoryPathExist(RESOURCES_PATH + strArray[0]) && // проверка что первый элемент - папка существует
-                isFilePathExist(RESOURCES_PATH + strArray[0] + "/" + strArray[1]) // проверка что второй элемент - файл существует
+                (strArray.length == 2) &&   // checking that there are only two elements (folder and file)
+                isDirectoryPathExist(RESOURCES_PATH + strArray[0]) && // checking that the first element - the folder exists
+                isFilePathExist(RESOURCES_PATH + strArray[0] + "/" + strArray[1]) // checking that the second element - the file exists
         ) {
             String pathToStorageProduct = RESOURCES_PATH + strArray[0] + "/" + strArray[1];
             new InteractiveModeRunner(pathToStorageProduct).start();
         } else {
             if (
-                    (strArray.length == 3) && // проверка что три элемента (папка, файл, файл)
-                    isDirectoryPathExist(RESOURCES_PATH + strArray[0]) && // проверка что первый элемент - папка существует
-                    isFilePathExist(RESOURCES_PATH + strArray[0] + "/" + strArray[1]) && // проверка что второй элемент - файл существует
-                    isFilePathExist(RESOURCES_PATH + strArray[0] + "/" + strArray[2]) // проверка что третий элемент - файл существует
+                    (strArray.length == 3) && // checking that there are three elements (folder, file, file)
+                    isDirectoryPathExist(RESOURCES_PATH + strArray[0]) &&  //checking that the first element - the folder exists
+                    isFilePathExist(RESOURCES_PATH + strArray[0] + "/" + strArray[1]) && // checking that the second element - the file exists
+                    isFilePathExist(RESOURCES_PATH + strArray[0] + "/" + strArray[2]) // check that the third element - the file exists
             ) {
                 String pathToStorageProduct = RESOURCES_PATH + strArray[0] + "/" + strArray[1];
                 String pathToCommandList = RESOURCES_PATH + strArray[0] + "/" + strArray[2];
