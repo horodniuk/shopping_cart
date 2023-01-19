@@ -1,6 +1,7 @@
 package cart;
 
 import discount.Discount;
+import discount.Discount_buy_1_get_30_percent_off;
 import storage.Storage;
 
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ public class Cart {
     private Storage storage; // Storage containing map of products
     private Map<String, Product> cartMap;         // map of products, which are added in the cart
     private Map<String, BigDecimal> discountMap;  // map of products, which are added in the cart and discounts applied
+    private Map<String, Discount> typesOfDiscountsMap;
     private BigDecimal price = new BigDecimal(00.00).setScale(2); // total price of products in cart (including discount)
     private BigDecimal discount = new BigDecimal(00.00).setScale(2); // total amount of discount on products in cart
 
@@ -22,6 +24,7 @@ public class Cart {
         this.cartMap = new LinkedHashMap<>();
         this.storage = storage;
         this.discountMap = new HashMap<>();
+        this.typesOfDiscountsMap = new HashMap<>();
     }
 
     /*
@@ -71,26 +74,53 @@ public class Cart {
     public void remove(String productName, int quantity) {
         if (cartMap.containsKey(productName)) {
             if (cartMap.get(productName).getQuantity() == quantity) {
-                Product tempProduct = cartMap.get(productName);
-                removePrintToConsole(quantity, productName);
-                cartMap.remove(productName);
-                storage.addProduct(tempProduct, quantity);
+                deleteProductAndDiscount(productName, quantity);
             } else if (cartMap.get(productName).getQuantity() > quantity) {
-                cartMap.get(productName).setQuantity(cartMap.get(productName).getQuantity() - quantity);
-                removePrintToConsole(quantity, productName);
-                storage.addProduct(cartMap.get(productName), quantity);
+                reduceProductAmountAndDiscount(productName, quantity);
             } else {
                 System.out.printf("Cart doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
                         productName, quantity, cartMap.get(productName).getQuantity());
             }
-
         } else System.out.println("You don't have " + productName + " in cart. Please enter another Product.");
+    }
+
+    public void deleteProductAndDiscount(String productName, int quantity) {
+        Product tempProduct = cartMap.get(productName);
+        removePrintToConsole(quantity, productName);
+        cartMap.remove(productName);
+        storage.addProduct(tempProduct, quantity);
+        if (typesOfDiscountsMap.containsKey(productName)) {
+            discount = discount.subtract(discountMap.get(productName));
+            discountMap.remove(productName);
+            typesOfDiscountsMap.remove(productName);
+        }
+        price = updatePrice();
+    }
+
+    public void reduceProductAmountAndDiscount(String productName, int quantity) {
+        Product tempProduct = cartMap.get(productName);
+        removePrintToConsole(quantity, productName);
+        cartMap.get(productName).setQuantity(cartMap.get(productName).getQuantity() - quantity);
+        storage.addProduct(tempProduct, quantity);
+        price = updatePrice();
+        if (typesOfDiscountsMap.containsKey(productName)) {
+            Discount tempDiscount = typesOfDiscountsMap.get(productName);
+            BigDecimal discountProductValue = tempDiscount.getDiscount(productName, cartMap).setScale(2);
+            if (discountProductValue.intValue() != 0) {
+                discount = updateDiscount(productName, discountProductValue);
+                price = updatePrice();
+                discountMap.put(productName, discountProductValue);
+                System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
+                        tempDiscount.getClass().getSimpleName(), productName, discountProductValue);
+            }
+        }
     }
 
     // output data (if product is added in cart) to the console according to the technical task
     private void addPrintToConsole(int quantity, String productName) {
         System.out.println(quantity + " " + productName + "(s) vas added");
     }
+
     // output data (if product is removed from cart) to the console according to the technical task
     private void removePrintToConsole(int quantity, String productName) {
         System.out.println(quantity + " " + productName + "(s) vas removed");
@@ -142,6 +172,7 @@ public class Cart {
                 discount = updateDiscount(productName, discountProductValue);
                 price = updatePrice();
                 discountMap.put(productName, discountProductValue);
+                typesOfDiscountsMap.put(productName, discountType);
                 System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
                         discountType.getClass().getSimpleName(), productName, discountProductValue);
             }
