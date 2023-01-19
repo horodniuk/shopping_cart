@@ -109,7 +109,7 @@ public class Cart {
                 discount = updateDiscount(productName, discountProductValue);
                 price = updatePrice();
                 discountMap.put(productName, discountProductValue);
-                System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
+                System.out.printf("discount changed. Details: apply %s by  %s. Discount value - %s $ %n",
                         tempDiscount.getClass().getSimpleName(), productName, discountProductValue);
             }
         }
