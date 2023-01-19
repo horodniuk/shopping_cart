@@ -53,11 +53,11 @@ public class Cart {
     }
 
 
-
     // output data (if product is added in cart) to the console according to the technical task
     private void addPrintToConsole(int quantity, String productName) {
         System.out.println(quantity + " " + productName + "(s) vas added");
     }
+
     // output data (if product is removed from cart) to the console according to the technical task
     private void removePrintToConsole(int quantity, String productName) {
         System.out.println(quantity + " " + productName + "(s) vas removed");

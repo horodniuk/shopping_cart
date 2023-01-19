@@ -10,20 +10,25 @@ import java.util.Optional;
 
 public class TextModeRunner {
 
-    /*
-     * Task (completed)
-     * We must make method which will be performing commands, which are included in technical task
-     * For example: If we get String "add beer 5" we must parse it to get
-     * name of product "beer" and quantity "5" and check if we have such product,
-     * in such quantity and after perform the command.
-     * for example:
-     * add beer 5 --> cart.add("beer", 5) equals - cart.add(arguments.get(1), Integer.parseInt(arguments.get(2)))
-     * add soap 2 --> cart.add("soap", 2)
-     * discount buy_1_get_30_percentage beer --> applyDiscount(new Discount_BUY_1_GET_30_PERCENT_OFF(), "beer") equals
-     * cart.applyDiscount(cartCommandParser.parseDiscount(arguments.get(1)), arguments.get(2))
-     * discount buy_3_get_1_free soap --> applyDiscount(new Discount_BUY_3_GET_1_FREE(), "soap")
-     * in case command add - argument 1 is product, argument 2 is quantity of this product;
-     * in case command discount - argument 1 is discount type, argument 2 is product.
+    /**
+     * Method description
+     * Method parameters - string line which we get after reading file or getting it from console
+     * This methode is made to execute commands which we get after parsing the string of command.
+     * First we get Optional of Class ParsedCommand with the help of method cartCommandParser.parse()
+     * Then checking if Optional of ParsedCommand is empty or not.
+     * If it's empty then we print message to console that user entered unknown command,
+     * because we couldn't parse it with method parse()
+     * IF Optional of ParsedCommand is not empty: then we get command from instance of Oprional ParsedCommand
+     * and assign to a variable command;
+     * also we are getting string arguments from parsedCommandOptional and assign them to new List arguments.
+     * after that we are checking in cycle "switch case" if simple name of class of our command fits any of command
+     * case CommandDiscount -> we apply discount on chosen product, where
+     * cartCommandParser.parseDiscount(arguments.get(1)) is type of discount and arguments.get(2) - name of the product;
+     * case CommandAdd -> we are adding product to cart, where argument.get(1) is product name and
+     * Integer.parseInt(arguments.get(2)) is product quantity;
+     * case CommandPrice -> we output data to console: total price of the products, total discount and
+     * amount of products in cart and in storage;
+     * case CommandFinish -> we finish the work of the program.
      */
     public void executeCommand(String line, Cart cart) {
         CartCommandParser cartCommandParser = new CartCommandParser(cart);

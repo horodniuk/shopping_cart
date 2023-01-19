@@ -13,7 +13,11 @@ import java.util.Map;
  * but in the end we will also get Map filled from database (not sure for now)
  *
  * Method write() - writes updated data to the file
- * Method getStorage() - getter of Map with data
+ * Method addProduct() - add product to the storage map;
+ * Method removeProduct() - removes product from the storage map;
+ * Method getProductNames() - returns the names of all the products from the Storage map;
+ * Method isProductAvailable() - checks if storage map contains needed quantity of such product;
+ * Method getProductPrice() - returns the price of the product from storage map;
  */
 public interface Storage {
     Map<String, Product> load();
