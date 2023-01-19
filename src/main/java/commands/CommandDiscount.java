@@ -20,6 +20,7 @@ public class CommandDiscount extends Command {
             createRegExValues(CartCommandParser.getDiscounts()) + ") ("
             + createRegExValues(CartCommandParser.getProducts()) + ")"));
 
+    //method which finds out if Pattern matches string
     public Boolean matches(String text) {
         return regex.matcher(text).find();
     }

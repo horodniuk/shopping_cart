@@ -18,6 +18,7 @@ public class CommandAdd extends Command {
     private final Pattern regex = (Pattern.compile("^(add) (" +
             createRegExValues(CartCommandParser.getProducts()) + ") ([0-9]+)"));
 
+    //method which finds out if Pattern matches string
     public Boolean matches(String text) {
         return regex.matcher(text).find();
     }

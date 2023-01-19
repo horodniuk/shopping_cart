@@ -6,6 +6,7 @@ public abstract class Command {
 
     private Pattern regex;
 
+    //method which finds out if Pattern matches string
     public Boolean matches(String text) {
         return regex.matcher(text).find();
     }
