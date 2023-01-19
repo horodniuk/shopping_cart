@@ -1,7 +1,6 @@
 package cart;
 
 import discount.Discount;
-import discount.Discount_buy_1_get_30_percent_off;
 import storage.Storage;
 
 import java.math.BigDecimal;
@@ -11,7 +10,7 @@ public class Cart {
     private Storage storage; // Storage containing map of products
     private Map<String, Product> cartMap;         // map of products, which are added in the cart
     private Map<String, BigDecimal> discountMap;  // map of products, which are added in the cart and discounts applied
-    private Map<String, Discount> typesOfDiscountsMap;
+    private Map<String, Discount> discountTypesMap; // map of discount types, which are applied on products in Cart
     private BigDecimal price = new BigDecimal(00.00).setScale(2); // total price of products in cart (including discount)
     private BigDecimal discount = new BigDecimal(00.00).setScale(2); // total amount of discount on products in cart
 
@@ -24,7 +23,7 @@ public class Cart {
         this.cartMap = new LinkedHashMap<>();
         this.storage = storage;
         this.discountMap = new HashMap<>();
-        this.typesOfDiscountsMap = new HashMap<>();
+        this.discountTypesMap = new HashMap<>();
     }
 
     /*
@@ -89,10 +88,10 @@ public class Cart {
         removePrintToConsole(quantity, productName);
         cartMap.remove(productName);
         storage.addProduct(tempProduct, quantity);
-        if (typesOfDiscountsMap.containsKey(productName)) {
+        if (discountTypesMap.containsKey(productName)) {
             discount = discount.subtract(discountMap.get(productName));
             discountMap.remove(productName);
-            typesOfDiscountsMap.remove(productName);
+            discountTypesMap.remove(productName);
         }
         price = updatePrice();
     }
@@ -103,8 +102,8 @@ public class Cart {
         cartMap.get(productName).setQuantity(cartMap.get(productName).getQuantity() - quantity);
         storage.addProduct(tempProduct, quantity);
         price = updatePrice();
-        if (typesOfDiscountsMap.containsKey(productName)) {
-            Discount tempDiscount = typesOfDiscountsMap.get(productName);
+        if (discountTypesMap.containsKey(productName)) {
+            Discount tempDiscount = discountTypesMap.get(productName);
             BigDecimal discountProductValue = tempDiscount.getDiscount(productName, cartMap).setScale(2);
             if (discountProductValue.intValue() != 0) {
                 discount = updateDiscount(productName, discountProductValue);
@@ -172,11 +171,18 @@ public class Cart {
                 discount = updateDiscount(productName, discountProductValue);
                 price = updatePrice();
                 discountMap.put(productName, discountProductValue);
-                typesOfDiscountsMap.put(productName, discountType);
+                updateDiscountType(productName, discountType);
                 System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
                         discountType.getClass().getSimpleName(), productName, discountProductValue);
             }
         }
+    }
+
+    private void updateDiscountType(String productName, Discount discountType) {
+        if (discountTypesMap.containsKey(productName)) {
+            discountTypesMap.remove(productName);
+            discountTypesMap.put(productName, discountType);
+        } else discountTypesMap.put(productName, discountType);
     }
 
     /**
