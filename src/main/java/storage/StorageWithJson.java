@@ -63,16 +63,12 @@ public class StorageWithJson implements Storage {
 
     @Override
     public void addProduct(Product product, int quantity) {
-        if (storageProducts.containsKey(product.getName())) {
-            storageProducts.get(product.getName()).setQuantity(getQuantity(product.getName()) + quantity);
-        } else storageProducts.put(product.getName(), product);
+        storageProducts.get(product.getName()).setQuantity(getQuantity(product.getName()) + quantity);
     }
 
     @Override
     public void removeProduct(String productName, int quantity) {
-        if (getQuantity(productName) > quantity) {
-            storageProducts.get(productName).setQuantity(getQuantity(productName) - quantity);
-        } else storageProducts.remove(productName);
+        storageProducts.get(productName).setQuantity(getQuantity(productName) - quantity);
     }
 
    /* @Override
@@ -85,7 +81,6 @@ public class StorageWithJson implements Storage {
      * checking if product with this name exists in storage
      * check availability in storage, if available then return true,
      * if not - then we output to console, message that there is not enough quantity - and return false
-     *
      */
     @Override
     public boolean isProductAvailable(String productName, int quantity) {
