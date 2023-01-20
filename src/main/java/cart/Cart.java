@@ -84,7 +84,7 @@ public class Cart {
         } else System.out.println("You don't have " + productName + " in cart. Please enter another Product.");
     }
 
-    public void deleteProductAndDiscount(String productName, int quantity) {
+    private void deleteProductAndDiscount(String productName, int quantity) {
         if (discountMap.containsKey(productName)) {
             discount = discount.subtract(discountMap.get(productName).getDiscount(productName, cartMap));
             discountMap.remove(productName);
@@ -96,23 +96,27 @@ public class Cart {
         price = updatePrice();
     }
 
-    public void reduceProductAndDiscount(String productName, int quantity) {
+    private void reduceProductAndDiscount(String productName, int quantity) {
         Product tempProduct = cartMap.get(productName);
         if (discountMap.containsKey(productName)) {
             Discount tempDiscount = discountMap.get(productName);
             BigDecimal discountProductValue = tempDiscount.getDiscount(productName, cartMap).setScale(2);
-            cartMap.get(productName).setQuantity(cartMap.get(productName).getQuantity() - quantity);
+            changeQuantity(productName, quantity);
             discount = discount.subtract(discountProductValue).add(tempDiscount.getDiscount(productName, cartMap)).
                     setScale(2);
             discountMap.put(productName, tempDiscount);
             System.out.printf("discount changed. Details: apply %s by  %s. Discount value - %s $ %n",
                     tempDiscount.getClass().getSimpleName(), productName, discountProductValue);
         } else {
-            cartMap.get(productName).setQuantity(cartMap.get(productName).getQuantity() - quantity);
+            changeQuantity(productName, quantity);
         }
         storage.addProduct(tempProduct, quantity);
         price = updatePrice();
         removePrintToConsole(quantity, productName);
+    }
+
+    private void changeQuantity(String productName, int quantity) {
+        cartMap.get(productName).setQuantity(cartMap.get(productName).getQuantity() - quantity);
     }
 
     // output data (if product is added in cart) to the console according to the technical task
