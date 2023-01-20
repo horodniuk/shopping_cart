@@ -35,17 +35,17 @@ public class Main {
 
         if (
                 (strArray.length == 2) &&   // checking that there are only two elements (folder and file)
-                isDirectoryPathExist(RESOURCES_PATH + strArray[0]) && // checking that the first element - the folder exists
-                isFilePathExist(RESOURCES_PATH + strArray[0] + "/" + strArray[1]) // checking that the second element - the file exists
+                        isDirectoryPathExist(RESOURCES_PATH + strArray[0]) && // checking that the first element - the folder exists
+                        isFilePathExist(RESOURCES_PATH + strArray[0] + "/" + strArray[1]) // checking that the second element - the file exists
         ) {
             String pathToStorageProduct = RESOURCES_PATH + strArray[0] + "/" + strArray[1];
             new InteractiveModeRunner(pathToStorageProduct).start();
         } else {
             if (
                     (strArray.length == 3) && // checking that there are three elements (folder, file, file)
-                    isDirectoryPathExist(RESOURCES_PATH + strArray[0]) &&  //checking that the first element - the folder exists
-                    isFilePathExist(RESOURCES_PATH + strArray[0] + "/" + strArray[1]) && // checking that the second element - the file exists
-                    isFilePathExist(RESOURCES_PATH + strArray[0] + "/" + strArray[2]) // check that the third element - the file exists
+                            isDirectoryPathExist(RESOURCES_PATH + strArray[0]) &&  //checking that the first element - the folder exists
+                            isFilePathExist(RESOURCES_PATH + strArray[0] + "/" + strArray[1]) && // checking that the second element - the file exists
+                            isFilePathExist(RESOURCES_PATH + strArray[0] + "/" + strArray[2]) // check that the third element - the file exists
             ) {
                 String pathToStorageProduct = RESOURCES_PATH + strArray[0] + "/" + strArray[1];
                 String pathToCommandList = RESOURCES_PATH + strArray[0] + "/" + strArray[2];
@@ -57,15 +57,15 @@ public class Main {
     }
 
     private static boolean isFilePathExist(String path) {
-        if(!Files.exists(Path.of(path))){
+        if (!Files.exists(Path.of(path))) {
             throw new IllegalArgumentException("File " + path + " is not exists");
         }
         return true;
     }
 
     private static boolean isDirectoryPathExist(String path) {
-        if(!Files.isDirectory(Path.of(path))){
-           throw new IllegalArgumentException("Path " + path + " is not directory");
+        if (!Files.isDirectory(Path.of(path))) {
+            throw new IllegalArgumentException("Path " + path + " is not directory");
         }
         return true;
     }
@@ -77,7 +77,7 @@ public class Main {
     private static void printPreviewToConsole() {
         System.out.println("Choose mode:");
         System.out.println("Interactive mode - enter \"./market storage.json\"");
-        System.out.println("File mode режим - enter \"./market storage.json commadsList.txt\"");
+        System.out.println("File mode - enter \"./market storage.json commadsList.txt\"");
     }
 }
 

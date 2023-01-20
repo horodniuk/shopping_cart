@@ -3,7 +3,7 @@ package runner;
 import cart.Cart;
 import cart.CartCommandParser;
 import cart.ParsedCommand;
-import commands.*;
+import commands.Command;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +44,7 @@ public class TextModeRunner {
                 case "CommandAdd" -> cart.add(arguments.get(1), Integer.parseInt(arguments.get(2)));
                 case "CommandPrice" -> cart.price();
                 case "CommandFinish" -> cart.finish();
+                case "CommandRemoveSomeName" -> cart.removeProductSameName(arguments.get(1));
             }
         }
     }

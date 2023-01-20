@@ -48,6 +48,15 @@ public class Cart {
         }
     }
 
+    public void removeProductSameName(String productName) {
+        if (isProductExistInCart(productName)) {
+            storage.addProduct(cartMap.get(productName), cartMap.get(productName).getQuantity());
+            removePrintToConsole(cartMap.get(productName).getQuantity(), productName);
+            cartMap.remove(productName);
+            price = updatePrice();
+        }
+    }
+
     private boolean isProductExistInCart(String productName) {
         return !cartMap.isEmpty() && cartMap.containsKey(productName);
     }
