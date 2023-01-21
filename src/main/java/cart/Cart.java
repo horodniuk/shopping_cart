@@ -73,13 +73,14 @@ public class Cart {
      */
     public void remove(String productName, int quantity) {
         if (cartMap.containsKey(productName)) {
-            if (cartMap.get(productName).getQuantity() == quantity) {
+            int quantityInCart = cartMap.get(productName).getQuantity();
+            if (quantityInCart == quantity) {
                 deleteProductAndDiscount(productName, quantity);
-            } else if (cartMap.get(productName).getQuantity() > quantity) {
+            } else if (quantityInCart > quantity) {
                 reduceProductAndDiscount(productName, quantity);
             } else {
                 System.out.printf("Cart doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
-                        productName, quantity, cartMap.get(productName).getQuantity());
+                        productName, quantity, quantityInCart);
             }
         } else System.out.println("You don't have " + productName + " in cart. Please enter another Product.");
     }
