@@ -1,5 +1,6 @@
 package commands;
 
+import cart.Cart;
 import cart.CartCommandParser;
 import lombok.Getter;
 
@@ -16,5 +17,9 @@ public class CommandAdd extends Command {
 
     public Boolean matches(String text) {
         return regex.matcher(text).find();
+    }
+
+    public void execute(Cart cart, String productName, String quantity) {
+        cart.add(productName, Integer.parseInt(quantity));
     }
 }
