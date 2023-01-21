@@ -4,6 +4,7 @@ import cart.Cart;
 import cart.CartCommandParser;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static cart.CartCommandParser.createRegExValues;
@@ -20,7 +21,7 @@ public class CommandDiscount extends Command {
         return regex.matcher(text).find();
     }
 
-    public void execute(Cart cart, String discount, String productName) {
-        cart.applyDiscount(CartCommandParser.parseDiscount(discount), productName);
+    public void execute(Cart cart, List<String> arguments) {
+        cart.applyDiscount(CartCommandParser.parseDiscount(arguments.get(1)), arguments.get(2));
     }
 }

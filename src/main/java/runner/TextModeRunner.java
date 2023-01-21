@@ -33,14 +33,16 @@ public class TextModeRunner {
         else {
             Command command = parsedCommandOptional.get().getCommand();
             List<String> arguments = parsedCommandOptional.get().getArguments();
-            switch (command.getClass().getSimpleName()) {
-                case "CommandDiscount" -> cart.applyDiscount(cartCommandParser.parseDiscount(arguments.get(1)),
-                        arguments.get(2));
-                case "CommandAdd" -> cart.add(arguments.get(1), Integer.parseInt(arguments.get(2)));
-                case "CommandRemove" -> cart.remove(arguments.get(1), Integer.parseInt(arguments.get(2)));
-                case "CommandPrice" -> cart.price();
-                case "CommandFinish" -> cart.finish();
-            }
+            command.execute(cart, arguments);
+
+//            switch (command.getClass().getSimpleName()) {
+//                case "CommandDiscount" -> cart.applyDiscount(cartCommandParser.parseDiscount(arguments.get(1)),
+//                        arguments.get(2));
+//                case "CommandAdd" -> cart.add(arguments.get(1), Integer.parseInt(arguments.get(2)));
+//                case "CommandRemove" -> cart.remove(arguments.get(1), Integer.parseInt(arguments.get(2)));
+//                case "CommandPrice" -> cart.price();
+//                case "CommandFinish" -> cart.finish();
+//            }
         }
     }
 }

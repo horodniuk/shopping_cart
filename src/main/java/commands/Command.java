@@ -4,6 +4,7 @@ import cart.Cart;
 import cart.CartCommandParser;
 import runner.TextModeRunner;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 public abstract class Command {
@@ -22,6 +23,6 @@ public abstract class Command {
         return regex;
     }
 
-    public void execute(Cart cart, String argument1, String argument2) {
+    public void execute(Cart cart, List<String> arguments) {
     }
 }
