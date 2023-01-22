@@ -62,7 +62,7 @@ public class CartCommandParser {
      * buy_1_get_30_percentage -> Discount_BUY_1_GET_30_PERCENT_OFF();
      * buy_3_get_1_free -> Discount_BUY_3_GET_1_FREE();
      */
-    public Discount parseDiscount(String nameCommand) {
+    public static Discount parseDiscount(String nameCommand) {
         if (nameCommand.equals("buy_1_get_30_percentage")) {
             return new Discount_buy_1_get_30_percent_off();
         } else {
