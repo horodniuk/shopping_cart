@@ -1,18 +1,15 @@
 package commands;
 
 import cart.Cart;
-import runner.TextModeExecute;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 public abstract class Command {
-    TextModeExecute textModeExecute;
     private Pattern regex;
 
-    public Command() {
-        this.textModeExecute = new TextModeExecute();
-    }
+    private List<String> arguments = new ArrayList<>();
 
     public Boolean matches(String text) {
         return regex.matcher(text).find();
@@ -22,6 +19,13 @@ public abstract class Command {
         return regex;
     }
 
-    public void execute(Cart cart, List<String> arguments) {
+    public void receiveArguments(List<String> arguments){
+    }
+
+    public String createRegExValues(List<String> values) {
+        return String.join("|", values);
+    }
+
+    public void execute(Cart cart) {
     }
 }

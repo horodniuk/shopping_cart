@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Getter
-public class CommandPrice extends Command {
+public class PriceCommand extends Command {
 
     //Example: price
     private final Pattern regex = (Pattern.compile("(^price$)"));
@@ -16,7 +16,14 @@ public class CommandPrice extends Command {
         return regex.matcher(text).find();
     }
 
-    public void execute(Cart cart, List<String> arguments) {
+    public void receiveArguments(List<String> newArguments) {
+    }
+
+    public String createRegExValues(List<String> values) {
+        return String.join("|", values);
+    }
+
+    public void execute(Cart cart) {
         cart.price();
     }
 }
