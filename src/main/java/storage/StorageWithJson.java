@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,11 +17,11 @@ import java.util.Map;
  * Realisation of storage with products based on json file
  */
 public class StorageWithJson implements Storage {
-    private String path;
+    private URI path;
     private Map<String, Product> storageProducts;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public StorageWithJson(String path) {
+    public StorageWithJson(URI path) {
         this.path = path;
         this.storageProducts = load();
     }
@@ -32,7 +33,7 @@ public class StorageWithJson implements Storage {
      */
     @Override
     public Map<String, Product> load() {
-        File jsonFile = new File(path);
+        File jsonFile = new File(path.getPath());
         Map<String, Product> productMap = new LinkedHashMap<>();
         try {
             List<Product> productList = objectMapper.readValue(jsonFile, new TypeReference<>() {

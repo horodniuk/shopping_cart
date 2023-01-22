@@ -3,6 +3,7 @@ package runner;
 import cart.Cart;
 import storage.StorageWithJson;
 
+import java.net.URI;
 import java.util.Scanner;
 
 /**
@@ -10,9 +11,9 @@ import java.util.Scanner;
  * perform them. (look method executeCommand())
  */
 public class InteractiveModeRunner implements ModeRunner {
-    private String pathToStorage;
+    private URI pathToStorage;
 
-    public InteractiveModeRunner(String pathToStorage) {
+    public InteractiveModeRunner(URI pathToStorage) {
         this.pathToStorage = pathToStorage;
     }
 

@@ -1,7 +1,13 @@
 import runner.FileModeRunner;
 import runner.InteractiveModeRunner;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Scanner;
 
@@ -27,48 +33,54 @@ public class Main {
      *   then starts new FileModeRunner#start
      */
     private static void start() {
-        final String RESOURCES_PATH = "src/main/resources/";
         printPreviewToConsole();
         String line = getLineToConsole();
-
         String[] strArray = line.split(" ");
-
-        if (
-                (strArray.length == 2) &&   // проверка что только два элемента (папка и файл)
-                isDirectoryPathExist(RESOURCES_PATH + strArray[0]) && // проверка что первый элемент - папка существует
-                isFilePathExist(RESOURCES_PATH + strArray[0] + "/" + strArray[1]) // проверка что второй элемент - файл существует
-        ) {
-            String pathToStorageProduct = RESOURCES_PATH + strArray[0] + "/" + strArray[1];
-            new InteractiveModeRunner(pathToStorageProduct).start();
+        isPathCorrect(strArray[0], strArray);
+        if (strArray.length == 2) {
+            String pathToStorageProduct = strArray[0] + File.separator + strArray[1];
+            new InteractiveModeRunner(URI.create(String.valueOf(Main.class.getResource(pathToStorageProduct)))).start();
+        } else if (strArray.length == 3) {
+            String pathToStorageProduct = strArray[0] + "/" + strArray[1];
+            String pathToCommandList = strArray[0] + "/" + strArray[2];
+            new FileModeRunner(
+                    URI.create(String.valueOf(Main.class.getResource(pathToStorageProduct))),
+                    URI.create(String.valueOf(Main.class.getResource(pathToCommandList)))
+            ).start();
         } else {
-            if (
-                    (strArray.length == 3) && // проверка что три элемента (папка, файл, файл)
-                    isDirectoryPathExist(RESOURCES_PATH + strArray[0]) && // проверка что первый элемент - папка существует
-                    isFilePathExist(RESOURCES_PATH + strArray[0] + "/" + strArray[1]) && // проверка что второй элемент - файл существует
-                    isFilePathExist(RESOURCES_PATH + strArray[0] + "/" + strArray[2]) // проверка что третий элемент - файл существует
-            ) {
-                String pathToStorageProduct = RESOURCES_PATH + strArray[0] + "/" + strArray[1];
-                String pathToCommandList = RESOURCES_PATH + strArray[0] + "/" + strArray[2];
-                new FileModeRunner(pathToStorageProduct, pathToCommandList).start();
-            } else {
-                System.out.println("incorrectly command");
-            }
+            System.out.println("incorrectly command");
         }
     }
 
-    private static boolean isFilePathExist(String path) {
-        if(!Files.exists(Path.of(path))){
-            throw new IllegalArgumentException("File " + path + " is not exists");
+    private static boolean isPathCorrect(String folder, String... files)  {
+         isDirectoryPathExist(folder);
+        for (int i = 1; i < files.length; i++) {
+           isFilePathExist(folder + "/" + files[i]);
         }
         return true;
+    }
+
+    private static boolean isFilePathExist(String path)  {
+            return Files.exists(getPath(path));
     }
 
     private static boolean isDirectoryPathExist(String path) {
-        if(!Files.isDirectory(Path.of(path))){
-           throw new IllegalArgumentException("Path " + path + " is not directory");
-        }
-        return true;
+            return Files.isDirectory(getPath(path));
     }
+
+    private static Path getPath(String path)  {
+        final URL url = Main.class.getResource(path);
+        if (url == null){
+            throw new IllegalArgumentException("Resource " + path + " not found!");
+        }
+        try {
+            return  Path.of(Main.class.getResource(path).toURI());
+        } catch (URISyntaxException e) {
+            throw new InvalidPathException(path, "cannot find path");
+        }
+
+
+        }
 
     private static String getLineToConsole() {
         return new Scanner(System.in).nextLine();
