@@ -24,10 +24,10 @@ public class InteractiveModeRunner implements ModeRunner {
         showTooltipWithCommands();
         System.out.println("Enter the command in console:");
         Cart cart = new Cart(new StorageWithJson(pathToStorage));
-        TextModeRunner textModeRunner = new TextModeRunner();
+        TextModeExecute textModeExecute = new TextModeExecute();
         while (true) {
             String line = new Scanner(System.in).nextLine();
-            textModeRunner.executeCommand(line, cart);
+            textModeExecute.executeCommand(line, cart);
             if (line.equals("finish")) return;
         }
     }

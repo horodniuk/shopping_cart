@@ -1,18 +1,17 @@
 package commands;
 
 import cart.Cart;
-import cart.CartCommandParser;
-import runner.TextModeRunner;
+import runner.TextModeExecute;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
 public abstract class Command {
-    TextModeRunner textModeRunner;
+    TextModeExecute textModeExecute;
     private Pattern regex;
 
     public Command() {
-        this.textModeRunner = new TextModeRunner();
+        this.textModeExecute = new TextModeExecute();
     }
 
     public Boolean matches(String text) {
