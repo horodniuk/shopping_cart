@@ -47,7 +47,15 @@ public class CartCommandParser {
         }
         return parsedCommandOptional;
     }
-
+    /**
+     * Method description
+     * Method parameters - instance of class Matcher
+     * we create an empty ArrayList
+     * then we check if String line matches Pattern
+     * Next we create int countGroup which stores the numbers if groups in Pattern
+     * and collect in Arraylist using stream all the arguments by number of groups.
+     * return - we return list of arguments which correspond to pattern groups
+     */
     private List<String> getArgumentsWithMatcher(Matcher matcher) {
         List<String> list = new ArrayList<>();
         if (matcher.find()) {
