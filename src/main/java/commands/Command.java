@@ -7,10 +7,7 @@ import java.util.List;
 public abstract class Command {
     private List<String> arguments;
 
-    public void receiveArguments(List<String> newArguments) {
-        arguments = newArguments;
-    }
+    public abstract void receiveArguments(List<String> newArguments);
 
-    public void execute(Cart cart) {
-    }
+    public abstract void execute(Cart cart) ;
 }

@@ -1,12 +1,9 @@
 package commands;
 
 import cart.Cart;
-import lombok.Getter;
 
 import java.util.List;
 
-
-@Getter
 public class AddCommand extends Command {
 
     private String productName;

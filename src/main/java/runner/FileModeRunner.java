@@ -29,11 +29,11 @@ public class FileModeRunner implements ModeRunner {
     public void start() {
         System.out.println("Starting File mode." + " Commands will be read from file\" " + pathToCommand);
         Cart cart = new Cart(new StorageWithJson(pathToStorage));
-        TextExecute textExecute = new TextExecute();
+        TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
         try (BufferedReader reader = new BufferedReader(new FileReader(new File(pathToCommand)))) {
             String line = reader.readLine();
             while (line != null) {
-                if (line.length() > 0) textExecute.executeCommand(line, cart);
+                if (line.length() > 0) textCommandExecutor.executeCommand(line, cart);
                 line = reader.readLine();
             }
         } catch (IOException e) {

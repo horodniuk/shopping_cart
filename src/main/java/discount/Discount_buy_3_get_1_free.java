@@ -1,6 +1,7 @@
 package discount;
 
 import cart.Product;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
@@ -9,7 +10,8 @@ import java.util.Map;
 @ToString
 public class Discount_buy_3_get_1_free implements Discount {
     private static final int NUMBER_ITERATION_FOR_DISCOUNT = 4;
-    private String discountName = "buy_3_get_1_free";
+    @Getter
+    private final String discountName = "buy_3_get_1_free";
 
     /**
      * BUY_3_GET_ONE_FREE - type of discount in which customer gets every fourth identical product for free
@@ -26,7 +28,4 @@ public class Discount_buy_3_get_1_free implements Discount {
         }
     }
 
-    public String getDiscountName() {
-        return discountName;
-    }
 }

@@ -1,14 +1,10 @@
 package commands;
 
 import cart.Cart;
-import lombok.Getter;
 
 import java.util.List;
 
-@Getter
 public class RemoveCommand extends Command {
-
-    // Example: add bear 5, add cola 1, add soap 2
 
     private String productName;
     private int quantity;

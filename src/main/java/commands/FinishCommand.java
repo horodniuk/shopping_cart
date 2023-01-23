@@ -1,14 +1,10 @@
 package commands;
 
 import cart.Cart;
-import lombok.Getter;
 
 import java.util.List;
 
-@Getter
 public class FinishCommand extends Command {
-
-    //Example: finish
 
     private List<String> arguments;
 

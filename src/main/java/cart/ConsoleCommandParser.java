@@ -12,26 +12,40 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ConsoleCommandParser {
-    private List<Discount> discounts;
-    private List<String> products;
-    private Map<Command, Pattern> commandsMap;
+    private List<Discount> discounts; // List of all discounts
+    private List<String> products; // List of all product names stored in Storage
+    private Map<Command, Pattern> commandsMap; // Map of all commands (keys) and Patterns for these commands (values)
 
 
     public ConsoleCommandParser(Cart cart) {
         this.products = cart.getStorage().getProductNames(); // getting all names of products from storage
-        this.discounts = List.of(new Discount_buy_1_get_30_percent_off(), new Discount_buy_3_get_1_free()); //discounts commands;
-        this.commandsMap = fillCommandsMap();
+        this.discounts = fillDiscountList(); //discounts commands;
+        this.commandsMap = fillCommandsMap(); // filling Map of commands and patterns with method fillCommandsMap()
     }
+
+    /**
+     * Method description
+     * Method parameters -
+     * Initializing Map with Commands (keys) and Patterns for this commands (values).
+     * After that we initialize patterns for each command (add, discount, remove, price and finish).
+     * after that we put commands and patterns in map
+     * return - we return map of Commands and Patterns.
+     */
 
     private Map<Command, Pattern> fillCommandsMap() {
         Map<Command, Pattern> commands = new HashMap<>();
+        // Example: add bear 5, add cola 1, add soap 2
         final Pattern addPattern = (Pattern.compile("^(add) (" + createRegExValues(products) + ") " +
                 "([0-9]+)"));
+        //Example: discount buy_1_get_30_percentage cola,  discount buy_3_get_1_free bear
         final Pattern discountPattern = (Pattern.compile("^(discount) (" +
                 createRegExValuesDiscounts(discounts) + ") (" + createRegExValues(products) + ")"));
+        // Example: remove bear 5, remove cola 1, remove soap 2
         final Pattern removePattern = (Pattern.compile("^(remove) (" + createRegExValues(products) + ")" +
                 " ([0-9]+)"));
+        // example: finish
         final Pattern finishPattern = (Pattern.compile("(^finish$)"));
+        // example: price
         final Pattern pricePattern = (Pattern.compile("(^price$)"));
 
         commands.put(new AddCommand(), addPattern);
@@ -44,13 +58,24 @@ public class ConsoleCommandParser {
 
     /**
      * Method description
+     * Method parameters -
+     * Method for filling List of discounts which is a paramether of this class.
+     * return - list of discounts.
+     */
+    private List<Discount> fillDiscountList() {
+        return List.of(new Discount_buy_1_get_30_percent_off(), new Discount_buy_3_get_1_free());
+    }
+
+    /**
+     * Method description
      * Method parameters - string, which we get after reading file or reading command console
-     * Initializing Optional of class ParsedCommand.
-     * we create list of Commands,
-     * after that with the help of cycle foreach we check if any command matches string line,
-     * if we find this command - then we get arguments with the help of method getArgumentsWithMatcher()
-     * and return Optional of class ParsedCommand which has parameters: found Command, and arguments.
-     * return - we return Optional of class ParsedCommand.
+     * Initializing Optional of class Command.
+     * After that in cycle for each we check if commands (keys from map commandsMap) match
+     * after that with the help of cycle foreach we check if any commands Pattern matches string line,
+     * if we find this command - then we get arguments with the help of method getArgumentsWithMatcher() and passing
+     * parameters to each command with method receiveArguments().
+     * Then return Optional of class Command.
+     * return - we return Optional of class Command.
      */
     public Optional<Command> parse(String line) {
         Optional<Command> parsedCommandOptional = Optional.empty();
@@ -104,6 +129,11 @@ public class ConsoleCommandParser {
         return String.join("|", values);
     }
 
+    /*
+     * from list converting to String, to apply in regular expression
+     * For example: from List<Discount> discounts we get names of each discount, add them to list of discount names and
+     * then make string from them -> "buy_1_get_30_percentage|buy_3_get_1_free"
+     */
     private String createRegExValuesDiscounts(List<Discount> values) {
         List<String> discountNames = new ArrayList<>();
         for (Discount discount : values) {
@@ -112,15 +142,13 @@ public class ConsoleCommandParser {
         return String.join("|", discountNames);
     }
 
+    /**
+     * Method description
+     * Method parameters - string which we get from text file or console, command
+     * we check if Pattern (which is value found by key - command) matches the string.
+     * return - we return true if matches and false if not
+     */
     public Boolean matches(String text, Command command) {
         return commandsMap.get(command).matcher(text).find();
-    }
-
-    public List<Discount> getDiscounts() {
-        return discounts;
-    }
-
-    public List<String> getProducts() {
-        return products;
     }
 }
