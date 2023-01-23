@@ -4,21 +4,49 @@ import commands.*;
 import discount.Discount;
 import discount.Discount_buy_1_get_30_percent_off;
 import discount.Discount_buy_3_get_1_free;
+import storage.Storage;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class CartCommandParser {
-    private static List<String> discounts;
-    private static List<String> products;
+    private final List<String> discounts;
+    private final List<String> products;
+    private final Map<Command, Pattern> commands;
+
+    Map<Command, Pattern> createComands() {
+        Map<Command, Pattern> commands = new HashMap<>();
+        final Pattern regexAdd = Pattern.compile("^(add) " +
+                                                 "(" + createRegExValues(getProducts()) + ")" +
+                                                 " ([0-9]+)");
+
+        final Pattern regexDiscount = Pattern.compile("^(discount)" +
+                                                      " (" + createRegExValues(getDiscounts()) + ")" +
+                                                      " (" + createRegExValues(getProducts()) + ")");
+
+        final Pattern regexRemove = Pattern.compile("^(remove) " +
+                                                    "(" + createRegExValues(getProducts()) + ")" +
+                                                    "([0-9]+)");
+
+        final Pattern regexFinish = Pattern.compile("(^finish$)");
+        final Pattern regexPrice = Pattern.compile("(^price$)");
+
+        commands.put(new CommandAdd(), regexAdd);
+        commands.put(new CommandDiscount(), regexDiscount);
+        commands.put(new CommandRemove(), regexRemove);
+        commands.put(new CommandFinish(), regexFinish);
+        commands.put(new CommandPrice(), regexPrice);
+        return commands;
+    }
 
     public CartCommandParser(Cart cart) {
+        discounts = List.of("buy_1_get_30_percentage", "buy_3_get_1_free");
         products = cart.getStorage().getProductNames(); // getting all names of products from storage
-        discounts = List.of("buy_1_get_30_percentage", "buy_3_get_1_free"); // discounts commands;
+        commands = createComands();
     }
 
     /*
@@ -30,19 +58,15 @@ public class CartCommandParser {
      * (group(2)) - in case 'add' it is a product name, in case 'discount' - name of discount
      * (group(3)) - in case 'add' it is product quantity, in case 'discount' - name of product
      */
-    public Optional<ParsedCommand> parse(String line) {
-        Optional<ParsedCommand> parsedCommandOptional = Optional.empty();
-        List<Command> commands = new ArrayList<>();
-        commands.add(new CommandAdd());
-        commands.add(new CommandDiscount());
-        commands.add(new CommandFinish());
-        commands.add(new CommandPrice());
-        commands.add(new CommandRemove());
-        for (Command currentCommand : commands) {
-            if (currentCommand.matches(line)) {
-                final Matcher matcher = currentCommand.getRegex().matcher(line);
+    public Optional<Command> parse(String line) {
+        Optional<Command> parsedCommandOptional = Optional.empty();
+        for (Map.Entry<Command, Pattern> currentCommand : commands.entrySet()) {
+            if (currentCommand.getValue().matcher(line).find()) {
+                final Matcher matcher = currentCommand.getValue().matcher(line);
                 List<String> arguments = getArgumentsWithMatcher(matcher);
-                return Optional.of(new ParsedCommand(currentCommand, arguments));
+                Command command = currentCommand.getKey();
+                command.setArguments(arguments);
+                return Optional.of(currentCommand.getKey());
             }
         }
         return parsedCommandOptional;
@@ -52,7 +76,9 @@ public class CartCommandParser {
         List<String> list = new ArrayList<>();
         if (matcher.find()) {
             int countGroup = matcher.groupCount();
-            list = IntStream.rangeClosed(1, countGroup).mapToObj(matcher::group).collect(Collectors.toList());
+            list = IntStream.rangeClosed(1, countGroup)
+                    .mapToObj(matcher::group)
+                    .collect(Collectors.toList());
         }
         return list;
     }
@@ -75,15 +101,15 @@ public class CartCommandParser {
      * For example: List.of("buy_1_get_30_percentage", "buy_3_get_1_free") ->
      * "buy_1_get_30_percentage|buy_3_get_1_free"
      */
-    public static String createRegExValues(List<String> values) {
+    public String createRegExValues(List<String> values) {
         return String.join("|", values);
     }
 
-    public static List<String> getDiscounts() {
+    public List<String> getDiscounts() {
         return discounts;
     }
 
-    public static List<String> getProducts() {
+    public List<String> getProducts() {
         return products;
     }
 }

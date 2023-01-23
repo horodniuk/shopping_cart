@@ -1,23 +1,24 @@
 package commands;
 
 import cart.Cart;
-import cart.CartCommandParser;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 
 import java.util.List;
-import java.util.regex.Pattern;
 
-import static cart.CartCommandParser.createRegExValues;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class CommandAdd extends Command {
 
     // Example: add bear 5, add cola 1, add soap 2
-    private final Pattern regex = (Pattern.compile("^(add) (" +
-            createRegExValues(CartCommandParser.getProducts()) + ") ([0-9]+)"));
+    private List<String> arguments;
 
-    public Boolean matches(String text) {
-        return regex.matcher(text).find();
+    public void setArguments(List<String> arguments) {
+        this.arguments = arguments;
     }
 
     public void execute(Cart cart, List<String> arguments) {

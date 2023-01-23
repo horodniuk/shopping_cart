@@ -2,7 +2,7 @@ package runner;
 
 import cart.Cart;
 import cart.CartCommandParser;
-import cart.ParsedCommand;
+
 import commands.*;
 
 import java.util.List;
@@ -27,11 +27,11 @@ public class TextModeExecute {
      */
     public void executeCommand(String line, Cart cart) {
         CartCommandParser cartCommandParser = new CartCommandParser(cart);
-        Optional<ParsedCommand> parsedCommandOptional = cartCommandParser.parse(line);
+        Optional<Command> parsedCommandOptional = cartCommandParser.parse(line);
         if (parsedCommandOptional.isEmpty())
             System.out.println("Unknown command, try again, for example \"add beer 5\"");
         else {
-            Command command = parsedCommandOptional.get().getCommand();
+            Command command = parsedCommandOptional.get();
             List<String> arguments = parsedCommandOptional.get().getArguments();
             command.execute(cart, arguments);
         }
