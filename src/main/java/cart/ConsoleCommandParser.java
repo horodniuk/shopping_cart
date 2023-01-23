@@ -12,32 +12,32 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ConsoleCommandParser {
-    private static List<Discount> discounts = new ArrayList<>();
-    private static List<String> products = new ArrayList<>();
-    private static Command addCommand = new AddCommand();
-    private static final Pattern addPattern = (Pattern.compile("^(add) (" + createRegExValues(products) + ") " +
-            "([0-9]+)"));
-    private static final Pattern discountPattern = (Pattern.compile("^(discount) (" +
-            createRegExValuesDiscounts(discounts) + ") (" + createRegExValues(products) + ")"));
-    private static final Pattern removePattern = (Pattern.compile("^(remove) (" + createRegExValues(products) + ")"
-            + " ([0-9]+)"));
-    private static final Pattern finishPattern = (Pattern.compile("(^finish$)"));
-    private static final Pattern pricePattern = (Pattern.compile("(^price$)"));
+    private List<Discount> discounts;
+    private List<String> products;
+    private Map<Command, Pattern> commandsMap;
 
 
-    private static Map<Command, Pattern> commands = new HashMap<>();
+    public ConsoleCommandParser(Cart cart) {
+        this.products = cart.getStorage().getProductNames(); // getting all names of products from storage
+        this.discounts = List.of(new Discount_buy_1_get_30_percent_off(), new Discount_buy_3_get_1_free()); //discounts commands;
+        this.commandsMap = fillCommandsMap();
+    }
 
-    static {
-        commands.put(addCommand, addPattern);
+    private Map<Command, Pattern> fillCommandsMap() {
+        Map<Command, Pattern> commands = new HashMap<>();
+        Pattern addPattern = (Pattern.compile("^(add) (" + createRegExValues(products) + ") " + "([0-9]+)"));
+        Pattern discountPattern = (Pattern.compile("^(discount) (" +
+                createRegExValuesDiscounts(discounts) + ") (" + createRegExValues(products) + ")"));
+        Pattern removePattern = (Pattern.compile("^(remove) (" + createRegExValues(products) + ")" + " ([0-9]+)"));
+        Pattern finishPattern = (Pattern.compile("(^finish$)"));
+        Pattern pricePattern = (Pattern.compile("(^price$)"));
+
+        commands.put(new AddCommand(), addPattern);
         commands.put(new DiscountCommand(), discountPattern);
         commands.put(new FinishCommand(), finishPattern);
         commands.put(new PriceCommand(), pricePattern);
         commands.put(new RemoveCommand(), removePattern);
-    }
-
-    public ConsoleCommandParser(Cart cart) {
-        products = cart.getStorage().getProductNames(); // getting all names of products from storage
-        discounts = List.of(new Discount_buy_1_get_30_percent_off(), new Discount_buy_3_get_1_free()); //discounts commands;
+        return commands;
     }
 
     /**
@@ -52,9 +52,9 @@ public class ConsoleCommandParser {
      */
     public Optional<Command> parse(String line) {
         Optional<Command> parsedCommandOptional = Optional.empty();
-        for (Command currentCommand : commands.keySet()) {
+        for (Command currentCommand : commandsMap.keySet()) {
             if (matches(line, currentCommand)) {
-                final Matcher matcher = commands.get(currentCommand).matcher(line);
+                final Matcher matcher = commandsMap.get(currentCommand).matcher(line);
                 currentCommand.receiveArguments(getArgumentsWithMatcher(matcher));
                 return Optional.of(currentCommand);
             }
@@ -98,11 +98,11 @@ public class ConsoleCommandParser {
      * For example: List.of("buy_1_get_30_percentage", "buy_3_get_1_free") ->
      * "buy_1_get_30_percentage|buy_3_get_1_free"
      */
-    private static String createRegExValues(List<String> values) {
+    private String createRegExValues(List<String> values) {
         return String.join("|", values);
     }
 
-    private static String createRegExValuesDiscounts(List<Discount> values) {
+    private String createRegExValuesDiscounts(List<Discount> values) {
         List<String> discountNames = new ArrayList<>();
         for (Discount discount : values) {
             discountNames.add(discount.getClass().getSimpleName().replace("Discount_", ""));
@@ -111,7 +111,7 @@ public class ConsoleCommandParser {
     }
 
     public Boolean matches(String text, Command command) {
-        return commands.get(command).matcher(text).find();
+        return commandsMap.get(command).matcher(text).find();
     }
 
     public List<Discount> getDiscounts() {
