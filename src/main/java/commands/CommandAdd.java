@@ -1,8 +1,10 @@
 package commands;
 
+import cart.Cart;
 import cart.CartCommandParser;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static cart.CartCommandParser.createRegExValues;
@@ -21,5 +23,9 @@ public class CommandAdd extends Command {
     //method which finds out if Pattern matches string
     public Boolean matches(String text) {
         return regex.matcher(text).find();
+    }
+
+    public void execute(Cart cart, List<String> arguments) {
+        cart.add(arguments.get(1), Integer.parseInt(arguments.get(2)));
     }
 }
