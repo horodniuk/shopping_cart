@@ -30,9 +30,6 @@ public class FileModeRunner implements ModeRunner {
         System.out.println("Starting File mode." + " Commands will be read from file\" " + pathToCommand);
         Cart cart = new Cart(new StorageWithJson(pathToStorage));
         TextExecute textExecute = new TextExecute();
-        System.out.println(pathToCommand.getPath());
-        System.out.println(pathToCommand);
-        System.out.println(new File(pathToCommand).exists());
         try (BufferedReader reader = new BufferedReader(new FileReader(new File(pathToCommand)))) {
             String line = reader.readLine();
             while (line != null) {
