@@ -6,7 +6,7 @@ import commands.*;
 
 import java.util.Optional;
 
-public class TextModeExecute {
+public class TextExecute {
 
     /**
      * Method description

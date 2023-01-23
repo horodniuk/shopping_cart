@@ -8,6 +8,7 @@ import java.util.Map;
 @ToString
 public class Discount_buy_1_get_30_percent_off implements Discount {
     private static final int DISCOUNT_PERCENT = 30;
+    private String discountName = "buy_1_get_30_percentage";
 
     /**
      * BUY_1_GET_30_PERCENT_OFF - type of discount in which customer gets 30% discount on each product.
@@ -19,5 +20,9 @@ public class Discount_buy_1_get_30_percent_off implements Discount {
         BigDecimal quantity = BigDecimal.valueOf(cart.get(productName).getQuantity());
         BigDecimal percent = new BigDecimal(DISCOUNT_PERCENT).movePointLeft(2);
         return pricePerOneProduct.multiply(quantity.multiply(percent));
+    }
+
+    public String getDiscountName() {
+        return discountName;
     }
 }
