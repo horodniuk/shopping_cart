@@ -38,8 +38,8 @@ public class CartCommandParser {
         commands.add(new CommandDiscount());
         commands.add(new CommandFinish());
         commands.add(new CommandPrice());
-        commands.add(new CommandRemoveSomeName());
         commands.add(new CommandRemove());
+        commands.add(new CommandRemoveSomeName());
         for (Command currentCommand : commands) {
             if (currentCommand.matches(line)) {
                 final Matcher matcher = currentCommand.getRegex().matcher(line);

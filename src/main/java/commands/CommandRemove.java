@@ -12,7 +12,7 @@ import static cart.CartCommandParser.createRegExValues;
 @Getter
 public class CommandRemove extends Command {
 
-    // Example: add bear 5, add cola 1, add soap 2
+    // Example: remove bear 5, remove cola 1, remove soap 2
     private final Pattern regex = (Pattern.compile("^(remove) (" +
             createRegExValues(CartCommandParser.getProducts()) + ") ([0-9]+)"));
 

@@ -49,12 +49,15 @@ public class Cart {
         }
     }
 
+    //Deletes all products of the given item in the shopping cart.
     public void removeProductSameName(String productName) {
-        if (isProductExistInCart(productName)) {
-            storage.addProduct(cartMap.get(productName), cartMap.get(productName).getQuantity());
-            removePrintToConsole(cartMap.get(productName).getQuantity(), productName);
-            cartMap.remove(productName);
-            price = updatePrice();
+        if (isProductExistInCart(productName)) {            //check the availability of the product by name
+            storage.addProduct(cartMap.get(productName), cartMap.get(productName).getQuantity());//return all products from the cart to storage
+            removePrintToConsole(cartMap.get(productName).getQuantity(), productName);//print to console remove
+            cartMap.remove(productName);                    //remove all product by name
+            price = updatePrice();                          //update price in cart
+        } else {
+            System.out.println("You don't have " + productName + " in cart. Please enter another Product.");//if product is absent.
         }
     }
 
@@ -133,6 +136,7 @@ public class Cart {
     private void addPrintToConsole(int quantity, String productName) {
         System.out.println(quantity + " " + productName + "(s) vas added");
     }
+
     // output data (if product is removed from cart) to the console according to the technical task
     private void removePrintToConsole(int quantity, String productName) {
         System.out.println(quantity + " " + productName + "(s) vas removed");

@@ -11,14 +11,15 @@ import static cart.CartCommandParser.createRegExValues;
 
 @Getter
 public class CommandRemoveSomeName extends Command {
-    private final Pattern regex = (Pattern.compile("^(remove) (" +
-            createRegExValues(CartCommandParser.getProducts()) + ")"));
+    // Example: remove bear, remove cola, remove soap
+    private final Pattern regex = Pattern.compile("^(remove) (" +
+            createRegExValues(CartCommandParser.getProducts()) + ")");
 
     public Boolean matches(String text) {
         return regex.matcher(text).find();
     }
 
     public void execute(Cart cart, List<String> arguments) {
-        cart.remove(arguments.get(1), Integer.parseInt(arguments.get(2)));
+        cart.removeProductSameName(arguments.get(1));
     }
 }
