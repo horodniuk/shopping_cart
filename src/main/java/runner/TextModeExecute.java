@@ -1,7 +1,7 @@
 package runner;
 
 import cart.Cart;
-import cart.CartCommandParser;
+import cart.ConsoleCommandParser;
 import commands.*;
 
 import java.util.Optional;
@@ -29,8 +29,8 @@ public class TextModeExecute {
      * case FinishCommand -> we finish the work of the program.
      */
     public void executeCommand(String line, Cart cart) {
-        CartCommandParser cartCommandParser = new CartCommandParser(cart);
-        Optional<Command> parsedCommandOptional = cartCommandParser.parse(line);
+        ConsoleCommandParser consoleCommandParser = new ConsoleCommandParser(cart);
+        Optional<Command> parsedCommandOptional = consoleCommandParser.parse(line);
         if (parsedCommandOptional.isEmpty())
             System.out.println("Unknown command, try again, for example \"add beer 5\"");
         else {

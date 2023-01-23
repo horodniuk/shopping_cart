@@ -11,26 +11,33 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class CartCommandParser {
-    private static List<String> discounts;
-    private static List<String> products;
-    private static final AddCommand addCommand = new AddCommand();
-    private static final DiscountCommand discountCommand = new DiscountCommand();
-    private static final FinishCommand finishCommand = new FinishCommand();
-    private static final PriceCommand priceCommand = new PriceCommand();
-    private static final RemoveCommand removeCommand = new RemoveCommand();
+public class ConsoleCommandParser {
+    private static List<Discount> discounts = new ArrayList<>();
+    private static List<String> products = new ArrayList<>();
+    private static Command addCommand = new AddCommand();
+    private static final Pattern addPattern = (Pattern.compile("^(add) (" + createRegExValues(products) + ") " +
+            "([0-9]+)"));
+    private static final Pattern discountPattern = (Pattern.compile("^(discount) (" +
+            createRegExValuesDiscounts(discounts) + ") (" + createRegExValues(products) + ")"));
+    private static final Pattern removePattern = (Pattern.compile("^(remove) (" + createRegExValues(products) + ")"
+            + " ([0-9]+)"));
+    private static final Pattern finishPattern = (Pattern.compile("(^finish$)"));
+    private static final Pattern pricePattern = (Pattern.compile("(^price$)"));
 
-    private static Map<Command, Pattern> commands = new HashMap<>() {{
-        commands.put(addCommand, addCommand.getRegex());
-        commands.put(discountCommand, discountCommand.getRegex());
-        commands.put(finishCommand, finishCommand.getRegex());
-        commands.put(priceCommand, priceCommand.getRegex());
-        commands.put(removeCommand, removeCommand.getRegex());
-    }};
 
-    public CartCommandParser(Cart cart) {
+    private static Map<Command, Pattern> commands = new HashMap<>();
+
+    static {
+        commands.put(addCommand, addPattern);
+        commands.put(new DiscountCommand(), discountPattern);
+        commands.put(new FinishCommand(), finishPattern);
+        commands.put(new PriceCommand(), pricePattern);
+        commands.put(new RemoveCommand(), removePattern);
+    }
+
+    public ConsoleCommandParser(Cart cart) {
         products = cart.getStorage().getProductNames(); // getting all names of products from storage
-        discounts = List.of("buy_1_get_30_percentage", "buy_3_get_1_free"); // discounts commands;
+        discounts = List.of(new Discount_buy_1_get_30_percent_off(), new Discount_buy_3_get_1_free()); //discounts commands;
     }
 
     /**
@@ -46,7 +53,7 @@ public class CartCommandParser {
     public Optional<Command> parse(String line) {
         Optional<Command> parsedCommandOptional = Optional.empty();
         for (Command currentCommand : commands.keySet()) {
-            if (currentCommand.matches(line)) {
+            if (matches(line, currentCommand)) {
                 final Matcher matcher = commands.get(currentCommand).matcher(line);
                 currentCommand.receiveArguments(getArgumentsWithMatcher(matcher));
                 return Optional.of(currentCommand);
@@ -86,11 +93,32 @@ public class CartCommandParser {
         }
     }
 
-    public static List<String> getDiscounts() {
+    /*
+     * from list converting to String, to apply in regular expression
+     * For example: List.of("buy_1_get_30_percentage", "buy_3_get_1_free") ->
+     * "buy_1_get_30_percentage|buy_3_get_1_free"
+     */
+    private static String createRegExValues(List<String> values) {
+        return String.join("|", values);
+    }
+
+    private static String createRegExValuesDiscounts(List<Discount> values) {
+        List<String> discountNames = new ArrayList<>();
+        for (Discount discount : values) {
+            discountNames.add(discount.getClass().getSimpleName().replace("Discount_", ""));
+        }
+        return String.join("|", discountNames);
+    }
+
+    public Boolean matches(String text, Command command) {
+        return commands.get(command).matcher(text).find();
+    }
+
+    public List<Discount> getDiscounts() {
         return discounts;
     }
 
-    public static List<String> getProducts() {
+    public List<String> getProducts() {
         return products;
     }
 }
