@@ -29,14 +29,14 @@ public class StorageWithJsonTest {
     @Test
     void testLoad_whenFileIsParsed() {
         //Arrange
-        String file = "src/test/resources/shopping_products_storage.json";
+        String file = "src/test/resources/storage.json";
         Product product = new Product(name, price, quantity);
         Map<String, Product> expectedMap = new HashMap<>();
         expectedMap.put(product.getName(), product);
         StorageWithJson storageWithJson = new StorageWithJson(file);
 
         //Act
-        Map<String, Product> actualMap = storageWithJson.load(file);
+        Map<String, Product> actualMap = storageWithJson.load();
         //Assert
         assertEquals(expectedMap.containsKey("bear"), actualMap.containsKey("bear"));
     }

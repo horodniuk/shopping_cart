@@ -1,25 +1,29 @@
-# Security Policy
+Thanks for helping make GitHub safe for everyone.
 
-This document outlines the Responsible Disclosure Program for Auth0
-open source software.
+## Security
 
-## Responsible Disclosure Policy
+GitHub takes the security of our software products and services seriously, including all of the open source code repositories managed through our GitHub organizations, such as [GitHub](https://github.com/GitHub).
 
-At Auth0 we take security seriously and consider it a top priority. Since a
-public disclosure of a security vulnerability could put the entire Auth0
-community at risk, we require that potential vulnerabilities are kept
-confidential until they are confirmed and fixed. We appreciate your efforts in
-keeping Auth0 and its users safe by responsibly disclosing any security
-vulnerability. Rest assured we will make every effort to acknowledge your
-contributions.
+## Reporting Security Issues
 
-## Reporting a vulnerability
+If you believe you have found a security vulnerability in any GitHub-owned repository, please report it to us through coordinated disclosure.
 
-Any security related issue should be reported to Auth0 via the form at the
-bottom of the [Responsible Disclosure Policy
-page](https://auth0.com/responsible-disclosure-policy/).
+**Please do not report security vulnerabilities through public GitHub issues, discussions, or pull requests.**
 
-If individuals prefer to directly communicate with the Auth0 security team,
-they are invited to send an email to security@auth0.com For encrypted
-communication, you can download our PGP key from
-[here](https://cdn.auth0.com/website/security/pgp/171A6588004C96B6A8E8A130B54BE3C0D18F0FE7.pub)
+Instead, please send an email to opensource-security[@]github.com.
+
+Please include as much of the information listed below as you can to help us better understand and resolve the issue:
+
+* The type of issue (e.g., buffer overflow, SQL injection, or cross-site scripting)
+* Full paths of source file(s) related to the manifestation of the issue
+* The location of the affected source code (tag/branch/commit or direct URL)
+* Any special configuration required to reproduce the issue
+* Step-by-step instructions to reproduce the issue
+* Proof-of-concept or exploit code (if possible)
+* Impact of the issue, including how an attacker might exploit the issue
+
+This information will help us triage your report more quickly.
+
+## Policy
+
+See [GitHub's Safe Harbor Policy](https://docs.github.com/en/site-policy/security-policies/github-bug-bounty-program-legal-safe-harbor)

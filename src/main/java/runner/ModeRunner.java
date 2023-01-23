@@ -1,6 +1,5 @@
 package runner;
 
-import cart.Cart;
 
 /*
  * Interface for working with different modes of data output to the console
@@ -13,6 +12,4 @@ import cart.Cart;
  */
 public interface ModeRunner {
     void start();
-
-    void executeCommand(String line, Cart cart);
 }

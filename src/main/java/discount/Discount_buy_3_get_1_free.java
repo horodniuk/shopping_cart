@@ -1,11 +1,13 @@
 package discount;
 
 import cart.Product;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.Map;
 
-public class Discount_BUY_3_GET_1_FREE implements Discount {
+@ToString
+public class Discount_buy_3_get_1_free implements Discount {
     private static final int NUMBER_ITERATION_FOR_DISCOUNT = 4;
 
     /**

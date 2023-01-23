@@ -1,11 +1,12 @@
 package discount;
 
 import cart.Product;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.Map;
-
-public class Discount_BUY_1_GET_30_PERCENT_OFF implements Discount {
+@ToString
+public class Discount_buy_1_get_30_percent_off implements Discount {
     private static final int DISCOUNT_PERCENT = 30;
 
     /**
