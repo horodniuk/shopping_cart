@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,13 +17,13 @@ import java.util.Map;
  * Realisation of storage with products based on json file
  */
 public class StorageWithJson implements Storage {
-    private String path;
-    private Map<String, Product> storageProducts;
+    private URI path;
+    private Map<String, Product> storageCache;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public StorageWithJson(String path) {
+    public StorageWithJson(URI path) {
         this.path = path;
-        this.storageProducts = load();
+        this.storageCache = load();
     }
 
     /*
@@ -32,7 +33,7 @@ public class StorageWithJson implements Storage {
      */
     @Override
     public Map<String, Product> load() {
-        File jsonFile = new File(path);
+        File jsonFile = new File(path.getPath());
         Map<String, Product> productMap = new LinkedHashMap<>();
         try {
             List<Product> productList = objectMapper.readValue(jsonFile, new TypeReference<>() {
@@ -55,7 +56,7 @@ public class StorageWithJson implements Storage {
 //        File jsonFile = new File(path);
         File jsonFile = new File("src/main/resources/test.json");
         try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, storageProducts.values());
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, storageCache.values());
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -63,12 +64,12 @@ public class StorageWithJson implements Storage {
 
     @Override
     public void addProduct(Product product, int quantity) {
-        storageProducts.get(product.getName()).setQuantity(getQuantity(product.getName()) + quantity);
+        storageCache.get(product.getName()).setQuantity(getQuantity(product.getName()) + quantity);
     }
 
     @Override
     public void removeProduct(String productName, int quantity) {
-        storageProducts.get(productName).setQuantity(getQuantity(productName) - quantity);
+        storageCache.get(productName).setQuantity(getQuantity(productName) - quantity);
     }
 
    /* @Override
@@ -97,23 +98,23 @@ public class StorageWithJson implements Storage {
      * get quantity product in storage
      */
     private int getQuantity(String productName) {
-        return storageProducts.get(productName).getQuantity();
+        return storageCache.get(productName).getQuantity();
     }
 
     @Override
     public List<String> getProductNames() {
-        return storageProducts.keySet().stream().toList();
+        return storageCache.keySet().stream().toList();
     }
 
     @Override
     public BigDecimal getProductPrice(String productName) {
-        return storageProducts.get(productName).getPrice();
+        return storageCache.get(productName).getPrice();
     }
 
     @Override
     public String toString() {
         return "StorageWithJson{" +
-                "storageProducts=" + storageProducts +
-                '}';
+               "storageProducts=" + storageCache +
+               '}';
     }
 }

@@ -2,23 +2,25 @@ package commands;
 
 import cart.Cart;
 import cart.CartCommandParser;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 
 import java.util.List;
-import java.util.regex.Pattern;
 
-import static cart.CartCommandParser.createRegExValues;
 
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class CommandDiscount extends Command {
 
     //Example: discount buy_1_get_30_percentage cola,  discount buy_3_get_1_free bear
-    private final Pattern regex = (Pattern.compile("^(discount) (" +
-            createRegExValues(CartCommandParser.getDiscounts()) + ") ("
-            + createRegExValues(CartCommandParser.getProducts()) + ")"));
+    private List<String> arguments;
 
-    public Boolean matches(String text) {
-        return regex.matcher(text).find();
+    public void setArguments(List<String> arguments) {
+        this.arguments = arguments;
     }
 
     public void execute(Cart cart, List<String> arguments) {

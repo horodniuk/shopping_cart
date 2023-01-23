@@ -2,22 +2,24 @@ package commands;
 
 import cart.Cart;
 import cart.CartCommandParser;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static cart.CartCommandParser.createRegExValues;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
+
 public class CommandRemove extends Command {
+    private List<String> arguments;
 
-    // Example: add bear 5, add cola 1, add soap 2
-    private final Pattern regex = (Pattern.compile("^(remove) (" +
-            createRegExValues(CartCommandParser.getProducts()) + ") ([0-9]+)"));
-
-    public Boolean matches(String text) {
-        return regex.matcher(text).find();
+    public void setArguments(List<String> arguments) {
+        this.arguments = arguments;
     }
 
     public void execute(Cart cart, List<String> arguments) {
