@@ -114,7 +114,7 @@ public class StorageWithJson implements Storage {
     @Override
     public String toString() {
         return "StorageWithJson{" +
-               "storageProducts=" + storageCache +
-               '}';
+                "storageCache=" + storageCache +
+                '}';
     }
 }

@@ -16,4 +16,8 @@ public interface Discount {
      * cart - cart with products;
      */
     BigDecimal getDiscount(String productName, Map<String, Product> cart);
+
+    String getDiscountName();
 }
+
+
