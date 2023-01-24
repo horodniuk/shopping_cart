@@ -1,8 +1,5 @@
 package cart;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import discount.Discount;
 import storage.Storage;
 
