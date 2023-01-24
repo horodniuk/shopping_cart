@@ -69,21 +69,23 @@ public class Cart {
      * method reduceProductAndDiscount() - we reduce quantity of product in storage, and update total price
      * and total discount.
      */
-    public void remove(String productName, int quantity) {
-        if (cartMap.containsKey(productName)) {
+    public void remove(String productName, int neededQuantity) {
+        boolean isProductInCart = cartMap.containsKey(productName);
+        if (isProductInCart) {
+            List<ProductQuantityState> productQuantityStates = new ArrayList<>();
+            productQuantityStates.add(new ProductQuantityStateEquals());
+            productQuantityStates.add(new ProductQuantityStateSmaller());
+            productQuantityStates.add(new ProductQuantityStateMore());
             int quantityInCart = cartMap.get(productName).getQuantity();
-            if (quantityInCart == quantity) {
-                deleteProductAndDiscount(productName, quantity);
-            } else if (quantityInCart > quantity) {
-                reduceProductAndDiscount(productName, quantity);
-            } else {
-                System.out.printf("Cart doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
-                        productName, quantity, quantityInCart);
+            for (ProductQuantityState productState : productQuantityStates) {
+                if (productState.checkProductQuantity(quantityInCart,neededQuantity)){
+                    productState.invokeAction(productName,quantityInCart,neededQuantity,this);
+                }
             }
         } else System.out.println("You don't have " + productName + " in cart. Please enter another Product.");
     }
 
-    private void deleteProductAndDiscount(String productName, int quantity) {
+    public void deleteProductAndDiscount(String productName, int quantity) {
         if (discountMap.containsKey(productName)) {
             discount = discount.subtract(discountMap.get(productName).getDiscount(productName, cartMap));
             discountMap.remove(productName);
@@ -95,7 +97,7 @@ public class Cart {
         price = updatePrice();
     }
 
-    private void reduceProductAndDiscount(String productName, int quantity) {
+    public void reduceProductAndDiscount(String productName, int quantity) {
         Product tempProduct = cartMap.get(productName);
         if (discountMap.containsKey(productName)) {
             Discount tempDiscount = discountMap.get(productName);
