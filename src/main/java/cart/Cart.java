@@ -148,7 +148,7 @@ public class Cart {
         try {
             storage.write();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Unable to write file!");
         }
         System.out.println("Done!");
     }

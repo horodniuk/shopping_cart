@@ -25,17 +25,16 @@ public class InteractiveModeRunner implements ModeRunner {
         System.out.println("Starting Interactive mode.");
         showTooltipWithCommands();
         System.out.println("Enter the command in console:");
-        Cart cart = null;
         try {
-            cart = new Cart(new StorageWithJson(pathToStorage));
+            Cart cart = new Cart(new StorageWithJson(pathToStorage));
+            TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
+            while (true) {
+                String line = new Scanner(System.in).nextLine();
+                textCommandExecutor.executeCommand(line, cart);
+                if (line.equals("finish")) return;
+            }
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-        TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
-        while (true) {
-            String line = new Scanner(System.in).nextLine();
-            textCommandExecutor.executeCommand(line, cart);
-            if (line.equals("finish")) return;
+            throw new RuntimeException("Unable to read file!");
         }
     }
 
