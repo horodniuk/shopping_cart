@@ -9,6 +9,6 @@ public class ProductQuantityStateEquals extends ProductQuantityState {
 
     @Override
     public void invokeAction(String productName, int quantityInCart, int neededQuantity, Cart cart) {
-        cart.deleteProductAndDiscount(productName, neededQuantity);
+        cart.deleteProduct(productName, neededQuantity);
     }
 }

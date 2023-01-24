@@ -84,7 +84,7 @@ public class Cart {
         } else System.out.println("You don't have " + productName + " in cart. Please enter another Product.");
     }
 
-    public void deleteProductAndDiscount(String productName, int quantity) {
+    public void deleteProduct(String productName, int quantity) {
         if (discountMap.containsKey(productName)) {
             discount = discount.subtract(discountMap.get(productName).getDiscount(productName, cartMap));
             discountMap.remove(productName);
@@ -96,23 +96,27 @@ public class Cart {
         price = updatePrice();
     }
 
-    public void reduceProductAndDiscount(String productName, int quantity) {
+    public void reduceProductQuantity(String productName, int quantity) {
         Product tempProduct = cartMap.get(productName);
         if (discountMap.containsKey(productName)) {
-            Discount tempDiscount = discountMap.get(productName);
-            BigDecimal discountProductValue = tempDiscount.getDiscount(productName, cartMap).setScale(2);
-            changeQuantity(productName, quantity);
-            discount = discount.subtract(discountProductValue).add(tempDiscount.getDiscount(productName, cartMap)).
-                    setScale(2);
-            discountMap.put(productName, tempDiscount);
-            System.out.printf("discount changed. Details: apply %s by  %s. Discount value - %s $ %n",
-                    tempDiscount.getClass().getSimpleName(), productName, discountProductValue);
+            changeQuantityAndDiscount(productName, quantity);
         } else {
             changeQuantity(productName, quantity);
         }
         storage.addProduct(tempProduct, quantity);
         price = updatePrice();
         removePrintToConsole(quantity, productName);
+    }
+
+    private void changeQuantityAndDiscount(String productName, int quantity) {
+        Discount tempDiscount = discountMap.get(productName);
+        BigDecimal discountProductValue = tempDiscount.getDiscount(productName, cartMap).setScale(2);
+        changeQuantity(productName, quantity);
+        discount = discount.subtract(discountProductValue).add(tempDiscount.getDiscount(productName, cartMap)).
+                setScale(2);
+        discountMap.put(productName, tempDiscount);
+        System.out.printf("discount changed. Details: apply %s by  %s. Discount value - %s $ %n",
+                tempDiscount.getClass().getSimpleName(), productName, discountProductValue);
     }
 
     private void changeQuantity(String productName, int quantity) {

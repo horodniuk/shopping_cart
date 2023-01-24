@@ -9,6 +9,6 @@ public class ProductQuantityStateMore extends ProductQuantityState {
 
     @Override
     public void invokeAction(String productName, int quantityInCart, int neededQuantity, Cart cart) {
-        cart.reduceProductAndDiscount(productName, neededQuantity);
+        cart.reduceProductQuantity(productName, neededQuantity);
     }
 }
