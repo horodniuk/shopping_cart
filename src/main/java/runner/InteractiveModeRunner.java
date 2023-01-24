@@ -3,6 +3,7 @@ package runner;
 import cart.Cart;
 import storage.StorageWithJson;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.Scanner;
 
@@ -24,7 +25,12 @@ public class InteractiveModeRunner implements ModeRunner {
         System.out.println("Starting Interactive mode.");
         showTooltipWithCommands();
         System.out.println("Enter the command in console:");
-        Cart cart = new Cart(new StorageWithJson(pathToStorage));
+        Cart cart = null;
+        try {
+            cart = new Cart(new StorageWithJson(pathToStorage));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
         while (true) {
             String line = new Scanner(System.in).nextLine();

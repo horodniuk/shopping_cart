@@ -2,6 +2,7 @@ package storage;
 
 import cart.Product;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,9 @@ import java.util.Map;
  * Method getProductPrice() - returns the price of the product from storage map;
  */
 public interface Storage {
-    Map<String, Product> load();
+    Map<String, Product> load() throws IOException;
 
-    void write();
+    void write() throws IOException;
 
     void addProduct(Product product, int quantity);
 

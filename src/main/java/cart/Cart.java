@@ -3,6 +3,7 @@ package cart;
 import discount.Discount;
 import storage.Storage;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -140,7 +141,11 @@ public class Cart {
      * finishes work and writes changes in StorageMap to Storage file or DataBase
      */
     public void finish() {
-        storage.write();
+        try {
+            storage.write();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         System.out.println("Done!");
     }
 
