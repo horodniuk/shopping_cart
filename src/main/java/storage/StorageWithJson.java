@@ -21,7 +21,7 @@ public class StorageWithJson implements Storage {
     private Map<String, Product> storageCache;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public StorageWithJson(URI path) {
+    public StorageWithJson(URI path) throws IOException {
         this.path = path;
         this.storageCache = load();
     }
@@ -32,16 +32,12 @@ public class StorageWithJson implements Storage {
      * source root --> storage.json
      */
     @Override
-    public Map<String, Product> load() {
+    public Map<String, Product> load() throws IOException {
         File jsonFile = new File(path.getPath());
         Map<String, Product> productMap = new LinkedHashMap<>();
-        try {
-            List<Product> productList = objectMapper.readValue(jsonFile, new TypeReference<>() {
-            });
-            productList.forEach(product -> productMap.put(product.getName(), product));
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+        List<Product> productList = objectMapper.readValue(jsonFile, new TypeReference<>() {
+        });
+        productList.forEach(product -> productMap.put(product.getName(), product));
         return productMap;
     }
 
@@ -52,14 +48,11 @@ public class StorageWithJson implements Storage {
      * source root --> storage.json
      */
     @Override
-    public void write() {
+    public void write() throws IOException {
 //        File jsonFile = new File(path);
         File jsonFile = new File("src/main/resources/test.json");
-        try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, storageCache.values());
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, storageCache.values());
+
     }
 
     @Override

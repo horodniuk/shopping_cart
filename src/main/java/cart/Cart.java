@@ -3,6 +3,7 @@ package cart;
 import discount.Discount;
 import storage.Storage;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -48,7 +49,6 @@ public class Cart {
             price = updatePrice();
         }
     }
-
 
 
     /*
@@ -140,7 +140,11 @@ public class Cart {
      * finishes work and writes changes in StorageMap to Storage file or DataBase
      */
     public void finish() {
-        storage.write();
+        try {
+            storage.write();
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to write file!");
+        }
         System.out.println("Done!");
     }
 
@@ -177,7 +181,8 @@ public class Cart {
                 System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
                         discountType.getClass().getSimpleName(), productName, discountProductValue);
             }
-        }
+        } else System.out.println("Product " + productName + " doesn't exist in cart. " +
+                "Therefore discount cannot be applied.");
     }
 
     /**
@@ -197,6 +202,7 @@ public class Cart {
         }
         return discount.add(discountProductValue).setScale(2);
     }
+
     /**
      * updating total price of products in cart
      */
@@ -213,13 +219,7 @@ public class Cart {
      */
 
     private boolean isProductExistInCart(String productName) {
-        if (!cartMap.isEmpty() && cartMap.containsKey(productName)){
-            return true;
-        } else {
-            System.out.println("Product " + productName + " doesn't exist in cart. " +
-                               "Therefore discount cannot be applied.");
-            return false;
-        }
+        return !cartMap.isEmpty() && cartMap.containsKey(productName);
     }
 
 

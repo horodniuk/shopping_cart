@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Objects;
 
 /**
  * Reading commands line by line from file and if such commands exist -
@@ -28,18 +29,18 @@ public class FileModeRunner implements ModeRunner {
     @Override
     public void start() {
         System.out.println("Starting File mode." + " Commands will be read from file\" " + pathToCommand);
-        Cart cart = new Cart(new StorageWithJson(pathToStorage));
         TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
         try (BufferedReader reader = new BufferedReader(new FileReader(new File(pathToCommand)))) {
+            Cart cart = new Cart(new StorageWithJson(pathToStorage));
             String line = reader.readLine();
             while (line != null) {
                 if (line.length() > 0) textCommandExecutor.executeCommand(line, cart);
                 line = reader.readLine();
             }
+            cart.finish();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Unable to read file!");
         }
-        cart.finish();
     }
 
     public URI getPathToCommand() {

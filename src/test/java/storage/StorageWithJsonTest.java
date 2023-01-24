@@ -4,6 +4,7 @@ import cart.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class StorageWithJsonTest {
 
 
     @Test
-    void testLoad_whenFileIsParsed() {
+    void testLoad_whenFileIsParsed() throws IOException {
         //Arrange
         URI file = URI.create("src/test/resources/storage.json");
         Product product = new Product(name, price, quantity);

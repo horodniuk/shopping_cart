@@ -3,6 +3,7 @@ package runner;
 import cart.Cart;
 import storage.StorageWithJson;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.Scanner;
 
@@ -24,12 +25,16 @@ public class InteractiveModeRunner implements ModeRunner {
         System.out.println("Starting Interactive mode.");
         showTooltipWithCommands();
         System.out.println("Enter the command in console:");
-        Cart cart = new Cart(new StorageWithJson(pathToStorage));
-        TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
-        while (true) {
-            String line = new Scanner(System.in).nextLine();
-            textCommandExecutor.executeCommand(line, cart);
-            if (line.equals("finish")) return;
+        try {
+            Cart cart = new Cart(new StorageWithJson(pathToStorage));
+            TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
+            while (true) {
+                String line = new Scanner(System.in).nextLine();
+                textCommandExecutor.executeCommand(line, cart);
+                if (line.equals("finish")) return;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to read file!");
         }
     }
 
