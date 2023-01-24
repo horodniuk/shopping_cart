@@ -51,7 +51,6 @@ public class Cart {
     }
 
 
-
     /*
      * Method description - it should remove products from cart
      * method parameters - name of product, and it's quantity
@@ -182,7 +181,8 @@ public class Cart {
                 System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
                         discountType.getClass().getSimpleName(), productName, discountProductValue);
             }
-        }
+        } else System.out.println("Product " + productName + " doesn't exist in cart. " +
+                "Therefore discount cannot be applied.");
     }
 
     /**
@@ -202,6 +202,7 @@ public class Cart {
         }
         return discount.add(discountProductValue).setScale(2);
     }
+
     /**
      * updating total price of products in cart
      */
@@ -218,13 +219,7 @@ public class Cart {
      */
 
     private boolean isProductExistInCart(String productName) {
-        if (!cartMap.isEmpty() && cartMap.containsKey(productName)){
-            return true;
-        } else {
-            System.out.println("Product " + productName + " doesn't exist in cart. " +
-                               "Therefore discount cannot be applied.");
-            return false;
-        }
+        return !cartMap.isEmpty() && cartMap.containsKey(productName);
     }
 
 
