@@ -70,8 +70,7 @@ public class Cart {
      * and total discount.
      */
     public void remove(String productName, int neededQuantity) {
-        boolean isProductInCart = cartMap.containsKey(productName);
-        if (isProductInCart) {
+        if (isProductExistInCart(productName)) {
             List<ProductQuantityState> productQuantityStates = new ArrayList<>();
             productQuantityStates.add(new ProductQuantityStateEquals());
             productQuantityStates.add(new ProductQuantityStateSmaller());
