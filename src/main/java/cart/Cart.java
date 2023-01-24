@@ -143,7 +143,7 @@ public class Cart {
         try {
             storage.write();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         System.out.println("Done!");
     }
