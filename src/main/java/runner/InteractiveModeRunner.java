@@ -29,7 +29,7 @@ public class InteractiveModeRunner implements ModeRunner {
         try {
             cart = new Cart(new StorageWithJson(pathToStorage));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Unable to read file!");
         }
         TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
         while (true) {

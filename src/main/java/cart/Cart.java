@@ -1,5 +1,8 @@
 package cart;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import discount.Discount;
 import storage.Storage;
 
@@ -143,7 +146,7 @@ public class Cart {
         try {
             storage.write();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException();
         }
         System.out.println("Done!");
     }
