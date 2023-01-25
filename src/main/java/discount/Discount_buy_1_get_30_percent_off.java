@@ -17,9 +17,9 @@ public class Discount_buy_1_get_30_percent_off implements Discount {
      * formula -> discount = product quantity * product price * 0.30
      */
     @Override
-    public BigDecimal getDiscount(String productName, Map<String, Product> cart) {
-        BigDecimal pricePerOneProduct = cart.get(productName).getPrice();
-        BigDecimal quantity = BigDecimal.valueOf(cart.get(productName).getQuantity());
+    public BigDecimal getDiscount(Product product, Map<Product, Integer> cart) {
+        BigDecimal pricePerOneProduct = product.getPrice();
+        BigDecimal quantity = BigDecimal.valueOf(cart.get(product));
         BigDecimal percent = new BigDecimal(DISCOUNT_PERCENT).movePointLeft(2);
         return pricePerOneProduct.multiply(quantity.multiply(percent));
     }

@@ -15,6 +15,6 @@ public class RemoveCommand extends Command {
     }
 
     public void execute(Cart cart) {
-        cart.remove(productName, quantity);
+     //   cart.remove(productName, quantity);
     }
 }

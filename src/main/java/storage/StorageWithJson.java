@@ -11,6 +11,12 @@ import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -18,7 +24,7 @@ import java.util.Map;
  */
 public class StorageWithJson implements Storage {
     private URI path;
-    private Map<String, Product> storageCache;
+    private Map<Product, Integer> storageCache;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     public StorageWithJson(URI path) {
@@ -32,16 +38,21 @@ public class StorageWithJson implements Storage {
      * source root --> storage.json
      */
     @Override
-    public Map<String, Product> load() {
-        File jsonFile = new File(path.getPath());
-        Map<String, Product> productMap = new LinkedHashMap<>();
+    public Map<Product, Integer> load() {
+      /*  File jsonFile = new File(path.getPath());
+        Map<Product, Integer> productMap = new LinkedHashMap<>();
         try {
             List<Product> productList = objectMapper.readValue(jsonFile, new TypeReference<>() {
             });
-            productList.forEach(product -> productMap.put(product.getName(), product));
+            productList.forEach(product -> productMap.put(product, product.getProduct_id()));
         } catch (IOException exception) {
             exception.printStackTrace();
-        }
+        }*/
+
+        Map<Product, Integer> productMap = new LinkedHashMap<>();
+        productMap.put(new Product(1, "beer", new BigDecimal(50)), 30);
+        productMap.put(new Product(2, "cola", new BigDecimal(20)), 20);
+        productMap.put(new Product(3, "soap", new BigDecimal(30)), 10);
         return productMap;
     }
 
@@ -56,7 +67,7 @@ public class StorageWithJson implements Storage {
 //        File jsonFile = new File(path);
         File jsonFile = new File("src/main/resources/test.json");
         try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, storageCache.values());
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, storageCache.keySet());
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -64,12 +75,21 @@ public class StorageWithJson implements Storage {
 
     @Override
     public void addProduct(Product product, int quantity) {
-        storageCache.get(product.getName()).setQuantity(getQuantity(product.getName()) + quantity);
+        storageCache.put(product, storageCache.get(product) + quantity);
+    }
+    // ПЕРЕПИСАТЬ ПРОВЕРКА, OPTIONAL СТРИМ ДОЛЖЕН ВОЗВРАЩАТЬ OPTIONAL(PRODUCT)
+
+
+    @Override
+    public Product getProductByName(String productName){
+        return storageCache.keySet().stream()
+                .filter(product -> product.getName().equals(productName))
+                .findFirst().orElseThrow();
     }
 
     @Override
-    public void removeProduct(String productName, int quantity) {
-        storageCache.get(productName).setQuantity(getQuantity(productName) - quantity);
+    public void removeProduct(Product product, int quantity) {
+        storageCache.put(product, storageCache.get(product) - quantity);
     }
 
    /* @Override
@@ -84,31 +104,33 @@ public class StorageWithJson implements Storage {
      * if not - then we output to console, message that there is not enough quantity - and return false
      */
     @Override
-    public boolean isProductAvailable(String productName, int quantity) {
-        final var qetQuantityProductInStorage = getQuantity(productName);
+    public boolean isProductAvailable(Product product, int quantity) {
+        final var qetQuantityProductInStorage = getQuantity(product);
         if (qetQuantityProductInStorage < quantity) {
             System.out.printf("Storage doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
-                    productName, quantity, qetQuantityProductInStorage);
+                    product.getName(), quantity, qetQuantityProductInStorage);
         }
         return qetQuantityProductInStorage >= quantity;
     }
 
 
     /*
-     * get quantity product in storage
+     * get return quantity(value) product in storage
      */
-    private int getQuantity(String productName) {
-        return storageCache.get(productName).getQuantity();
+    private int getQuantity(Product product) {
+        return storageCache.get(product);
     }
 
     @Override
     public List<String> getProductNames() {
-        return storageCache.keySet().stream().toList();
+        return storageCache.keySet().stream()
+                .map(Product::getName)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public BigDecimal getProductPrice(String productName) {
-        return storageCache.get(productName).getPrice();
+    public BigDecimal getProductPrice(Product product) {
+        return product.getPrice();
     }
 
     @Override

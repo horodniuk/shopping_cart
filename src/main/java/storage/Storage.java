@@ -20,17 +20,19 @@ import java.util.Map;
  * Method getProductPrice() - returns the price of the product from storage map;
  */
 public interface Storage {
-    Map<String, Product> load();
+    Map<Product, Integer> load();
 
     void write();
 
     void addProduct(Product product, int quantity);
 
-    void removeProduct(String productName, int quantity);
+    void removeProduct(Product product, int quantity);
 
     List<String> getProductNames();
 
-    BigDecimal getProductPrice(String productName);
+    BigDecimal getProductPrice(Product product);
 
-    boolean isProductAvailable(String productName, int quantity);
+    boolean isProductAvailable(Product product, int quantity);
+
+    Product getProductByName(String productName);
 }

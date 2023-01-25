@@ -8,8 +8,8 @@ import java.util.*;
 
 public class Cart {
     private Storage storage; // Storage containing map of products
-    private Map<String, Product> cartMap;         // map of products, which are added in the cart
-    private Map<String, Discount> discountMap;    // map of discount types, which are applied on products in Cart
+    private Map<Product, Integer> cartMap;         // map of products, which are added in the cart
+    private Map<Product, Discount> discountMap;    // map of discount types, which are applied on products in Cart
     private BigDecimal price = new BigDecimal(00.00).setScale(2); // total price of products (including discount)
     private BigDecimal discount = new BigDecimal(00.00).setScale(2); // total amount of discount on products in cart
 
@@ -36,15 +36,13 @@ public class Cart {
      * method updatePrice() - we update price (total price of all products in cart)
      */
     public void add(String productName, int quantity) {
-        if (storage.isProductAvailable(productName, quantity)) {
-            BigDecimal tempPrice = storage.getProductPrice(productName);
-            cartMap.compute(productName, (key, product) ->
-                    (isProductExistInCart(productName) ?
-                            new Product(productName, tempPrice, cartMap.get(productName).getQuantity()
-                                    + quantity) :
-                            new Product(productName, tempPrice, quantity)));
-            addPrintToConsole(quantity, productName);
-            storage.removeProduct(productName, quantity);
+        Product product = storage.getProductByName(productName);
+        if (storage.isProductAvailable(product, quantity)) {
+           // ??? BigDecimal tempPrice = storage.getProductPrice(product);
+            cartMap.compute(product, (key, value) -> (isProductExistInCart(product) ?
+                    value + quantity : value));
+            addPrintToConsole(quantity, product);
+            storage.removeProduct(product, quantity);
             price = updatePrice();
         }
     }
@@ -69,7 +67,7 @@ public class Cart {
      * method reduceProductAndDiscount() - we reduce quantity of product in storage, and update total price
      * and total discount.
      */
-    public void remove(String productName, int quantity) {
+/*    public void remove(String productName, int quantity) {
         if (cartMap.containsKey(productName)) {
             int quantityInCart = cartMap.get(productName).getQuantity();
             if (quantityInCart == quantity) {
@@ -116,17 +114,17 @@ public class Cart {
 
     private void changeQuantity(String productName, int quantity) {
         cartMap.get(productName).setQuantity(cartMap.get(productName).getQuantity() - quantity);
-    }
+    }*/
 
     // output data (if product is added in cart) to the console according to the technical task
-    private void addPrintToConsole(int quantity, String productName) {
-        System.out.println(quantity + " " + productName + "(s) vas added");
+    private void addPrintToConsole(int quantity, Product product) {
+        System.out.println(quantity + " " + product.getName() + "(s) vas added");
     }
 
     // output data (if product is removed from cart) to the console according to the technical task
-    private void removePrintToConsole(int quantity, String productName) {
+ /*   private void removePrintToConsole(int quantity, productName) {
         System.out.println(quantity + " " + productName + "(s) vas removed");
-    }
+    }*/
 
     /**
      * data output to console in next format: discount:00.00,price:XX.50
@@ -148,12 +146,10 @@ public class Cart {
      * total price of products without discounts
      */
     public BigDecimal totalPriceWithoutDiscount() {
-        List<Product> list = new ArrayList<>(cartMap.values());
-        var sum = BigDecimal.ZERO;
-        for (Product product : list) {
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(product.getQuantity())));
-        }
-        return sum.setScale(2);
+        Integer sum =  cartMap.entrySet().stream()
+                .mapToInt(product -> product.getKey().getPrice().multiply(new BigDecimal(product.getValue())).intValue())
+                .sum();
+        return new BigDecimal(sum).setScale(2);
     }
 
     /*
@@ -168,14 +164,15 @@ public class Cart {
      * output to console - discount added
      */
     public void applyDiscount(Discount discountType, String productName) {
-        if (isProductExistInCart(productName)) {
-            BigDecimal discountProductValue = discountType.getDiscount(productName, cartMap).setScale(2);
+        Product product = storage.getProductByName(productName);
+        if (isProductExistInCart(product)) {
+            BigDecimal discountProductValue = discountType.getDiscount(product, cartMap).setScale(2);
             if (discountProductValue.intValue() != 0) {
-                discount = updateDiscount(productName, discountProductValue);
+                discount = updateDiscount(product, discountProductValue);
                 price = updatePrice();
-                discountMap.put(productName, discountType);
+                discountMap.put(product, discountType);
                 System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
-                        discountType.getClass().getSimpleName(), productName, discountProductValue);
+                        discountType.getClass().getSimpleName(), product, discountProductValue);
             }
         }
     }
@@ -190,9 +187,9 @@ public class Cart {
      * then we must apply only the last one.
      * return - we add discount on this product to total discount on all products.
      */
-    private BigDecimal updateDiscount(String productName, BigDecimal discountProductValue) {
-        if (discountMap.containsKey(productName)) {
-            BigDecimal oldDiscountValueProduct = discountMap.get(productName).getDiscount(productName, cartMap);
+    private BigDecimal updateDiscount(Product product, BigDecimal discountProductValue) {
+        if (discountMap.containsKey(product)) {
+            BigDecimal oldDiscountValueProduct = discountMap.get(product).getDiscount(product, cartMap);
             discount = discount.subtract(oldDiscountValueProduct);
         }
         return discount.add(discountProductValue).setScale(2);
@@ -212,11 +209,11 @@ public class Cart {
      * If exists then we return true.
      */
 
-    private boolean isProductExistInCart(String productName) {
-        if (!cartMap.isEmpty() && cartMap.containsKey(productName)){
+    private boolean isProductExistInCart(Product product) {
+        if (!cartMap.isEmpty() && cartMap.containsKey(product)){
             return true;
         } else {
-            System.out.println("Product " + productName + " doesn't exist in cart. " +
+            System.out.println("Product " + product.getName() + " doesn't exist in cart. " +
                                "Therefore discount cannot be applied.");
             return false;
         }
@@ -227,20 +224,8 @@ public class Cart {
         return storage;
     }
 
-    public Map<String, Product> getCartMap() {
-        return cartMap;
-    }
-
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public BigDecimal getDiscount() {
-        return discount;
-    }
-
-    public Map<String, Discount> getDiscountMap() {
-        return discountMap;
     }
 
     @Override

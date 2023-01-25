@@ -102,7 +102,9 @@ public class ConsoleCommandParser {
         List<String> list = new ArrayList<>();
         if (matcher.find()) {
             int countGroup = matcher.groupCount();
-            list = IntStream.rangeClosed(1, countGroup).mapToObj(matcher::group).collect(Collectors.toList());
+            list = IntStream.rangeClosed(1, countGroup)
+                    .mapToObj(matcher::group)
+                    .collect(Collectors.toList());
         }
         return list;
     }

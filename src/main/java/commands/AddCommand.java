@@ -1,21 +1,22 @@
 package commands;
 
 import cart.Cart;
+import cart.Product;
 
 import java.util.List;
 
 public class AddCommand extends Command {
 
-    private String productName;
+    private String product;
     private int quantity;
 
     public void receiveArguments(List<String> newArguments) {
-        productName = newArguments.get(1);
+        product = newArguments.get(1);
         quantity = Integer.parseInt(newArguments.get(2));
     }
 
     public void execute(Cart cart) {
-        cart.add(productName, quantity);
+        cart.add(product, quantity);
     }
 
 }
