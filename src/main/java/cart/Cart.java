@@ -40,7 +40,7 @@ public class Cart {
         Product product = storage.getProductByName(productName);
         if (storage.isProductAvailable(product, quantity)) {
             cartMap.put(product, isProductExistInCart(product) ? cartMap.get(product) + quantity : quantity);
-            addPrintToConsole(quantity, product);
+            addPrintToConsole(product, quantity);
             storage.removeProduct(product, quantity);
             price = updatePrice();
         }
@@ -68,64 +68,72 @@ public class Cart {
      * method reduceProductAndDiscount() - we reduce quantity of product in storage, and update total price
      * and total discount.
      */
-/*    public void remove(String productName, int quantity) {
-        if (cartMap.containsKey(productName)) {
-            int quantityInCart = cartMap.get(productName).getQuantity();
-            if (quantityInCart == quantity) {
-                deleteProductAndDiscount(productName, quantity);
-            } else if (quantityInCart > quantity) {
-                reduceProductAndDiscount(productName, quantity);
-            } else {
-                System.out.printf("Cart doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
-                        productName, quantity, quantityInCart);
-            }
-        } else System.out.println("You don't have " + productName + " in cart. Please enter another Product.");
+
+
+    public void remove(String productName, int quantity) {
+        Product product = storage.getProductByName(productName);
+        if (isProductExistInCart(product)) {
+            int quantityProductInCart = cartMap.get(product);
+            remove(product, quantity, quantityProductInCart);
+        } else System.out.println("You don't have " + product + " in cart. Please enter another Product.");
     }
 
-    private void deleteProductAndDiscount(String productName, int quantity) {
-        if (discountMap.containsKey(productName)) {
-            discount = discount.subtract(discountMap.get(productName).getDiscount(productName, cartMap));
-            discountMap.remove(productName);
+    private void remove(Product product, int quantity, int quantityInCart) {
+        if (quantityInCart > quantity) reduceProductAndDiscount(product, quantity);
+        else if (quantityInCart == quantity) deleteProductAndDiscount(product, quantity);
+        else System.out.printf("Cart doesn't contain %s " +
+           "in quantity %d right now there is only next quantity: %d%n", product, quantity, quantityInCart);
+    }
+
+
+
+    private void deleteProductAndDiscount(Product product, int quantity) {
+        if (discountMap.containsKey(product)) {
+            Discount tempDiscount = discountMap.get(product);
+            discount = discount.subtract(tempDiscount.getDiscount(product, cartMap));
+            discountMap.remove(product);
         }
-        Product tempProduct = cartMap.get(productName);
-        removePrintToConsole(quantity, productName);
-        cartMap.remove(productName);
-        storage.addProduct(tempProduct, quantity);
+        cartMap.remove(product);
+
+        storage.addProduct(product, quantity);
         price = updatePrice();
+        removePrintToConsole( product, quantity);
     }
 
-    private void reduceProductAndDiscount(String productName, int quantity) {
-        Product tempProduct = cartMap.get(productName);
-        if (discountMap.containsKey(productName)) {
-            Discount tempDiscount = discountMap.get(productName);
-            BigDecimal discountProductValue = tempDiscount.getDiscount(productName, cartMap).setScale(2);
-            changeQuantity(productName, quantity);
-            discount = discount.subtract(discountProductValue).add(tempDiscount.getDiscount(productName, cartMap)).
-                    setScale(2);
-            discountMap.put(productName, tempDiscount);
+    private void reduceProductAndDiscount(Product  product, int quantity) {
+        if (discountMap.containsKey(product)) {
+            Discount tempDiscount = discountMap.get(product);
+            BigDecimal discountProductValue = tempDiscount.getDiscount(product, cartMap);
+            changeQuantity(product, quantity);
+            discount = discount.subtract(discountProductValue).add(tempDiscount.getDiscount(product, cartMap));
+            discountMap.put(product, tempDiscount);
             System.out.printf("discount changed. Details: apply %s by  %s. Discount value - %s $ %n",
-                    tempDiscount.getClass().getSimpleName(), productName, discountProductValue);
-        } else {
-            changeQuantity(productName, quantity);
+                    tempDiscount.getClass().getSimpleName(), product, discountProductValue);
+        } else{
+            changeQuantity(product, quantity);
         }
-        storage.addProduct(tempProduct, quantity);
+
+        storage.addProduct(product, quantity);
         price = updatePrice();
-        removePrintToConsole(quantity, productName);
+        removePrintToConsole( product, quantity);
     }
 
-    private void changeQuantity(String productName, int quantity) {
-        cartMap.get(productName).setQuantity(cartMap.get(productName).getQuantity() - quantity);
-    }*/
 
-    // output data (if product is added in cart) to the console according to the technical task
-    private void addPrintToConsole(int quantity, Product product) {
-        System.out.println(quantity + " " + product.getName() + "(s) vas added");
+
+    private void changeQuantity(Product product, int quantity) {
+        cartMap.put(product, cartMap.get(product) - quantity);
     }
 
     // output data (if product is removed from cart) to the console according to the technical task
- /*   private void removePrintToConsole(int quantity, productName) {
-        System.out.println(quantity + " " + productName + "(s) vas removed");
-    }*/
+    private void removePrintToConsole(Product product, int quantity) {
+        System.out.println(quantity + " " + product.getName() + "(s) vas removed");
+    }
+
+
+    // output data (if product is added in cart) to the console according to the technical task
+    private void addPrintToConsole( Product product, int quantity) {
+        System.out.println(quantity + " " + product.getName() + "(s) vas added");
+    }
 
     /**
      * data output to console in next format: discount:00.00,price:XX.50

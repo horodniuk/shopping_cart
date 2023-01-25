@@ -5,10 +5,12 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 import java.util.Map;
-@ToString
+
 public class Discount_buy_1_get_30_percent_off implements Discount {
     private static final int DISCOUNT_PERCENT = 30;
+
     @Getter
     private final String discountName = "buy_1_get_30_percentage";
 
@@ -22,5 +24,10 @@ public class Discount_buy_1_get_30_percent_off implements Discount {
         BigDecimal quantity = BigDecimal.valueOf(cart.get(product));
         BigDecimal percent = new BigDecimal(DISCOUNT_PERCENT).movePointLeft(2);
         return pricePerOneProduct.multiply(quantity.multiply(percent));
+    }
+
+    @Override
+    public String toString() {
+        return  discountName.toUpperCase(Locale.ROOT);
     }
 }
