@@ -5,6 +5,7 @@ import storage.Storage;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.BiFunction;
 
 public class Cart {
     private Storage storage; // Storage containing map of products
@@ -38,16 +39,16 @@ public class Cart {
     public void add(String productName, int quantity) {
         Product product = storage.getProductByName(productName);
         if (storage.isProductAvailable(product, quantity)) {
-           // ??? BigDecimal tempPrice = storage.getProductPrice(product);
-            cartMap.compute(product, (key, value) -> (isProductExistInCart(product) ?
-                    value + quantity : value));
+            cartMap.put(product, isProductExistInCart(product) ? cartMap.get(product) + quantity : quantity);
             addPrintToConsole(quantity, product);
             storage.removeProduct(product, quantity);
             price = updatePrice();
         }
     }
 
-
+    private boolean isProductExistInCart(Product product) {
+        return !cartMap.isEmpty() && cartMap.containsKey(product);
+    }
 
     /*
      * Method description - it should remove products from cart
@@ -147,7 +148,8 @@ public class Cart {
      */
     public BigDecimal totalPriceWithoutDiscount() {
         Integer sum =  cartMap.entrySet().stream()
-                .mapToInt(product -> product.getKey().getPrice().multiply(new BigDecimal(product.getValue())).intValue())
+                .mapToInt(product -> product.getKey().getPrice()
+                        .multiply(new BigDecimal(product.getValue())).intValue())
                 .sum();
         return new BigDecimal(sum).setScale(2);
     }
@@ -201,23 +203,7 @@ public class Cart {
         return totalPriceWithoutDiscount().subtract(discount);
     }
 
-    /**
-     * Method description
-     * Method parameters - name of product
-     * checking if name of product exists as key in Cart map.
-     * If it doesn't exist then we return false and outputs message to the console.
-     * If exists then we return true.
-     */
 
-    private boolean isProductExistInCart(Product product) {
-        if (!cartMap.isEmpty() && cartMap.containsKey(product)){
-            return true;
-        } else {
-            System.out.println("Product " + product.getName() + " doesn't exist in cart. " +
-                               "Therefore discount cannot be applied.");
-            return false;
-        }
-    }
 
 
     public Storage getStorage() {

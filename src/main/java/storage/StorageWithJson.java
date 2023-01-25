@@ -77,7 +77,7 @@ public class StorageWithJson implements Storage {
     public void addProduct(Product product, int quantity) {
         storageCache.put(product, storageCache.get(product) + quantity);
     }
-    // ПЕРЕПИСАТЬ ПРОВЕРКА, OPTIONAL СТРИМ ДОЛЖЕН ВОЗВРАЩАТЬ OPTIONAL(PRODUCT)
+
 
 
     @Override

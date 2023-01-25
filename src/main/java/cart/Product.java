@@ -16,7 +16,6 @@ public class Product {
         return product_id;
     }
 
-
     public String getName() {
         return name;
     }
@@ -46,5 +45,14 @@ public class Product {
     @Override
     public int hashCode() {
         return product_id;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+               "product_id=" + product_id +
+               ", name='" + name + '\'' +
+               ", price=" + price +
+               '}';
     }
 }
