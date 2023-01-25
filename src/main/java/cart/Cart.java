@@ -6,6 +6,7 @@ import storage.Storage;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class Cart {
     private Storage storage; // Storage containing map of products
@@ -72,16 +73,26 @@ public class Cart {
     public void remove(String productName, int quantity) {
         if (isProductExistInCart(productName)) {
             int quantityInCart = cartMap.get(productName).getQuantity();
-            if (quantityInCart == quantity) {
-                deleteProductAndDiscount(productName, quantity);
-            } else if (quantityInCart > quantity) {
-                reduceProductAndDiscount(productName, quantity);
-            } else {
-                System.out.printf("Cart doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
-                        productName, quantity, quantityInCart);
+            Map<String, Consumer<String>> quantityMap = Map.of(
+                    "equals", value -> deleteProductAndDiscount(productName, quantity),
+                    "bigger", value -> reduceProductAndDiscount(productName, quantity),
+                    "smaller", value -> System.out.printf("Cart doesn't contain %s " +
+                                    "in quantity %d right now there is only next quantity: %d%n", productName, quantity,
+                            quantityInCart));
+            for (String string: quantityMap.keySet()) {
+                if (string.equals(compareQuantity(quantityInCart,quantity))) quantityMap.get(string).accept(string);
             }
         } else System.out.println("You don't have " + productName + " in cart. Please enter another Product.");
     }
+
+    public String compareQuantity(int quantityInCart, int quantityNeeded) {
+        String result = null;
+        if (quantityInCart > quantityNeeded) return "bigger";
+        else if (quantityInCart == quantityNeeded) return "equals";
+        else if (quantityInCart < quantityNeeded) return "smaller";
+        return result;
+    }
+
 
     private void deleteProductAndDiscount(String productName, int quantity) {
         if (discountMap.containsKey(productName)) {
