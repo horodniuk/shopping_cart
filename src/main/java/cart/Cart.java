@@ -70,7 +70,7 @@ public class Cart {
      * and total discount.
      */
     public void remove(String productName, int quantity) {
-        if (cartMap.containsKey(productName)) {
+        if (isProductExistInCart(productName)) {
             int quantityInCart = cartMap.get(productName).getQuantity();
             if (quantityInCart == quantity) {
                 deleteProductAndDiscount(productName, quantity);
