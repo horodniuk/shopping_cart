@@ -73,26 +73,17 @@ public class Cart {
     public void remove(String productName, int quantity) {
         if (isProductExistInCart(productName)) {
             int quantityInCart = cartMap.get(productName).getQuantity();
-            Map<String, Consumer<String>> quantityMap = Map.of(
-                    "equals", value -> deleteProductAndDiscount(productName, quantity),
-                    "bigger", value -> reduceProductAndDiscount(productName, quantity),
-                    "smaller", value -> System.out.printf("Cart doesn't contain %s " +
-                                    "in quantity %d right now there is only next quantity: %d%n", productName, quantity,
-                            quantityInCart));
-            for (String string: quantityMap.keySet()) {
-                if (string.equals(compareQuantity(quantityInCart,quantity))) quantityMap.get(string).accept(string);
-            }
+            remove(productName, quantity, quantityInCart);
         } else System.out.println("You don't have " + productName + " in cart. Please enter another Product.");
     }
 
-    public String compareQuantity(int quantityInCart, int quantityNeeded) {
-        String result = null;
-        if (quantityInCart > quantityNeeded) return "bigger";
-        else if (quantityInCart == quantityNeeded) return "equals";
-        else if (quantityInCart < quantityNeeded) return "smaller";
-        return result;
-    }
+    private void remove(String productName, int quantity, int quantityInCart) {
+        if (quantityInCart > quantity) reduceProductAndDiscount(productName, quantity);
+        else if (quantityInCart == quantity) deleteProductAndDiscount(productName, quantity);
+        else System.out.printf("Cart doesn't contain %s " +
+           "in quantity %d right now there is only next quantity: %d%n", productName, quantity, quantityInCart);
 
+    }
 
     private void deleteProductAndDiscount(String productName, int quantity) {
         if (discountMap.containsKey(productName)) {
