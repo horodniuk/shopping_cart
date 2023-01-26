@@ -153,7 +153,7 @@ public class Cart {
     /**
      * total price of products without discounts
      */
-    public BigDecimal totalPriceWithoutDiscount() {
+    private BigDecimal totalPriceWithoutDiscount() {
         List<Product> list = new ArrayList<>(cartMap.values());
         var sum = BigDecimal.ZERO;
         for (Product product : list) {
