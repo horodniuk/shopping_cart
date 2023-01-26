@@ -21,15 +21,12 @@ public class Main {
         start();
     }
 
-
-    /*
+    /**
+     * Method description
      * Method in endless cycle is asking user to enter file name.
-     *
-     * If user entered in command line only correct name of json file -
-     *  then starts new InteractiveModeRunner#start
-     *
+     * If user entered in command line only correct name of json file - then starts new InteractiveModeRunner#start
      * If user entered in command line json file name and through space name of .txt file with commands -
-     *   then starts new FileModeRunner#start
+     * then starts new FileModeRunner#start
      */
     private static void start() {
         printPreviewToConsole();
@@ -50,30 +47,36 @@ public class Main {
             System.out.println("incorrectly command");
         }
     }
-
-    private static boolean isPathCorrect(String folder, String... files)  {
-         isDirectoryPathExist(folder);
+    /**
+     * Method description
+     * Method in endless cycle is asking user to enter file name.
+     * If user entered in command line only correct name of json file - then starts new InteractiveModeRunner#start
+     * If user entered in command line json file name and through space name of .txt file with commands -
+     * then starts new FileModeRunner#start
+     */
+    private static boolean isPathCorrect(String folder, String... files) {
+        isDirectoryPathExist(folder);
         for (int i = 1; i < files.length; i++) {
-           isFilePathExist(folder + "/" + files[i]);
+            isFilePathExist(folder + "/" + files[i]);
         }
         return true;
     }
 
-    private static boolean isFilePathExist(String path)  {
-            return Files.exists(getPath(path));
+    private static boolean isFilePathExist(String path) {
+        return Files.exists(getPath(path));
     }
 
     private static boolean isDirectoryPathExist(String path) {
-            return Files.isDirectory(getPath(path));
+        return Files.isDirectory(getPath(path));
     }
 
-    private static Path getPath(String path)  {
+    private static Path getPath(String path) {
         final URL url = Main.class.getResource(path);
-        if (url == null){
+        if (url == null) {
             throw new IllegalArgumentException("Resource " + path + " not found!");
         }
         try {
-            return  Path.of(Main.class.getResource(path).toURI());
+            return Path.of(Main.class.getResource(path).toURI());
         } catch (URISyntaxException e) {
             throw new InvalidPathException(path, "cannot find path");
         }

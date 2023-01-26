@@ -13,12 +13,12 @@ import java.util.Map;
  * if we parse file with connecting to database - it will have its own realisation,
  * but in the end we will also get Map filled from database (not sure for now)
  *
- * Method write() - writes updated data to the file
- * Method addProduct() - add product to the storage map;
+ * Method write() - writes updated data to the file or database
+ * Method addProduct() - adds product to the storage map;
  * Method removeProduct() - removes product from the storage map;
  * Method getProductNames() - returns the names of all the products from the Storage map;
+ * Method getProductPrice() - returns the price of the specified product from storage map;
  * Method isProductAvailable() - checks if storage map contains needed quantity of such product;
- * Method getProductPrice() - returns the price of the product from storage map;
  */
 public interface Storage {
     Map<String, Product> load() throws IOException;

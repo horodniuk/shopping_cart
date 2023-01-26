@@ -11,10 +11,12 @@ import java.util.Map;
 public class Discount_buy_3_get_1_free implements Discount {
     private static final int NUMBER_ITERATION_FOR_DISCOUNT = 4;
     @Getter
-    private final String discountName = "buy_3_get_1_free";
+    private final String discountName = "buy_3_get_1_free"; // discount name
 
     /**
-     * BUY_3_GET_ONE_FREE - type of discount in which customer gets every fourth identical product for free
+     * Method description
+     * parameters - product name, cart with products;
+     * getDiscount() should return sum of discount which customer gets if every fourth identical product gets for free;
      * formula  ->  discount = amount of products/4 * price of product
      */
     @Override

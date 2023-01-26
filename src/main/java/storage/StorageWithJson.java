@@ -17,19 +17,22 @@ import java.util.Map;
  * Realisation of storage with products based on json file
  */
 public class StorageWithJson implements Storage {
-    private URI path;
-    private Map<String, Product> storageCache;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private URI path; // path in which json file is situated;
+    private Map<String, Product> storageCache; // map storing products and their names which ar loaded from json file;
+    private ObjectMapper objectMapper = new ObjectMapper(); // instance of class ObjectMapper
 
     public StorageWithJson(URI path) throws IOException {
         this.path = path;
-        this.storageCache = load();
+        this.storageCache = load(); // filling map with method load()
     }
 
-    /*
-     * Task (completed): rewrite method load() with checks and write tests for it
-     * in the end we must get a Map with data? which are stored in resources by address
-     * source root --> storage.json
+    /**
+     * Method description
+     * First we create the instance of class File (jsonFile), then creating empty Map for containing strings and
+     * instances of class Product;
+     * then we read values from jsonFile and write them in empty List of products;
+     * after that, list of products is putted in map;
+     * return - map of strings (product names as keys) and instances of class Product.
      */
     @Override
     public Map<String, Product> load() throws IOException {
@@ -41,11 +44,11 @@ public class StorageWithJson implements Storage {
         return productMap;
     }
 
-    /*
-     * This task must be clarified
-     * Task: implement method write() with checks and write tests for it
-     * data from storage Map must be written in file, which is stored in resources by address
-     * source root --> storage.json
+    /**
+     * Method description
+     * Writes changes from storageCache to our jsonFile;
+     * First we create the instance of class File (jsonFile);
+     * then we write values to jsonFile from map storageCache;
      */
     @Override
     public void write() throws IOException {
@@ -55,11 +58,21 @@ public class StorageWithJson implements Storage {
 
     }
 
+    /**
+     * Method description
+     * parameters - instance of class Product, quantity if this product;
+     * method changes quantity (increases) of this product in storageCache map.
+     */
     @Override
     public void addProduct(Product product, int quantity) {
         storageCache.get(product.getName()).setQuantity(getQuantity(product.getName()) + quantity);
     }
 
+    /**
+     * Method description
+     * parameters - string product name, quantity if this product;
+     * method changes quantity (decreases) of this product in storageCache map.
+     */
     @Override
     public void removeProduct(String productName, int quantity) {
         storageCache.get(productName).setQuantity(getQuantity(productName) - quantity);
@@ -71,10 +84,13 @@ public class StorageWithJson implements Storage {
     }*/
 
     /**
-     * Task (completed): implement method checkProductAndQuantityInStorage
-     * checking if product with this name exists in storage
-     * check availability in storage, if available then return true,
-     * if not - then we output to console, message that there is not enough quantity - and return false
+     * Method description
+     * parameters - string product name, quantity if this product;
+     * checks if specified product exists in needed quantity in storageCache map;
+     * we check if quantity of product in storage is smaller than needed quantity,
+     * if true: then we output message to console - that we don't have enough of this product in storage;
+     * return - we return true if quantity of this product in storage is bigger or equals needed quantity,
+     * otherwise we return false.
      */
     @Override
     public boolean isProductAvailable(String productName, int quantity) {
@@ -86,19 +102,29 @@ public class StorageWithJson implements Storage {
         return qetQuantityProductInStorage >= quantity;
     }
 
-
-    /*
-     * get quantity product in storage
+    /**
+     * Method description
+     * parameters - string product name;
+     * return - we return quantity of specified product in storageCache map
      */
     private int getQuantity(String productName) {
         return storageCache.get(productName).getQuantity();
     }
 
+    /**
+     * Method description
+     * return - we return all the names of products stored in storageCache map.
+     */
     @Override
     public List<String> getProductNames() {
         return storageCache.keySet().stream().toList();
     }
 
+    /**
+     * Method description
+     * parameters - string name of product
+     * return - we return price of specified product from storageCache map.
+     */
     @Override
     public BigDecimal getProductPrice(String productName) {
         return storageCache.get(productName).getPrice();
