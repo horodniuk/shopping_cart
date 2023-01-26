@@ -6,6 +6,7 @@ import storage.Storage;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class Cart {
     private Storage storage; // Storage containing map of products
@@ -72,15 +73,16 @@ public class Cart {
     public void remove(String productName, int quantity) {
         if (isProductExistInCart(productName)) {
             int quantityInCart = cartMap.get(productName).getQuantity();
-            if (quantityInCart == quantity) {
-                deleteProductAndDiscount(productName, quantity);
-            } else if (quantityInCart > quantity) {
-                reduceProductAndDiscount(productName, quantity);
-            } else {
-                System.out.printf("Cart doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
-                        productName, quantity, quantityInCart);
-            }
+            remove(productName, quantity, quantityInCart);
         } else System.out.println("You don't have " + productName + " in cart. Please enter another Product.");
+    }
+
+    private void remove(String productName, int quantity, int quantityInCart) {
+        if (quantityInCart > quantity) reduceProductAndDiscount(productName, quantity);
+        else if (quantityInCart == quantity) deleteProductAndDiscount(productName, quantity);
+        else System.out.printf("Cart doesn't contain %s " +
+           "in quantity %d right now there is only next quantity: %d%n", productName, quantity, quantityInCart);
+
     }
 
     private void deleteProductAndDiscount(String productName, int quantity) {
@@ -151,7 +153,7 @@ public class Cart {
     /**
      * total price of products without discounts
      */
-    public BigDecimal totalPriceWithoutDiscount() {
+    private BigDecimal totalPriceWithoutDiscount() {
         List<Product> list = new ArrayList<>(cartMap.values());
         var sum = BigDecimal.ZERO;
         for (Product product : list) {

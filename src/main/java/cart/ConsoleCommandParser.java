@@ -148,7 +148,7 @@ public class ConsoleCommandParser {
      * we check if Pattern (which is value found by key - command) matches the string.
      * return - we return true if matches and false if not
      */
-    public Boolean matches(String text, Command command) {
+    private Boolean matches(String text, Command command) {
         return commandsMap.get(command).matcher(text).find();
     }
 }
