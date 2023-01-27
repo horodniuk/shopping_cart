@@ -4,43 +4,50 @@ import cart.Cart;
 import storage.StorageWithJson;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
 
-/**
- * Reading commands line by line from file and if such commands exist -
- * perform them. (look method executeCommand())
- */
+
 public class FileModeRunner implements ModeRunner {
-    private String pathToStorage;
-    private String pathToCommand;
+    private URI pathToStorage;
+    private URI pathToCommand;
 
-    public FileModeRunner(String pathToStorage, String pathToCommand) {
+    public FileModeRunner(URI pathToStorage, URI pathToCommand) {
         this.pathToStorage = pathToStorage;
         this.pathToCommand = pathToCommand;
     }
 
     /**
-     * Reading commands line by line from file.
+     * Method description
+     * starts reading and executing commands line by line from file;
+     * First we create instance of Class TextCommandExecutor
+     * after that we create BufferedReader instance and instance of class Cart;
+     * next we read file line by line until line!=null;
+     * each line we pass to method executeCommand() to execute each command;
+     * after we read all lines we start method finish(), that finishes work of program.
+     * method executeCommand() - executes command in line from file;
+     * method finish() - finishes work of program and writes changes to Storage (if such occurred).
      */
     @Override
     public void start() {
         System.out.println("Starting File mode." + " Commands will be read from file\" " + pathToCommand);
-        Cart cart = new Cart(new StorageWithJson(pathToStorage));
-        TextModeRunner textModeRunner = new TextModeRunner();
-        try (BufferedReader reader = new BufferedReader(new FileReader(pathToCommand))) {
+        TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
+        try (BufferedReader reader = new BufferedReader(new FileReader(new File(pathToCommand)))) {
+            Cart cart = new Cart(new StorageWithJson(pathToStorage));
             String line = reader.readLine();
             while (line != null) {
-                if (line.length() > 0) textModeRunner.executeCommand(line, cart);
+                if (line.length() > 0) textCommandExecutor.executeCommand(line, cart);
                 line = reader.readLine();
             }
+            cart.finish();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Unable to read file!");
         }
-        cart.finish();
     }
 
-    public String getPathToCommand() {
+    public URI getPathToCommand() {
         return pathToCommand;
     }
 }

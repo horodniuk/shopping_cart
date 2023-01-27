@@ -1,17 +1,20 @@
 package commands;
 
-import java.util.regex.Pattern;
+import cart.Cart;
+
+import java.util.List;
 
 public abstract class Command {
 
-    private Pattern regex;
+    /**
+     * Method receiveArguments() - receives arguments (strings) in method parse() in class ConsoleCommandParser.
+     * parameters - List of strings
+     */
+    public abstract void receiveArguments(List<String> newArguments);
 
-    //method which finds out if Pattern matches string
-    public Boolean matches(String text) {
-        return regex.matcher(text).find();
-    }
-
-    public Pattern getRegex() {
-        return regex;
-    }
+    /**
+     * Method execute() - executes command.
+     * parameters - instance of class Cart.
+     */
+    public abstract void execute(Cart cart);
 }

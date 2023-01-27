@@ -8,7 +8,6 @@ package runner;
  * if it is Interactive mode - we read the commands from console
  * if it is File mode - we read the commands from file
  *
- * method executeCommand() - executes commands based on the read data (object of Cart)
  */
 public interface ModeRunner {
     void start();
