@@ -39,9 +39,6 @@ public class Main {
      * of array ("commadsList.txt") separated by string - / ;
      * after that we create instance of FileModeRunner class, and start this mode with method start();
      * if false: we output message to console, that user entered incorrect command;*
-     * method printPreviewToConsole() - outputs message to user in console;
-     * method getLineToConsole() - gets string line from console, typed by user;
-     * method isPathCorrect() - checks if path that user provided is correct;
      */
     private static void start() {
         printPreviewToConsole();
