@@ -62,16 +62,15 @@ public class Main {
             System.out.println("incorrectly command");
         }
     }
+
     /**
      * Method description
      * parameters - string folder and string files
      * checks if path that user provided is correct;
      * first we check if such directory exists with method isDirectoryPathExist();
      * next we check if file exists with method isFilePathExist();
-     *
-     * If user entered in command line only correct name of json file - then starts new InteractiveModeRunner#start
-     * If user entered in command line json file name and through space name of .txt file with commands -
-     * then starts new FileModeRunner#start
+     * method isDirectoryPathExist() - checks if directory exists
+     * method isFilePathExist() - checks if file exists
      */
     private static boolean isPathCorrect(String folder, String... files) {
         isDirectoryPathExist(folder);
@@ -81,14 +80,37 @@ public class Main {
         return true;
     }
 
+    /**
+     * Method description
+     * parameters - string path;
+     * checks if file exists;
+     * returns true if exists;
+     * returns false if not.
+     */
     private static boolean isFilePathExist(String path) {
         return Files.exists(getPath(path));
     }
 
+    /**
+     * Method description
+     * parameters - string path;
+     * checks if directory exists;
+     * returns true if exists;
+     * returns false if not.
+     */
     private static boolean isDirectoryPathExist(String path) {
         return Files.isDirectory(getPath(path));
     }
 
+    /**
+     * Method description
+     * parameters - string path;
+     * first we create instance of class URL which contains path to resources;
+     * next we check if url == null, if true - we throw IllegalArgumentException;
+     * next in try catch we return instance of class Path, which can throw URISyntaxException, which we catch and
+     * if we get it - then throw InvalidPathException;
+     * returns instance of class Path.
+     */
     private static Path getPath(String path) {
         final URL url = Main.class.getResource(path);
         if (url == null) {
@@ -101,10 +123,19 @@ public class Main {
         }
     }
 
+    /**
+     * Method description
+     * creates string line after reading it from console;
+     * returns string line.
+     */
     private static String getLineToConsole() {
         return new Scanner(System.in).nextLine();
     }
 
+    /**
+     * Method description
+     * outputs message to user in console, that user should choose mode;
+     */
     private static void printPreviewToConsole() {
         System.out.println("Choose mode:");
         System.out.println("Interactive mode - enter \"./market storage.json\"");
