@@ -23,10 +23,25 @@ public class Main {
 
     /**
      * Method description
-     * Method in endless cycle is asking user to enter file name.
-     * If user entered in command line only correct name of json file - then starts new InteractiveModeRunner#start
-     * If user entered in command line json file name and through space name of .txt file with commands -
-     * then starts new FileModeRunner#start
+     * First we start the method printPreviewToConsole(), which outputs message to user in console;
+     * next create string line with method getLineToConsole();
+     * after that we create array of strings (strArray) from line, splitting it in strings by regular expression " ";
+     * then we start method isPathCorrect() which checks if path that user provided is correct;
+     * next we check if strArray length equals 2, if true:
+     * we create string pathToStorageProduct which consists of zero element of array ("./market") and first element of
+     * array ("storage.json") separated by File.separator;
+     * and create new instance of InteractiveModeRunner class, and start this mode with method start();
+     * if false: we check next statement;
+     * next we check if strArray length equals 3, if true:
+     * we create String pathToStorageProduct which consists of zero element of array ("./market") and first element of
+     * array ("storage.json") separated by string - / ;
+     * next we create String pathToCommandList which consists of zero element of array ("./market") and second element
+     * of array ("commadsList.txt") separated by string - / ;
+     * after that we create instance of FileModeRunner class, and start this mode with method start();
+     * if false: we output message to console, that user entered incorrect command;*
+     * method printPreviewToConsole() - outputs message to user in console;
+     * method getLineToConsole() - gets string line from console, typed by user;
+     * method isPathCorrect() - checks if path that user provided is correct;
      */
     private static void start() {
         printPreviewToConsole();
@@ -49,7 +64,11 @@ public class Main {
     }
     /**
      * Method description
-     * Method in endless cycle is asking user to enter file name.
+     * parameters - string folder and string files
+     * checks if path that user provided is correct;
+     * first we check if such directory exists with method isDirectoryPathExist();
+     * next we check if file exists with method isFilePathExist();
+     *
      * If user entered in command line only correct name of json file - then starts new InteractiveModeRunner#start
      * If user entered in command line json file name and through space name of .txt file with commands -
      * then starts new FileModeRunner#start
