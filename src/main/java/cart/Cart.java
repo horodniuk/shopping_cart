@@ -18,10 +18,10 @@ public class Cart {
      * When creating the constructor of cart we fill the storageMap with products from the storage to check the name
      * of products and their quantity before adding them in the cart.
      */
-    public Cart(Storage storage, DiscountRegister discountRegister) {
+    public Cart(Storage storage) {
         this.cartMap = new LinkedHashMap<>();
         this.storage = storage;
-        this.discountRegister = discountRegister;
+        this.discountRegister = new DiscountRegister();
     }
 
     /*
@@ -103,7 +103,7 @@ public class Cart {
             changeQuantity(product, quantity);
             discountRegister.subtractDiscountValue(tempDiscount, product, cartMap);
             discountRegister.updateDiscountValue(tempDiscount, discountProductValue, product, cartMap);
-            discountRegister.addDiscount(product,tempDiscount);
+            discountRegister.addDiscount(product, tempDiscount);
             System.out.printf("discount changed. Details: apply %s by  %s. Discount value - %s $ %n",
                     tempDiscount.getClass().getSimpleName(), product, discountProductValue);
         } else {

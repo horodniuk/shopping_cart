@@ -32,12 +32,12 @@ public class DiscountRegister {
         discountValue = discountValue.subtract(discountProductValue).add(tempDiscount.getDiscount(product, cartMap));
     }
 
-    public BigDecimal updateDiscount(Product product, BigDecimal discountProductValue, Map<Product, Integer> cartMap) {
-        if (discountMap.containsKey(product)) {
+    public void updateDiscount(Product product, BigDecimal discountProductValue, Map<Product, Integer> cartMap) {
+        if (isDiscountAppliedOnProduct(product)) {
             BigDecimal oldDiscountValueProduct = discountMap.get(product).getDiscount(product, cartMap);
             discountValue = discountValue.subtract(oldDiscountValueProduct);
         }
-        return discountValue.add(discountProductValue).setScale(2);
+        discountValue.add(discountProductValue).setScale(2);
     }
 
     public Boolean isDiscountAppliedOnProduct(Product product) {
@@ -56,7 +56,7 @@ public class DiscountRegister {
     public String toString() {
         return "DiscountRegister{" +
                 "discountMap=" + discountMap +
-                ", discount=" + discountValue +
+                ", discountValue=" + discountValue +
                 '}';
     }
 }
