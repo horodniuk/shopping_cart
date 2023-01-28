@@ -39,7 +39,7 @@ public class StorageWithJson implements Storage {
      */
     @Override
     public Map<Product, Integer> load() {
-      /*  File jsonFile = new File(path.getPath());
+        File jsonFile = new File(path.getPath());
         Map<Product, Integer> productMap = new LinkedHashMap<>();
         try {
             List<Product> productList = objectMapper.readValue(jsonFile, new TypeReference<>() {
@@ -47,12 +47,7 @@ public class StorageWithJson implements Storage {
             productList.forEach(product -> productMap.put(product, product.getProduct_id()));
         } catch (IOException exception) {
             exception.printStackTrace();
-        }*/
-
-        Map<Product, Integer> productMap = new LinkedHashMap<>();
-        productMap.put(new Product(1, "beer", new BigDecimal(50)), 30);
-        productMap.put(new Product(2, "cola", new BigDecimal(20)), 20);
-        productMap.put(new Product(3, "soap", new BigDecimal(30)), 10);
+        }
         return productMap;
     }
 
@@ -79,9 +74,8 @@ public class StorageWithJson implements Storage {
     }
 
 
-
     @Override
-    public Product getProductByName(String productName){
+    public Product getProductByName(String productName) {
         return storageCache.keySet().stream()
                 .filter(product -> product.getName().equals(productName))
                 .findFirst().orElseThrow();
