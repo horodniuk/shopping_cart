@@ -180,7 +180,7 @@ public class Cart {
                     discountRegister.updateDiscount(product, newDiscountProductValue, oldDiscountProductValue,
                             discountType);
                 } else {
-                    discountRegister.addDiscountValue(product, newDiscountProductValue, discountType);
+                    discountRegister.addDiscount(product, newDiscountProductValue, discountType);
                 }
                 price = updatePrice();
                 System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",

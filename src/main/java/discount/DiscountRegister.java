@@ -30,7 +30,7 @@ public class DiscountRegister {
         addDiscountType(product, newDiscountType);
     }
 
-    public void addDiscountValue(Product product, BigDecimal newDiscountProductValue, Discount newDiscountType) {
+    public void addDiscount(Product product, BigDecimal newDiscountProductValue, Discount newDiscountType) {
         discountValue = discountValue.add(newDiscountProductValue).setScale(2);
         addDiscountType(product, newDiscountType);
     }
