@@ -87,12 +87,11 @@ public class Cart {
 
     private void deleteProductAndDiscount(Product product, int quantity) {
         if (discountRegister.isDiscountAppliedOnProduct(product)) {
-            Discount tempDiscount = discountRegister.getDiscountTypeFromMap(product);
-            discountRegister.subtractDiscountValue(tempDiscount, product, cartMap);
-            discountRegister.removeDiscount(product);
+            BigDecimal tempDiscountValue = discountRegister.getDiscountTypeFromMap(product).getDiscount(product,
+                    cartMap);
+            discountRegister.removeDiscount(product, tempDiscountValue);
         }
         cartMap.remove(product);
-
         updatePriceAndStorage(product, quantity);
     }
 

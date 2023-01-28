@@ -19,12 +19,13 @@ public class DiscountRegister {
         discountMap.put(product, discount);
     }
 
-    public void removeDiscount(Product product) {
+    public void removeDiscount(Product product, BigDecimal tempDiscountValue) {
         discountMap.remove(product);
+        discountValue = discountValue.subtract(tempDiscountValue);
     }
 
     public void subtractDiscountValue(Discount tempDiscount, Product product, Map<Product, Integer> cartMap) {
-        discountValue = discountValue.subtract(tempDiscount.getDiscount(product, cartMap));
+
     }
 
     public void updateDiscountValue(Discount tempDiscount, BigDecimal oldDiscountProductValue, Product product,
