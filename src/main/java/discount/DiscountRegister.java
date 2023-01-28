@@ -15,23 +15,13 @@ public class DiscountRegister {
         this.discountMap = new HashMap<>();
     }
 
-    public void addDiscountType(Product product, Discount discount) {
+    private void addDiscountType(Product product, Discount discount) {
         discountMap.put(product, discount);
     }
 
     public void removeDiscount(Product product, BigDecimal tempDiscountValue) {
         discountMap.remove(product);
         discountValue = discountValue.subtract(tempDiscountValue);
-    }
-
-    public void subtractDiscountValue(Discount tempDiscount, Product product, Map<Product, Integer> cartMap) {
-
-    }
-
-    public void updateDiscountValue(Discount tempDiscount, BigDecimal oldDiscountProductValue, Product product,
-                                    Map<Product, Integer> cartMap) {
-        discountValue = discountValue.subtract(oldDiscountProductValue).add(tempDiscount.getDiscount(product, cartMap)).
-                setScale(2);
     }
 
     public void updateDiscount(Product product, BigDecimal newDiscountProductValue, BigDecimal oldDiscountProductValue,

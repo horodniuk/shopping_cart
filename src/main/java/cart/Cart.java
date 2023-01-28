@@ -101,11 +101,9 @@ public class Cart {
             BigDecimal oldDiscountProductValue = tempDiscount.getDiscount(product, cartMap);
             changeQuantity(product, quantity);
             BigDecimal newDiscountProductValue = tempDiscount.getDiscount(product, cartMap);
-            discountRegister.subtractDiscountValue(tempDiscount, product, cartMap);
-            discountRegister.updateDiscountValue(tempDiscount, oldDiscountProductValue, product, cartMap);
-            discountRegister.addDiscountType(product, tempDiscount);
+            discountRegister.updateDiscount(product, newDiscountProductValue, oldDiscountProductValue, tempDiscount);
             System.out.printf("discount changed. Details: apply %s by  %s. Discount value - %s $ %n",
-                    tempDiscount.getClass().getSimpleName(), product, oldDiscountProductValue);
+                    tempDiscount.getClass().getSimpleName(), product, newDiscountProductValue);
         } else {
             changeQuantity(product, quantity);
         }
@@ -178,11 +176,12 @@ public class Cart {
             if (newDiscountProductValue.intValue() != 0) {
                 if (discountRegister.isDiscountAppliedOnProduct(product)) {
                     BigDecimal oldDiscountProductValue = discountRegister.getDiscountTypeFromMap(product).
-                            getDiscount(product, cartMap);
+                            getDiscount(product, cartMap).setScale(2);
                     discountRegister.updateDiscount(product, newDiscountProductValue, oldDiscountProductValue,
                             discountType);
+                } else {
+                    discountRegister.addDiscountValue(product, newDiscountProductValue, discountType);
                 }
-                discountRegister.addDiscountValue(product, newDiscountProductValue, discountType);
                 price = updatePrice();
                 System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
                         discountType.getClass().getSimpleName(), product, newDiscountProductValue);
