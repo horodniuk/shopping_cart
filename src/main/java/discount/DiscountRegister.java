@@ -15,7 +15,7 @@ public class DiscountRegister {
         this.discountMap = new HashMap<>();
     }
 
-    public void addDiscount(Product product, Discount discount) {
+    public void addDiscountType(Product product, Discount discount) {
         discountMap.put(product, discount);
     }
 
@@ -27,24 +27,28 @@ public class DiscountRegister {
         discountValue = discountValue.subtract(tempDiscount.getDiscount(product, cartMap));
     }
 
-    public void updateDiscountValue(Discount tempDiscount, BigDecimal discountProductValue, Product product,
+    public void updateDiscountValue(Discount tempDiscount, BigDecimal oldDiscountProductValue, Product product,
                                     Map<Product, Integer> cartMap) {
-        discountValue = discountValue.subtract(discountProductValue).add(tempDiscount.getDiscount(product, cartMap));
+        discountValue = discountValue.subtract(oldDiscountProductValue).add(tempDiscount.getDiscount(product, cartMap)).
+                setScale(2);
     }
 
-    public void updateDiscount(Product product, BigDecimal discountProductValue, Map<Product, Integer> cartMap) {
-        if (isDiscountAppliedOnProduct(product)) {
-            BigDecimal oldDiscountValueProduct = discountMap.get(product).getDiscount(product, cartMap);
-            discountValue = discountValue.subtract(oldDiscountValueProduct);
-        }
-        discountValue.add(discountProductValue).setScale(2);
+    public void updateDiscount(Product product, BigDecimal newDiscountProductValue, BigDecimal oldDiscountProductValue,
+                               Discount newDiscountType) {
+        discountValue = discountValue.subtract(oldDiscountProductValue).add(newDiscountProductValue).setScale(2);
+        addDiscountType(product, newDiscountType);
+    }
+
+    public void addDiscountValue(Product product, BigDecimal newDiscountProductValue, Discount newDiscountType) {
+        discountValue = discountValue.add(newDiscountProductValue).setScale(2);
+        addDiscountType(product, newDiscountType);
     }
 
     public Boolean isDiscountAppliedOnProduct(Product product) {
         return discountMap.containsKey(product);
     }
 
-    public Discount getDiscountFromMap(Product product) {
+    public Discount getDiscountTypeFromMap(Product product) {
         return discountMap.get(product);
     }
 

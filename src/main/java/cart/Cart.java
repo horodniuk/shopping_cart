@@ -87,7 +87,7 @@ public class Cart {
 
     private void deleteProductAndDiscount(Product product, int quantity) {
         if (discountRegister.isDiscountAppliedOnProduct(product)) {
-            Discount tempDiscount = discountRegister.getDiscountFromMap(product);
+            Discount tempDiscount = discountRegister.getDiscountTypeFromMap(product);
             discountRegister.subtractDiscountValue(tempDiscount, product, cartMap);
             discountRegister.removeDiscount(product);
         }
@@ -98,14 +98,15 @@ public class Cart {
 
     private void reduceProductAndDiscount(Product product, int quantity) {
         if (discountRegister.isDiscountAppliedOnProduct(product)) {
-            Discount tempDiscount = discountRegister.getDiscountFromMap(product);
-            BigDecimal discountProductValue = tempDiscount.getDiscount(product, cartMap);
+            Discount tempDiscount = discountRegister.getDiscountTypeFromMap(product);
+            BigDecimal oldDiscountProductValue = tempDiscount.getDiscount(product, cartMap);
             changeQuantity(product, quantity);
+            BigDecimal newDiscountProductValue = tempDiscount.getDiscount(product, cartMap);
             discountRegister.subtractDiscountValue(tempDiscount, product, cartMap);
-            discountRegister.updateDiscountValue(tempDiscount, discountProductValue, product, cartMap);
-            discountRegister.addDiscount(product, tempDiscount);
+            discountRegister.updateDiscountValue(tempDiscount, oldDiscountProductValue, product, cartMap);
+            discountRegister.addDiscountType(product, tempDiscount);
             System.out.printf("discount changed. Details: apply %s by  %s. Discount value - %s $ %n",
-                    tempDiscount.getClass().getSimpleName(), product, discountProductValue);
+                    tempDiscount.getClass().getSimpleName(), product, oldDiscountProductValue);
         } else {
             changeQuantity(product, quantity);
         }
@@ -174,17 +175,21 @@ public class Cart {
     public void applyDiscount(Discount discountType, String productName) {
         Product product = storage.getProductByName(productName);
         if (isProductExistInCart(product)) {
-            BigDecimal discountProductValue = discountType.getDiscount(product, cartMap).setScale(2);
-            if (discountProductValue.intValue() != 0) {
-                discountRegister.updateDiscount(product, discountProductValue, cartMap);
+            BigDecimal newDiscountProductValue = discountType.getDiscount(product, cartMap).setScale(2);
+            if (newDiscountProductValue.intValue() != 0) {
+                if (discountRegister.isDiscountAppliedOnProduct(product)) {
+                    BigDecimal oldDiscountProductValue = discountRegister.getDiscountTypeFromMap(product).
+                            getDiscount(product, cartMap);
+                    discountRegister.updateDiscount(product, newDiscountProductValue, oldDiscountProductValue,
+                            discountType);
+                }
+                discountRegister.addDiscountValue(product, newDiscountProductValue, discountType);
                 price = updatePrice();
-                discountRegister.addDiscount(product, discountType);
                 System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
-                        discountType.getClass().getSimpleName(), product, discountProductValue);
+                        discountType.getClass().getSimpleName(), product, newDiscountProductValue);
             }
         }
     }
-
 
     /**
      * updating total price of products in cart
