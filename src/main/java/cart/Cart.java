@@ -9,7 +9,7 @@ import java.util.*;
 
 public class Cart {
     private Storage storage; // Storage containing map of products
-    private DiscountRegister discountRegister;
+    private DiscountRegister discountRegister; // discount register containing discount value and map of discounts
     private Map<Product, Integer> cartMap;         // map of products, which are added in the cart
     private BigDecimal price = new BigDecimal(00.00).setScale(2); // total price of products (including discount)
 
