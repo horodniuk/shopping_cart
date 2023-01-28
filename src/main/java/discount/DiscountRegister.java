@@ -15,10 +15,6 @@ public class DiscountRegister {
         this.discountMap = new HashMap<>();
     }
 
-    private void addDiscountType(Product product, Discount discount) {
-        discountMap.put(product, discount);
-    }
-
     public void removeDiscount(Product product, BigDecimal tempDiscountValue) {
         discountMap.remove(product);
         discountValue = discountValue.subtract(tempDiscountValue);
@@ -27,12 +23,12 @@ public class DiscountRegister {
     public void updateDiscount(Product product, BigDecimal newDiscountProductValue, BigDecimal oldDiscountProductValue,
                                Discount newDiscountType) {
         discountValue = discountValue.subtract(oldDiscountProductValue).add(newDiscountProductValue).setScale(2);
-        addDiscountType(product, newDiscountType);
+        discountMap.put(product, newDiscountType);
     }
 
     public void addDiscount(Product product, BigDecimal newDiscountProductValue, Discount newDiscountType) {
         discountValue = discountValue.add(newDiscountProductValue).setScale(2);
-        addDiscountType(product, newDiscountType);
+        discountMap.put(product, newDiscountType);
     }
 
     public Boolean isDiscountAppliedOnProduct(Product product) {
