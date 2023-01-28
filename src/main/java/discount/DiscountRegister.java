@@ -9,7 +9,8 @@ import java.util.Map;
 public class DiscountRegister {
     private Map<Product, Discount> discountMap;    // map of discount types, which are applied on products in Cart
 
-    private BigDecimal discountValue = new BigDecimal(00.00).setScale(2); // total amount of discount on products in cart
+    private BigDecimal discountValue = new BigDecimal(00.00).setScale(2); // total amount of discount on products in
+    // cart
 
     public DiscountRegister() {
         this.discountMap = new HashMap<>();

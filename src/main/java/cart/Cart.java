@@ -174,19 +174,23 @@ public class Cart {
         if (isProductExistInCart(product)) {
             BigDecimal newDiscountProductValue = discountType.getDiscount(product, cartMap).setScale(2);
             if (newDiscountProductValue.intValue() != 0) {
-                if (discountRegister.isDiscountAppliedOnProduct(product)) {
-                    BigDecimal oldDiscountProductValue = discountRegister.getDiscountTypeFromMap(product).
-                            getDiscount(product, cartMap).setScale(2);
-                    discountRegister.updateDiscount(product, newDiscountProductValue, oldDiscountProductValue,
-                            discountType);
-                } else {
-                    discountRegister.addDiscount(product, newDiscountProductValue, discountType);
-                }
-                price = updatePrice();
-                System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
-                        discountType.getClass().getSimpleName(), product, newDiscountProductValue);
+                applyDiscount(discountType, product, newDiscountProductValue);
             }
+        } else System.out.println("Discount cannot be added, because there is no such product in cart!");
+    }
+
+    private void applyDiscount(Discount discountType, Product product, BigDecimal newDiscountProductValue) {
+        if (discountRegister.isDiscountAppliedOnProduct(product)) {
+            BigDecimal oldDiscountProductValue = discountRegister.getDiscountTypeFromMap(product).
+                    getDiscount(product, cartMap).setScale(2);
+            discountRegister.updateDiscount(product, newDiscountProductValue, oldDiscountProductValue,
+                    discountType);
+        } else {
+            discountRegister.addDiscount(product, newDiscountProductValue, discountType);
         }
+        price = updatePrice();
+        System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
+                discountType.getClass().getSimpleName(), product, newDiscountProductValue);
     }
 
     /**
