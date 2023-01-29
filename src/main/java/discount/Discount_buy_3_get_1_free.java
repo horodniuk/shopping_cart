@@ -19,8 +19,8 @@ public class Discount_buy_3_get_1_free implements Discount {
      * formula  ->  discount = amount of products/4 * price of product
      */
     @Override
-    public BigDecimal getDiscount(Product product, Map<Product, Integer> cart) {
-        int discountCount = cart.get(product) / NUMBER_ITERATION_FOR_DISCOUNT;
+    public BigDecimal getDiscount(Product product, int quantityFromCart) {
+        int discountCount = quantityFromCart / NUMBER_ITERATION_FOR_DISCOUNT;
         if (discountCount == 0) {
             System.out.println("Cart doesn't have 4 units of product -" + product.getName() + ", to get fourth for free");
             return new BigDecimal(0);
