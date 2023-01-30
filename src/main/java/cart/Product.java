@@ -1,8 +1,11 @@
 package cart;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,6 +14,13 @@ public class Product {
     private int product_id;
     private String name;
     private BigDecimal price;
+    @Getter
+    private Map<String, String> quantityMap = new HashMap<>();
+
+    @JsonAnySetter
+    public void setQuantityMap(String fieldName, String fieldValue) {
+        quantityMap.put(fieldName, fieldValue);
+    }
 
     public int getProduct_id() {
         return product_id;
@@ -50,9 +60,9 @@ public class Product {
     @Override
     public String toString() {
         return "Product{" +
-               "product_id=" + product_id +
-               ", name='" + name + '\'' +
-               ", price=" + price +
-               '}';
+                "product_id=" + product_id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                '}';
     }
 }

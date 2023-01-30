@@ -8,15 +8,10 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**
@@ -39,20 +34,16 @@ public class StorageWithJson implements Storage {
      */
     @Override
     public Map<Product, Integer> load() {
-      /*  File jsonFile = new File(path.getPath());
+        File jsonFile = new File(path.getPath());
         Map<Product, Integer> productMap = new LinkedHashMap<>();
         try {
             List<Product> productList = objectMapper.readValue(jsonFile, new TypeReference<>() {
             });
-            productList.forEach(product -> productMap.put(product, product.getProduct_id()));
+            productList.forEach(product -> productMap.put(product, Integer.valueOf(product.getQuantityMap().get("quantity"))));
         } catch (IOException exception) {
             exception.printStackTrace();
-        }*/
-
-        Map<Product, Integer> productMap = new LinkedHashMap<>();
-        productMap.put(new Product(1, "beer", new BigDecimal(50)), 30);
-        productMap.put(new Product(2, "cola", new BigDecimal(20)), 20);
-        productMap.put(new Product(3, "soap", new BigDecimal(30)), 10);
+        }
+        System.out.println(productMap);
         return productMap;
     }
 
