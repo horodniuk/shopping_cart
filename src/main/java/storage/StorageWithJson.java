@@ -2,6 +2,7 @@ package storage;
 
 import cart.Product;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
@@ -34,16 +35,21 @@ public class StorageWithJson implements Storage {
      */
     @Override
     public Map<Product, Integer> load() {
-        File jsonFile = new File(path.getPath());
-        Map<Product, Integer> productMap = new LinkedHashMap<>();
+        Map<Product, Integer> productMap = new HashMap<>();
         try {
-            List<Product> productList = objectMapper.readValue(jsonFile, new TypeReference<>() {
-            });
-            productList.forEach(product -> productMap.put(product, Integer.valueOf(product.getQuantityMap().get("quantity"))));
+            JsonNode jsonNode = new ObjectMapper().readTree(new File("src/main/resources/market/storage.json"));
+            JsonNode storage = jsonNode.get("storage");
+            for (JsonNode node : storage) {
+                int product_id = Integer.parseInt(node.get("product_id").asText());
+                String name = node.get("name").asText();
+                BigDecimal price = new BigDecimal(node.get("price").asText());
+                int quantity = Integer.parseInt(node.get("quantity").asText());
+                Product tempProduct = new Product(product_id, name, price);
+                productMap.put(tempProduct, quantity);
+            }
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-        System.out.println(productMap);
         return productMap;
     }
 

@@ -14,13 +14,6 @@ public class Product {
     private int product_id;
     private String name;
     private BigDecimal price;
-    @Getter
-    private Map<String, String> quantityMap = new HashMap<>();
-
-    @JsonAnySetter
-    public void setQuantityMap(String fieldName, String fieldValue) {
-        quantityMap.put(fieldName, fieldValue);
-    }
 
     public int getProduct_id() {
         return product_id;
