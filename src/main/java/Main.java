@@ -72,11 +72,7 @@ public class Main {
         if (url == null){
             throw new IllegalArgumentException("Resource " + path + " not found!");
         }
-        try {
-            return  Path.of(Main.class.getResource(path).toURI());
-        } catch (URISyntaxException e) {
-            throw new InvalidPathException(path, "cannot find path");
-        }
+            return  Path.of(path);
     }
 
     private static String getLineToConsole() {
