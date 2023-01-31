@@ -2,21 +2,17 @@ package storage;
 
 import cart.Product;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**
@@ -39,20 +35,21 @@ public class StorageWithJson implements Storage {
      */
     @Override
     public Map<Product, Integer> load() {
-      /*  File jsonFile = new File(path.getPath());
-        Map<Product, Integer> productMap = new LinkedHashMap<>();
+        Map<Product, Integer> productMap = new HashMap<>();
         try {
-            List<Product> productList = objectMapper.readValue(jsonFile, new TypeReference<>() {
-            });
-            productList.forEach(product -> productMap.put(product, product.getProduct_id()));
+            JsonNode jsonNode = new ObjectMapper().readTree(new File("src/main/resources/market/storage.json"));
+            JsonNode storage = jsonNode.get("storage");
+            for (JsonNode node : storage) {
+                int product_id = Integer.parseInt(node.get("product_id").asText());
+                String name = node.get("name").asText();
+                BigDecimal price = new BigDecimal(node.get("price").asText());
+                int quantity = Integer.parseInt(node.get("quantity").asText());
+                Product tempProduct = new Product(product_id, name, price);
+                productMap.put(tempProduct, quantity);
+            }
         } catch (IOException exception) {
             exception.printStackTrace();
-        }*/
-
-        Map<Product, Integer> productMap = new LinkedHashMap<>();
-        productMap.put(new Product(1, "beer", new BigDecimal(50)), 30);
-        productMap.put(new Product(2, "cola", new BigDecimal(20)), 20);
-        productMap.put(new Product(3, "soap", new BigDecimal(30)), 10);
+        }
         return productMap;
     }
 
@@ -79,9 +76,8 @@ public class StorageWithJson implements Storage {
     }
 
 
-
     @Override
-    public Product getProductByName(String productName){
+    public Product getProductByName(String productName) {
         return storageCache.keySet().stream()
                 .filter(product -> product.getName().equals(productName))
                 .findFirst().orElseThrow();

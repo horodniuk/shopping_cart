@@ -1,18 +1,17 @@
 package cart;
 
 import discount.Discount;
+import discount.DiscountStorage;
 import storage.Storage;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.function.BiFunction;
 
 public class Cart {
     private Storage storage; // Storage containing map of products
+    private DiscountStorage discountStorage; // discount register containing discount value and map of discounts
     private Map<Product, Integer> cartMap;         // map of products, which are added in the cart
-    private Map<Product, Discount> discountMap;    // map of discount types, which are applied on products in Cart
     private BigDecimal price = new BigDecimal(00.00).setScale(2); // total price of products (including discount)
-    private BigDecimal discount = new BigDecimal(00.00).setScale(2); // total amount of discount on products in cart
 
 
     /**
@@ -22,7 +21,7 @@ public class Cart {
     public Cart(Storage storage) {
         this.cartMap = new LinkedHashMap<>();
         this.storage = storage;
-        this.discountMap = new HashMap<>();
+        this.discountStorage = new DiscountStorage();
     }
 
     /*
@@ -82,45 +81,46 @@ public class Cart {
         if (quantityInCart > quantity) reduceProductAndDiscount(product, quantity);
         else if (quantityInCart == quantity) deleteProductAndDiscount(product, quantity);
         else System.out.printf("Cart doesn't contain %s " +
-           "in quantity %d right now there is only next quantity: %d%n", product, quantity, quantityInCart);
+                    "in quantity %d right now there is only next quantity: %d%n", product, quantity, quantityInCart);
     }
-
 
 
     private void deleteProductAndDiscount(Product product, int quantity) {
-        if (discountMap.containsKey(product)) {
-            Discount tempDiscount = discountMap.get(product);
-            discount = discount.subtract(tempDiscount.getDiscount(product, cartMap));
-            discountMap.remove(product);
+        if (discountStorage.isDiscountAppliedOnProduct(product)) {
+            Discount tempDiscountType = discountStorage.getDiscountTypeFromMap(product);
+            int quantityInCart = cartMap.get(product);
+            BigDecimal tempDiscountValue = tempDiscountType.getDiscount(product, quantityInCart);
+            discountStorage.removeDiscountValueAndType(product, tempDiscountValue);
         }
         cartMap.remove(product);
-
-        storage.addProduct(product, quantity);
-        price = updatePrice();
-        removePrintToConsole( product, quantity);
+        updateAndPrintToConsole(product, quantity);
     }
 
-    private void reduceProductAndDiscount(Product  product, int quantity) {
-        if (discountMap.containsKey(product)) {
-            Discount tempDiscount = discountMap.get(product);
-            BigDecimal discountProductValue = tempDiscount.getDiscount(product, cartMap);
-            changeQuantity(product, quantity);
-            discount = discount.subtract(discountProductValue).add(tempDiscount.getDiscount(product, cartMap));
-            discountMap.put(product, tempDiscount);
+    private void reduceProductAndDiscount(Product product, int quantity) {
+        if (discountStorage.isDiscountAppliedOnProduct(product)) {
+            Discount tempDiscount = discountStorage.getDiscountTypeFromMap(product);
+            int oldQuantity = cartMap.get(product);
+            BigDecimal oldDiscountProductValue = tempDiscount.getDiscount(product, oldQuantity);
+            changeQuantityByReduceProduct(product, quantity);
+            int newQuantity = cartMap.get(product);
+            BigDecimal newDiscountProductValue = tempDiscount.getDiscount(product, newQuantity);
+            BigDecimal difference = oldDiscountProductValue.subtract(newDiscountProductValue);
+            discountStorage.updateDiscountValueAndType(product, difference, tempDiscount);
             System.out.printf("discount changed. Details: apply %s by  %s. Discount value - %s $ %n",
-                    tempDiscount.getClass().getSimpleName(), product, discountProductValue);
-        } else{
-            changeQuantity(product, quantity);
+                    tempDiscount.getClass().getSimpleName(), product, newDiscountProductValue);
+        } else {
+            changeQuantityByReduceProduct(product, quantity);
         }
-
-        storage.addProduct(product, quantity);
-        price = updatePrice();
-        removePrintToConsole( product, quantity);
+        updateAndPrintToConsole(product, quantity);
     }
 
+    private void updateAndPrintToConsole(Product product, int quantity) {
+        storage.addProduct(product, quantity);
+        price = updatePrice();
+        removePrintToConsole(product, quantity);
+    }
 
-
-    private void changeQuantity(Product product, int quantity) {
+    private void changeQuantityByReduceProduct(Product product, int quantity) {
         cartMap.put(product, cartMap.get(product) - quantity);
     }
 
@@ -131,7 +131,7 @@ public class Cart {
 
 
     // output data (if product is added in cart) to the console according to the technical task
-    private void addPrintToConsole( Product product, int quantity) {
+    private void addPrintToConsole(Product product, int quantity) {
         System.out.println(quantity + " " + product.getName() + "(s) vas added");
     }
 
@@ -139,7 +139,7 @@ public class Cart {
      * data output to console in next format: discount:00.00,price:XX.50
      */
     public void price() {
-        System.out.println(String.format("discount:%s, price:%s", discount, price));
+        System.out.println(String.format("discount:%s, price:%s", discountStorage.getDiscountValue(), price));
         System.out.println(this); // for logging, call of method toString on cart
     }
 
@@ -155,7 +155,7 @@ public class Cart {
      * total price of products without discounts
      */
     public BigDecimal totalPriceWithoutDiscount() {
-        Integer sum =  cartMap.entrySet().stream()
+        Integer sum = cartMap.entrySet().stream()
                 .mapToInt(product -> product.getKey().getPrice()
                         .multiply(new BigDecimal(product.getValue())).intValue())
                 .sum();
@@ -176,42 +176,36 @@ public class Cart {
     public void applyDiscount(Discount discountType, String productName) {
         Product product = storage.getProductByName(productName);
         if (isProductExistInCart(product)) {
-            BigDecimal discountProductValue = discountType.getDiscount(product, cartMap).setScale(2);
-            if (discountProductValue.intValue() != 0) {
-                discount = updateDiscount(product, discountProductValue);
-                price = updatePrice();
-                discountMap.put(product, discountType);
-                System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
-                        discountType.getClass().getSimpleName(), product, discountProductValue);
+            int quantity = cartMap.get(product);
+            BigDecimal newDiscountProductValue = discountType.getDiscount(product, quantity).setScale(2);
+            if (newDiscountProductValue.intValue() != 0) {
+                applyDiscount(discountType, product, newDiscountProductValue);
             }
-        }
+        } else System.out.println("Discount cannot be added, because there is no such product in cart!");
     }
 
-    /**
-     * Method description
-     * Method parameters - name of product and amount of discount applied to product
-     * checking if name of product exists as key in map with discounts.
-     * If true then discount was already applied in this product, then we must subtract old discount
-     * (oldDiscountValueProduct) from total discount on all products in cart(discount)
-     * Because according to the totalPriceWithoutDiscount - if two discounts are applied to one product -
-     * then we must apply only the last one.
-     * return - we add discount on this product to total discount on all products.
-     */
-    private BigDecimal updateDiscount(Product product, BigDecimal discountProductValue) {
-        if (discountMap.containsKey(product)) {
-            BigDecimal oldDiscountValueProduct = discountMap.get(product).getDiscount(product, cartMap);
-            discount = discount.subtract(oldDiscountValueProduct);
+    private void applyDiscount(Discount discountType, Product product, BigDecimal newDiscountProductValue) {
+        if (discountStorage.isDiscountAppliedOnProduct(product)) {
+            int quantity = cartMap.get(product);
+            Discount oldDiscountType = discountStorage.getDiscountTypeFromMap(product);
+            BigDecimal oldDiscountProductValue = oldDiscountType.getDiscount(product, quantity).setScale(2);
+            BigDecimal difference = oldDiscountProductValue.subtract(newDiscountProductValue);
+            discountStorage.updateDiscountValueAndType(product, difference,
+                    discountType);
+        } else {
+            discountStorage.addDiscountValueAndType(product, newDiscountProductValue, discountType);
         }
-        return discount.add(discountProductValue).setScale(2);
+        price = updatePrice();
+        System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
+                discountType.getClass().getSimpleName(), product, newDiscountProductValue);
     }
+
     /**
      * updating total price of products in cart
      */
     private BigDecimal updatePrice() {
-        return totalPriceWithoutDiscount().subtract(discount);
+        return totalPriceWithoutDiscount().subtract(discountStorage.getDiscountValue());
     }
-
-
 
 
     public Storage getStorage() {
@@ -227,9 +221,8 @@ public class Cart {
         return "~~~~~~~~~~~~~~~~~  CART (LOG) ~~~~~~~~~~~~~~~~~\n" +
                 "cartMap=" + cartMap +
                 ",\n storage=" + storage +
-                ",\n discountMap=" + discountMap +
+                ",\n discountStorage=" + discountStorage +
                 ",\n price=" + price +
-                ",\n discount=" + discount +
                 ",\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
                 '\n';
     }
