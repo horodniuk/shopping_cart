@@ -4,6 +4,7 @@ import cart.Product;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 public class StorageWithJson implements Storage {
     private URI path;
     private Map<Product, Integer> storageCache;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public StorageWithJson(URI path) {
         this.path = path;
@@ -37,7 +38,7 @@ public class StorageWithJson implements Storage {
     public Map<Product, Integer> load() {
         Map<Product, Integer> productMap = new HashMap<>();
         try {
-            JsonNode jsonNode = new ObjectMapper().readTree(new File("src/main/resources/market/storage.json"));
+            JsonNode jsonNode = objectMapper.readTree(new File("src/main/resources/market/storage.json"));
             JsonNode storage = jsonNode.get("storage");
             for (JsonNode node : storage) {
                 int product_id = Integer.parseInt(node.get("product_id").asText());
@@ -61,12 +62,18 @@ public class StorageWithJson implements Storage {
      */
     @Override
     public void write() {
-//        File jsonFile = new File(path);
-        File jsonFile = new File("src/main/resources/test.json");
         try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, storageCache.keySet());
-        } catch (IOException exception) {
-            exception.printStackTrace();
+            JsonNode jsonNode = objectMapper.readTree(new File("src/main/resources/market/storage.json"));
+            JsonNode storage = jsonNode.get("storage");
+            for (JsonNode node : storage) {
+                for (Product product : storageCache.keySet()) {
+                    if (node.get("product_id").asInt() == (product.getProduct_id())) {
+                        ((ObjectNode) node).put("quantity", storageCache.get(product));
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
