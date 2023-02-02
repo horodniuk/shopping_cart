@@ -47,7 +47,6 @@ public class DiscountStorage {
     public String toString() {
         return "DiscountStorage{" +
                 "discountMap=" + discountMap +
-                ", discountValue=" + discountValue +
                 '}';
     }
 }
