@@ -30,8 +30,14 @@ public class ConsoleCommandParser {
      * After that we initialize patterns for each command (add, discount, remove, price and finish).
      * after that we put commands and patterns in map
      * return - we return map of Commands and Patterns.
+     * Example of patterns:
+     * addPattern - add bear 5 or add cola 1 or add soap 2;
+     * discountPattern - discount buy_1_get_30_percentage cola or discount buy_3_get_1_free bear;
+     * removePattern - remove bear 5 or remove cola 1, remove soap 2;
+     * finishPattern - finish;
+     * pricePattern - price.
+     * return - returns Map of Commands (keys) and patterns (values).
      */
-
     private Map<Command, Pattern> fillCommandsMap() {
         Map<Command, Pattern> commands = new HashMap<>();
         // Example: add bear 5, add cola 1, add soap 2
@@ -58,8 +64,7 @@ public class ConsoleCommandParser {
 
     /**
      * Method description
-     * Method parameters -
-     * Method for filling List of discounts which is a paramether of this class.
+     * Method for filling List of discounts which is a parameter of this class.
      * return - list of discounts.
      */
     private List<Discount> fillDiscountList() {
@@ -75,6 +80,7 @@ public class ConsoleCommandParser {
      * if we find this command - then we get arguments with the help of method getArgumentsWithMatcher() and passing
      * parameters to each command with method receiveArguments().
      * Then return Optional of class Command.
+     * If command is not found - we return empty optional of class Command.
      * return - we return Optional of class Command.
      */
     public Optional<Command> parse(String line) {
@@ -94,7 +100,7 @@ public class ConsoleCommandParser {
      * Method parameters - instance of class Matcher
      * we create an empty ArrayList
      * then we check if String line matches Pattern
-     * Next we create int countGroup which stores the numbers if groups in Pattern
+     * Next we create int countGroup which stores the numbers of groups in Pattern
      * and collect in Arraylist using stream all the arguments by number of groups.
      * return - we return list of arguments which correspond to pattern groups
      */
@@ -109,10 +115,13 @@ public class ConsoleCommandParser {
         return list;
     }
 
-    /*
+    /**
+     * Method description
+     * Method parameters - string name of command
      * depending on discount name we create discount object
      * buy_1_get_30_percentage -> Discount_BUY_1_GET_30_PERCENT_OFF();
      * buy_3_get_1_free -> Discount_BUY_3_GET_1_FREE();
+     * return - we return instance of discount.
      */
     public static Discount parseDiscount(String nameCommand) {
         if (nameCommand.equals("buy_1_get_30_percentage")) {
@@ -122,19 +131,26 @@ public class ConsoleCommandParser {
         }
     }
 
-    /*
+    /**
+     * Method description
+     * Method parameters - list of string name of products
      * from list converting to String, to apply in regular expression
-     * For example: List.of("buy_1_get_30_percentage", "buy_3_get_1_free") ->
-     * "buy_1_get_30_percentage|buy_3_get_1_free"
+     * For example: List.of("beer", "soap", "cola") ->
+     * "beer|soap|cola"
+     * return - string of all product names with delimiter |.
      */
     private String createRegExValues(List<String> values) {
         return String.join("|", values);
     }
 
-    /*
-     * from list converting to String, to apply in regular expression
+    /**
+     * Method description
+     * Method parameters - list of instances of discounts
+     * from list instances of discounts we get the names of this commands and add them to new List of discount names,
+     * to apply it in regular expression
      * For example: from List<Discount> discounts we get names of each discount, add them to list of discount names and
      * then make string from them -> "buy_1_get_30_percentage|buy_3_get_1_free"
+     * return - string of all discount names with delimiter |.
      */
     private String createRegExValuesDiscounts(List<Discount> values) {
         List<String> discountNames = new ArrayList<>();
@@ -146,7 +162,7 @@ public class ConsoleCommandParser {
 
     /**
      * Method description
-     * Method parameters - string which we get from text file or console, command
+     * Method parameters - string which we get from text file or console and command
      * we check if Pattern (which is value found by key - command) matches the string.
      * return - we return true if matches and false if not
      */

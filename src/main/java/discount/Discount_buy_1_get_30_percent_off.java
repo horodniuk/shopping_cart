@@ -15,7 +15,9 @@ public class Discount_buy_1_get_30_percent_off implements Discount {
     private final String discountName = "buy_1_get_30_percentage";
 
     /**
-     * BUY_1_GET_30_PERCENT_OFF - type of discount in which customer gets 30% discount on each product.
+     * Method description
+     * parameters - product name, int quantity of this product;
+     * getDiscount() should return sum of discount which equals 30% from product price on selected product.
      * formula -> discount = product quantity * product price * 0.30
      */
     @Override

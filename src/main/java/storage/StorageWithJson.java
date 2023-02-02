@@ -20,19 +20,23 @@ import java.util.stream.Collectors;
  * Realisation of storage with products based on json file
  */
 public class StorageWithJson implements Storage {
-    private URI path;
-    private Map<Product, Integer> storageCache;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private URI path; // path in which json file is situated;
+    private Map<Product, Integer> storageCache; // map storing products and their quantity which are loaded from json;
+    private final ObjectMapper objectMapper = new ObjectMapper(); // instance of class ObjectMapper
 
     public StorageWithJson(URI path) {
         this.path = path;
-        this.storageCache = load();
+        this.storageCache = load();  // filling map with method load()
     }
 
-    /*
-     * Task (completed): rewrite method load() with checks and write tests for it
-     * in the end we must get a Map with data? which are stored in resources by address
-     * source root --> storage.json
+    /**
+     * Method description
+     * First we create empty Map for containing instances of class Product and Integers (theirs quantity);
+     * then we create instance of class JsonNode, which contains all the data from json file (which we read with method
+     * readTree();
+     * next we create another JsonNode to get to level of node storage;
+     * then get data for each product, and it's quantity and fill map productMap;
+     * return - map of instances of class Product and Integers (theirs quantity).
      */
     @Override
     public Map<Product, Integer> load() {
@@ -54,11 +58,14 @@ public class StorageWithJson implements Storage {
         return productMap;
     }
 
-    /*
-     * This task must be clarified
-     * Task: implement method write() with checks and write tests for it
-     * data from storage Map must be written in file, which is stored in resources by address
-     * source root --> storage.json
+    /**
+     * Method description
+     * Writes changes from storageCache to our jsonFile;
+     * First we create empty Map for containing instances of class Product and Integers (theirs quantity);
+     * then we create instance of class JsonNode, which contains all the data from json file (which we read with method
+     * readTree();
+     * then we check if product id equals product id from json file. If true - then we rewrite quantity of this product
+     * from storageCache to json file;
      */
     @Override
     public void write() {
@@ -77,12 +84,21 @@ public class StorageWithJson implements Storage {
         }
     }
 
+    /**
+     * Method description
+     * parameters - instance of class Product, quantity if this product;
+     * method changes quantity (increases) of this product in storageCache map.
+     */
     @Override
     public void addProduct(Product product, int quantity) {
         storageCache.put(product, storageCache.get(product) + quantity);
     }
 
-
+    /**
+     * Method description
+     * parameters - string name of the product;
+     * method returns instance of class Product found by its name.
+     */
     @Override
     public Product getProductByName(String productName) {
         return storageCache.keySet().stream()
@@ -90,6 +106,11 @@ public class StorageWithJson implements Storage {
                 .findFirst().orElseThrow();
     }
 
+    /**
+     * Method description
+     * parameters - instance of class product, quantity if this product;
+     * method changes quantity (decreases) of this product in storageCache map.
+     */
     @Override
     public void removeProduct(Product product, int quantity) {
         storageCache.put(product, storageCache.get(product) - quantity);
@@ -101,10 +122,13 @@ public class StorageWithJson implements Storage {
     }*/
 
     /**
-     * Task (completed): implement method checkProductAndQuantityInStorage
-     * checking if product with this name exists in storage
-     * check availability in storage, if available then return true,
-     * if not - then we output to console, message that there is not enough quantity - and return false
+     * Method description
+     * parameters - instance of class Product, quantity if this product;
+     * checks if specified product exists in needed quantity in storageCache map;
+     * we check if quantity of product in storage is smaller than needed quantity,
+     * if true: then we output message to console - that we don't have enough of this product in storage;
+     * return - we return true if quantity of this product in storage is bigger or equals needed quantity,
+     * otherwise we return false.
      */
     @Override
     public boolean isProductAvailable(Product product, int quantity) {
@@ -117,13 +141,19 @@ public class StorageWithJson implements Storage {
     }
 
 
-    /*
-     * get return quantity(value) product in storage
+    /**
+     * Method description
+     * parameters - instance of class Product;
+     * return - we return quantity of specified product in storageCache map
      */
     private int getQuantity(Product product) {
         return storageCache.get(product);
     }
 
+    /**
+     * Method description
+     * return - we return all the names of products stored in storageCache map.
+     */
     @Override
     public List<String> getProductNames() {
         return storageCache.keySet().stream()
@@ -131,6 +161,11 @@ public class StorageWithJson implements Storage {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Method description
+     * parameters - string name of product
+     * return - we return price of specified product from storageCache map.
+     */
     @Override
     public BigDecimal getProductPrice(Product product) {
         return product.getPrice();

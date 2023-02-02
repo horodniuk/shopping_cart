@@ -15,7 +15,9 @@ public class Discount_buy_3_get_1_free implements Discount {
     private final String discountName = "buy_3_get_1_free";
 
     /**
-     * BUY_3_GET_ONE_FREE - type of discount in which customer gets every fourth identical product for free
+     * Method description
+     * parameters - product name, int quantity of this product;
+     * getDiscount() should return sum of discount which customer gets if every fourth identical product gets for free;
      * formula  ->  discount = amount of products/4 * price of product
      */
     @Override

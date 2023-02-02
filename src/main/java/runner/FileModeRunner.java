@@ -23,7 +23,15 @@ public class FileModeRunner implements ModeRunner {
     }
 
     /**
-     * Reading commands line by line from file.
+     * Method description
+     * starts reading and executing commands line by line from file;
+     * First we create instance of Class TextCommandExecutor
+     * after that we create BufferedReader instance and instance of class Cart;
+     * next we read file line by line until line!=null;
+     * each line we pass to method executeCommand() to execute each command;
+     * after we read all lines we start method finish(), that finishes work of program.
+     * method executeCommand() - executes command in line from file;
+     * method finish() - finishes work of program and writes changes to Storage (if such occurred).
      */
     @Override
     public void start() {
