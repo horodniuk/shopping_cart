@@ -2,11 +2,9 @@ package discount;
 
 import cart.Product;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.Locale;
-import java.util.Map;
 
 
 public class Discount_buy_3_get_1_free implements Discount {

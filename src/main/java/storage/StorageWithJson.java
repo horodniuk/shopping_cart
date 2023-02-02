@@ -1,7 +1,6 @@
 package storage;
 
 import cart.Product;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -9,10 +8,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -20,11 +18,11 @@ import java.util.stream.Collectors;
  * Realisation of storage with products based on json file
  */
 public class StorageWithJson implements Storage {
-    private URI path; // path in which json file is situated;
+    private File path; // path in which json file is situated;
     private Map<Product, Integer> storageCache; // map storing products and their quantity which are loaded from json;
     private final ObjectMapper objectMapper = new ObjectMapper(); // instance of class ObjectMapper
 
-    public StorageWithJson(URI path) {
+    public StorageWithJson(File path) {
         this.path = path;
         this.storageCache = load();  // filling map with method load()
     }
@@ -42,7 +40,8 @@ public class StorageWithJson implements Storage {
     public Map<Product, Integer> load() {
         Map<Product, Integer> productMap = new HashMap<>();
         try {
-            JsonNode jsonNode = objectMapper.readTree(new File("src/main/resources/market/storage.json"));
+            System.out.println("SRR " + path);
+            JsonNode jsonNode = objectMapper.readTree(path);
             JsonNode storage = jsonNode.get("storage");
             for (JsonNode node : storage) {
                 int product_id = Integer.parseInt(node.get("product_id").asText());
@@ -70,7 +69,7 @@ public class StorageWithJson implements Storage {
     @Override
     public void write() {
         try {
-            JsonNode jsonNode = objectMapper.readTree(new File("src/main/resources/market/storage.json"));
+            JsonNode jsonNode = objectMapper.readTree(path);
             JsonNode storage = jsonNode.get("storage");
             for (JsonNode node : storage) {
                 for (Product product : storageCache.keySet()) {
@@ -116,10 +115,6 @@ public class StorageWithJson implements Storage {
         storageCache.put(product, storageCache.get(product) - quantity);
     }
 
-   /* @Override
-    public void reserveProduct(Product product, int quantity) {
-
-    }*/
 
     /**
      * Method description
@@ -174,7 +169,7 @@ public class StorageWithJson implements Storage {
     @Override
     public String toString() {
         return "StorageWithJson{" +
-                "storageCache=" + storageCache +
-                '}';
+               "storageCache=" + storageCache +
+               '}';
     }
 }

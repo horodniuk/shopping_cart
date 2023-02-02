@@ -1,13 +1,15 @@
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import runner.FileModeRunner;
 import runner.InteractiveModeRunner;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 
@@ -20,7 +22,6 @@ public class Main {
     public static void main(String[] args) {
         start();
     }
-
 
     /*
      * Method in endless cycle is asking user to enter file name.
@@ -37,24 +38,43 @@ public class Main {
         String[] strArray = line.split(" ");
         isPathCorrect(strArray[0], strArray);
         if (strArray.length == 2) {
-            String pathToStorageProduct = strArray[0] + File.separator + strArray[1];
-            new InteractiveModeRunner(URI.create(String.valueOf(Main.class.getResource(pathToStorageProduct)))).start();
+            String pathToStorageProduct = strArray[0] + "/" + strArray[1];
+            File storageProduct = getAccessToFileByCopy(pathToStorageProduct);
+            new InteractiveModeRunner(storageProduct).start();
         } else if (strArray.length == 3) {
             String pathToStorageProduct = strArray[0] + "/" + strArray[1];
-            String pathToCommandList = strArray[0] + "/" + strArray[2];
-            new FileModeRunner(
-                    URI.create(String.valueOf(Main.class.getResource(pathToStorageProduct))),
-                    URI.create(String.valueOf(Main.class.getResource(pathToCommandList)))
-            ).start();
+            String pathToCommandList = strArray[0] + "/" + strArray[2];   // File separator
+            File storageProduct = getAccessToFileByCopy(pathToStorageProduct);
+            File commandList = getAccessToFileByCopy(pathToCommandList);
+            new FileModeRunner(storageProduct, commandList).start();
         } else {
             System.out.println("incorrectly command");
         }
     }
 
+    /*
+     * if we run the program from the console by jar file, we need to copy the resource files
+     * and get access to file
+     */
+    private static File getAccessToFileByCopy(String path) {
+        InputStream in = Main.class.getClassLoader().getResourceAsStream(path);
+        try {
+            File output = new File(Paths.get("temp_") + FilenameUtils.getName(path));
+            FileUtils.copyInputStreamToFile(in, output );
+            in.close();
+            return output;
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Incorrect path to file " + path);
+        }
+    }
+
+    /*
+     * check for the existence of a file and folders
+     */
     private static boolean isPathCorrect(String folder, String... files)  {
-         isDirectoryPathExist(folder);
+        isDirectoryPathExist(folder);
         for (int i = 1; i < files.length; i++) {
-           isFilePathExist(folder + "/" + files[i]);
+            isFilePathExist(folder + "/" + files[i]);
         }
         return true;
     }
@@ -72,7 +92,7 @@ public class Main {
         if (url == null){
             throw new IllegalArgumentException("Resource " + path + " not found!");
         }
-            return  Path.of(path);
+            return Path.of(path);
     }
 
     private static String getLineToConsole() {
@@ -81,8 +101,8 @@ public class Main {
 
     private static void printPreviewToConsole() {
         System.out.println("Choose mode:");
-        System.out.println("Interactive mode - enter \"./market storage.json\"");
-        System.out.println("File mode режим - enter \"./market storage.json commadsList.txt\"");
+        System.out.println("Interactive mode - enter \"market storage.json\"");
+        System.out.println("File mode режим - enter \"market storage.json commadsList.txt\"");
     }
 }
 
