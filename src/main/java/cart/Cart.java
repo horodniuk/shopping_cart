@@ -223,6 +223,7 @@ public class Cart {
                 ",\n storage=" + storage +
                 ",\n discountStorage=" + discountStorage +
                 ",\n price=" + price +
+                ",\n discount=" + discountStorage.getDiscountValue() +
                 ",\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
                 '\n';
     }
