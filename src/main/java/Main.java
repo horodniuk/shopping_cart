@@ -59,7 +59,7 @@ public class Main {
     private static File getAccessToFileByCopy(String path) {
         InputStream in = Main.class.getClassLoader().getResourceAsStream(path);
         try {
-            File output = new File(Paths.get("temp_") + FilenameUtils.getName(path));
+            File output = new File(Paths.get("temp/temp_") + FilenameUtils.getName(path));
             FileUtils.copyInputStreamToFile(in, output );
             in.close();
             return output;
