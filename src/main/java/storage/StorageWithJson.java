@@ -68,6 +68,7 @@ public class StorageWithJson implements Storage {
      */
     @Override
     public void write() {
+        File tempStorage = new File("temp/temp_storage.json");
         try {
             JsonNode jsonNode = objectMapper.readTree(path);
             JsonNode storage = jsonNode.get("storage");
@@ -78,6 +79,7 @@ public class StorageWithJson implements Storage {
                     }
                 }
             }
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(tempStorage,jsonNode);
         } catch (IOException e) {
             e.printStackTrace();
         }
