@@ -1,5 +1,5 @@
 #https://git-scm.com/docs/gitignore
-
+.temp
 .idea
 *.iml
 out

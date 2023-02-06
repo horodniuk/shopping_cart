@@ -1,19 +1,17 @@
 package cart;
 
 import discount.Discount;
+import discount.DiscountStorage;
 import storage.Storage;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.function.Consumer;
 
 public class Cart {
     private Storage storage; // Storage containing map of products
-    private Map<String, Product> cartMap;         // map of products, which are added in the cart
-    private Map<String, Discount> discountMap;    // map of discount types, which are applied on products in Cart
+    private DiscountStorage discountStorage; // discount register containing discount value and map of discounts
+    private Map<Product, Integer> cartMap;         // map of products, which are added in the cart
     private BigDecimal price = new BigDecimal(00.00).setScale(2); // total price of products (including discount)
-    private BigDecimal discount = new BigDecimal(00.00).setScale(2); // total amount of discount on products in cart
 
 
     /**
@@ -23,7 +21,7 @@ public class Cart {
     public Cart(Storage storage) {
         this.cartMap = new LinkedHashMap<>();
         this.storage = storage;
-        this.discountMap = new HashMap<>();
+        this.discountStorage = new DiscountStorage();
     }
 
     /**
@@ -31,7 +29,6 @@ public class Cart {
      * method parameters - name of product, and it's quantity
      * Method should add products in the cart
      * we check if product with such name and in needed quantity exists in the storage (with method isProductAvailable()
-     * tempPrice - temporary variable for storing price of product
      * Further we are checking if cart is not empty and stores product with such name - then we update its quantity
      * otherwise we add this product in cart
      * method addPrintToConsole() - we print data to console
@@ -39,155 +36,151 @@ public class Cart {
      * method updatePrice() - we update price (total price of all products in cart)
      */
     public void add(String productName, int quantity) {
-        if (storage.isProductAvailable(productName, quantity)) {
-            BigDecimal tempPrice = storage.getProductPrice(productName);
-            cartMap.compute(productName, (key, product) ->
-                    (isProductExistInCart(productName) ?
-                            new Product(productName, tempPrice, cartMap.get(productName).getQuantity()
-                                    + quantity) :
-                            new Product(productName, tempPrice, quantity)));
-            addPrintToConsole(quantity, productName);
-            storage.removeProduct(productName, quantity);
+        Product product = storage.getProductByName(productName);
+        if (storage.isProductAvailable(product, quantity)) {
+            cartMap.put(product, isProductExistInCart(product) ? cartMap.get(product) + quantity : quantity);
+            addPrintToConsole(product, quantity);
+            storage.removeProduct(product, quantity);
             price = updatePrice();
         }
     }
 
     /**
      * Method description
-     * method parameters - name of product, and it's quantity to be removed
-     * Method should remove products from cart
-     * we check if product with such name exists in the cart:
-     * if true we make parameter quantityInCart (amount of this product stored in cart) and start method remove (),
-     * if false - we output message to the console, that we don't have such product in cart.
-     * <p>
-     * method remove() - we delete product from the cart, update total price and total discount or reduce quantity of
-     * product in storage, and update total price and total discount.
+     * Method parameters - instance of class product;
+     * checking if product exists as key in Cart map and if cartMap is not empty.
+     * If it doesn't exist then we return false.
+     * If exists then we return true.
+     */
+    private boolean isProductExistInCart(Product product) {
+        return !cartMap.isEmpty() && cartMap.containsKey(product);
+    }
+
+    /**
+     * Method description
+     * method parameters - name of product and quantity to be removed;
+     * method should reduce product amount in cart and change discount value on this product in discountStorage if
+     * discount on this product was applied;
+     * We create temporary instance of Product - tempProduct;
+     * next we check if such product exists in cart. If true :
+     * we create int quantity of this product and start method remove();
+     * if false: we output message to console - that such product doesn't exist in cart.
      */
     public void remove(String productName, int quantity) {
-        if (isProductExistInCart(productName)) {
-            int quantityInCart = cartMap.get(productName).getQuantity();
-            remove(productName, quantity, quantityInCart);
-        } else System.out.println("You don't have " + productName + " in cart. Please enter another Product.");
+        Product product = storage.getProductByName(productName);
+        if (isProductExistInCart(product)) {
+            int quantityProductInCart = cartMap.get(product);
+            remove(product, quantity, quantityProductInCart);
+        } else System.out.println("You don't have " + product + " in cart. Please enter another Product.");
     }
 
     /**
      * Method description
-     * method parameters - name of product, quantity to be removed, and it's quantity stored in cart;
-     * Method should remove products from cart;
-     * First we check if quantity of this product in cart is bigger than needed quantity,
-     * if true then we start method reduceProductAndDiscount(), if false - we check next statement;
-     * if quantity of this product in cart equals needed quantity,
-     * if true then we start method deleteProductAndDiscount(), if false - we output message to console that we don't
-     * have enough of this product in cart;
-     * method deleteProductAndDiscount() - we delete product from the cart, update total price and total discount;
-     * method reduceProductAndDiscount() - we reduce quantity of product in storage, and update total price
-     * and total discount.
+     * first we check if quantity of this product in cart is bigger than quantity needed to remove. If true:
+     * we start method reduceProductAndDiscount();
+     * if false - we check next statement.
+     * next we check if quantity of this product in cart equals quantity needed to remove. If true:
+     * we start method deleteProductAndDiscount();
+     * if false - we output message that cart doesn't contain enough quantity of this product.
      */
-    private void remove(String productName, int quantity, int quantityInCart) {
-        if (quantityInCart > quantity) reduceProductAndDiscount(productName, quantity);
-        else if (quantityInCart == quantity) deleteProductAndDiscount(productName, quantity);
+    private void remove(Product product, int quantity, int quantityInCart) {
+        if (quantityInCart > quantity) reduceProductAndDiscount(product, quantity);
+        else if (quantityInCart == quantity) deleteProductAndDiscount(product, quantity);
         else System.out.printf("Cart doesn't contain %s " +
-                    "in quantity %d right now there is only next quantity: %d%n", productName, quantity, quantityInCart);
-
+                    "in quantity %d right now there is only next quantity: %d%n", product, quantity, quantityInCart);
     }
 
     /**
      * Method description
-     * method parameters - name of product and quantity to be removed;
-     * Method should delete product in cart and remove discount from discount map if discount on this product was
-     * applied;
-     * First we check if discount map contains such key (product name);
-     * if true then we subtract from total amount of discount on all products in cart amount of discount on this product
-     * otherwise - we create a variable tempProduct - to store the produce we are deleting, after that we start method
-     * removePrintToConsole(), then we remove this product from cart Map
-     * Next we add this product in storage with method addProduct()
-     * in the end we update total price on all products in cart;
-     * removePrintToConsole() - we output message to the console that product was removed from cart;
-     * method addProduct() - we add product to storage in the specified quantity;
-     * method updatePrice() - we update total price on all products in cart including discounts.
+     * method deletes product and discount if product is removed from cart;
+     * first we check if discount is applied on this product with method isDiscountAppliedOnProduct();
+     * if true - we create int quantity of this product, type of discount and value of discount on this product;
+     * next we remove discount and reduce discount value with method removeDiscountValueAndType();
+     * next we remove product and it's quantity from cartMap;
+     * after that we update storage and output data to console with updateAndPrintToConsole();
      */
-    private void deleteProductAndDiscount(String productName, int quantity) {
-        if (discountMap.containsKey(productName)) {
-            discount = discount.subtract(discountMap.get(productName).getDiscount(productName, cartMap));
-            discountMap.remove(productName);
+    private void deleteProductAndDiscount(Product product, int quantity) {
+        if (discountStorage.isDiscountAppliedOnProduct(product)) {
+            Discount tempDiscountType = discountStorage.getDiscountTypeFromMap(product);
+            int quantityInCart = cartMap.get(product);
+            BigDecimal tempDiscountValue = tempDiscountType.getDiscount(product, quantityInCart);
+            discountStorage.removeDiscountValueAndType(product, tempDiscountValue);
         }
-        Product tempProduct = cartMap.get(productName);
-        removePrintToConsole(quantity, productName);
-        cartMap.remove(productName);
-        storage.addProduct(tempProduct, quantity);
-        price = updatePrice();
+        cartMap.remove(product);
+        updateAndPrintToConsole(product, quantity);
     }
 
     /**
      * Method description
-     * method parameters - name of product and quantity to be removed;
-     * method should reduce product amount in cart and change discount on this product in discount map if discount on
-     * this product was applied;
-     * We create temporary instance of Product - tempProduct;
-     * next we check if discount map contains such key (product name);
-     * if true:
-     * then we create temporary instance of Discount tempDiscount and create variable of discount value for this product
-     * next we change quantity of this product with method changeQuantity()
-     * then we subtract from total amount of discount on all products in cart amount of discount on this product and
-     * adding new amount of discount applied to this product;
-     * after that we put tempDiscount in discountMap (productName as a key);
-     * and output message to console - that discount changed in this product;
-     * if false we just change amount of this product in cart;
-     * Next we add this product in storage with method addProduct()
-     * after that we update total price on all products in cart with method updatePrice();
-     * in the end we start method removePrintToConsole(), then we remove this product from cart Map;
-     * removePrintToConsole() - we output message to the console that product was removed from cart;
-     * method addProduct() - we add product to storage in the specified quantity;
-     * method updatePrice() - we update total price on all products in cart including discounts;
-     * method changeQuantity() - we change quantity of product.
+     * method should reduce product quantity and discount amount;
+     * first we check if discount is applied on this product with method isDiscountAppliedOnProduct();
+     * if true - we create int old quantity of this product, old value of discount on this product;
+     * next we start method changeQuantityByReduceProduct() and after that create new value of discount on this product
+     * and new int quantity of this product;
+     * after that we calculate difference between old discount value and new discount value;
+     * next we start method updateDiscountValueAndType();
+     * and output message to console that discount changed;
+     * if false - we start method changeQuantityByReduceProduct();
+     * in the end we start method updateAndPrintToConsole().
      */
-    private void reduceProductAndDiscount(String productName, int quantity) {
-        Product tempProduct = cartMap.get(productName);
-        if (discountMap.containsKey(productName)) {
-            Discount tempDiscount = discountMap.get(productName);
-            BigDecimal discountProductValue = tempDiscount.getDiscount(productName, cartMap).setScale(2);
-            changeQuantity(productName, quantity);
-            discount = discount.subtract(discountProductValue).add(tempDiscount.getDiscount(productName, cartMap)).
-                    setScale(2);
-            discountMap.put(productName, tempDiscount);
+    private void reduceProductAndDiscount(Product product, int quantity) {
+        if (discountStorage.isDiscountAppliedOnProduct(product)) {
+            Discount tempDiscount = discountStorage.getDiscountTypeFromMap(product);
+            int oldQuantity = cartMap.get(product);
+            BigDecimal oldDiscountProductValue = tempDiscount.getDiscount(product, oldQuantity);
+            changeQuantityByReduceProduct(product, quantity);
+            int newQuantity = cartMap.get(product);
+            BigDecimal newDiscountProductValue = tempDiscount.getDiscount(product, newQuantity);
+            BigDecimal difference = oldDiscountProductValue.subtract(newDiscountProductValue);
+            discountStorage.updateDiscountValueAndType(product, difference, tempDiscount);
             System.out.printf("discount changed. Details: apply %s by  %s. Discount value - %s $ %n",
-                    tempDiscount.getClass().getSimpleName(), productName, discountProductValue);
+                    tempDiscount.getClass().getSimpleName(), product, newDiscountProductValue);
         } else {
-            changeQuantity(productName, quantity);
+            changeQuantityByReduceProduct(product, quantity);
         }
-        storage.addProduct(tempProduct, quantity);
-        price = updatePrice();
-        removePrintToConsole(quantity, productName);
+        updateAndPrintToConsole(product, quantity);
     }
 
     /**
      * Method description
-     * changes quantity of product stored in cart map
-     * method parameters - name of product and quantity to be removed;
+     * updates storage by adding product and quantity in it;
+     * next updating total price on all products;
+     * and output data to console with removePrintToConsole();
      */
-    private void changeQuantity(String productName, int quantity) {
-        cartMap.get(productName).setQuantity(cartMap.get(productName).getQuantity() - quantity);
+    private void updateAndPrintToConsole(Product product, int quantity) {
+        storage.addProduct(product, quantity);
+        price = updatePrice();
+        removePrintToConsole(product, quantity);
     }
 
     /**
-     * output data (if product is added in cart) to the console according to the technical task
+     * Method description
+     * changes quantity of this product by subtraction
      */
-    private void addPrintToConsole(int quantity, String productName) {
-        System.out.println(quantity + " " + productName + "(s) vas added");
+    private void changeQuantityByReduceProduct(Product product, int quantity) {
+        cartMap.put(product, cartMap.get(product) - quantity);
     }
 
     /**
      * output data (if product is removed from cart) to the console according to the technical task
      */
-    private void removePrintToConsole(int quantity, String productName) {
-        System.out.println(quantity + " " + productName + "(s) vas removed");
+    private void removePrintToConsole(Product product, int quantity) {
+        System.out.println(quantity + " " + product.getName() + "(s) vas removed");
+    }
+
+
+    /**
+     * output data (if product is added in cart) to the console according to the technical task
+     */
+    private void addPrintToConsole(Product product, int quantity) {
+        System.out.println(quantity + " " + product.getName() + "(s) vas added");
     }
 
     /**
      * data output to console in next format: discount:00.00,price:XX.50
      */
     public void price() {
-        System.out.println(String.format("discount:%s, price:%s", discount, price));
+        System.out.println(String.format("discount:%s, price:%s", discountStorage.getDiscountValue(), price));
         System.out.println(this); // for logging, call of method toString on cart
     }
 
@@ -197,11 +190,7 @@ public class Cart {
      * method write() - writes changes to the storage (Storage file or DataBase).
      */
     public void finish() {
-        try {
-            storage.write();
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to write file!");
-        }
+        storage.write();
         System.out.println("Done!");
     }
 
@@ -210,58 +199,62 @@ public class Cart {
      * calculates total price of products without discounts;
      * return - BigDecimal value of total price of all products in Cart.
      */
-    private BigDecimal totalPriceWithoutDiscount() {
-        List<Product> list = new ArrayList<>(cartMap.values());
-        var sum = BigDecimal.ZERO;
-        for (Product product : list) {
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(product.getQuantity())));
-        }
-        return sum.setScale(2);
+    public BigDecimal totalPriceWithoutDiscount() {
+        Integer sum = cartMap.entrySet().stream()
+                .mapToInt(product -> product.getKey().getPrice()
+                        .multiply(new BigDecimal(product.getValue())).intValue())
+                .sum();
+        return new BigDecimal(sum).setScale(2);
     }
 
     /**
      * Method description
+     * we update total discount value in cart (discount)
      * Method parameters - type of discount and name of product
      * applies discount on product
      * checking if product with such name exists in cart
      * if true - we get discount value (discountProductValue)
      * if discount value not 0, then discount worked and then:
-     * we update total discount value in cart (discount)
-     * then update total price of products in cart (price)
-     * next we add in map with discounts product name and discount value on it (BigDecimal).
-     * output to console - discount added;
+     * then we start private method applyDiscount();
      * if product not fount in cart - than we output message to console - that such product doesn't exist in cart.
      */
     public void applyDiscount(Discount discountType, String productName) {
-        if (isProductExistInCart(productName)) {
-            BigDecimal discountProductValue = discountType.getDiscount(productName, cartMap).setScale(2);
-            if (discountProductValue.intValue() != 0) {
-                discount = updateDiscount(productName, discountProductValue);
-                price = updatePrice();
-                discountMap.put(productName, discountType);
-                System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
-                        discountType.getClass().getSimpleName(), productName, discountProductValue);
+        Product product = storage.getProductByName(productName);
+        if (isProductExistInCart(product)) {
+            int quantity = cartMap.get(product);
+            BigDecimal newDiscountProductValue = discountType.getDiscount(product, quantity).setScale(2);
+            if (newDiscountProductValue.intValue() != 0) {
+                applyDiscount(discountType, product, newDiscountProductValue);
             }
-        } else System.out.println("Product " + productName + " doesn't exist in cart. " +
-                "Therefore discount cannot be applied.");
+        } else System.out.println("Discount cannot be added, because there is no such product in cart!");
     }
 
     /**
      * Method description
-     * Method parameters - name of product and amount of discount applied to product
-     * checking if name of product exists as key in map with discounts.
-     * If true then discount was already applied in this product, then we must subtract old discount
-     * (oldDiscountValueProduct) from total discount on all products in cart(discount)
-     * Because according to the totalPriceWithoutDiscount - if two discounts are applied to one product -
-     * then we must apply only the last one.
-     * return - we add discount on this product to total discount on all products.
+     * Method parameters - type of discount, instance of class product and new Discount Type
+     * we apply discount on product;
+     * first we check if any discount is applied on this product with method isDiscountAppliedOnProduct();
+     * if true - then we create int quantity of this product, oldDiscountValue, newDiscountValue and calculate
+     * difference between old and new values of discount;
+     * then we start method updateDiscountValueAndType();
+     * if false - we start method addDiscountValueAndType();
+     * next update total price of products in cart (price)
+     * output to console - discount added;
      */
-    private BigDecimal updateDiscount(String productName, BigDecimal discountProductValue) {
-        if (discountMap.containsKey(productName)) {
-            BigDecimal oldDiscountValueProduct = discountMap.get(productName).getDiscount(productName, cartMap);
-            discount = discount.subtract(oldDiscountValueProduct);
+    private void applyDiscount(Discount discountType, Product product, BigDecimal newDiscountProductValue) {
+        if (discountStorage.isDiscountAppliedOnProduct(product)) {
+            int quantity = cartMap.get(product);
+            Discount oldDiscountType = discountStorage.getDiscountTypeFromMap(product);
+            BigDecimal oldDiscountProductValue = oldDiscountType.getDiscount(product, quantity).setScale(2);
+            BigDecimal difference = oldDiscountProductValue.subtract(newDiscountProductValue);
+            discountStorage.updateDiscountValueAndType(product, difference,
+                    discountType);
+        } else {
+            discountStorage.addDiscountValueAndType(product, newDiscountProductValue, discountType);
         }
-        return discount.add(discountProductValue).setScale(2);
+        price = updatePrice();
+        System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
+                discountType.getClass().getSimpleName(), product, newDiscountProductValue);
     }
 
     /**
@@ -271,18 +264,7 @@ public class Cart {
      * return - BigDecimal of total price including discount.
      */
     private BigDecimal updatePrice() {
-        return totalPriceWithoutDiscount().subtract(discount);
-    }
-
-    /**
-     * Method description
-     * Method parameters - name of product
-     * checking if name of product exists as key in Cart map and if cartMap is not empty.
-     * If it doesn't exist then we return false.
-     * If exists then we return true.
-     */
-    private boolean isProductExistInCart(String productName) {
-        return !cartMap.isEmpty() && cartMap.containsKey(productName);
+        return totalPriceWithoutDiscount().subtract(discountStorage.getDiscountValue());
     }
 
 
@@ -290,20 +272,8 @@ public class Cart {
         return storage;
     }
 
-    public Map<String, Product> getCartMap() {
-        return cartMap;
-    }
-
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public BigDecimal getDiscount() {
-        return discount;
-    }
-
-    public Map<String, Discount> getDiscountMap() {
-        return discountMap;
     }
 
     @Override
@@ -311,9 +281,9 @@ public class Cart {
         return "~~~~~~~~~~~~~~~~~  CART (LOG) ~~~~~~~~~~~~~~~~~\n" +
                 "cartMap=" + cartMap +
                 ",\n storage=" + storage +
-                ",\n discountMap=" + discountMap +
+                ",\n discountStorage=" + discountStorage +
                 ",\n price=" + price +
-                ",\n discount=" + discount +
+                ",\n discount=" + discountStorage.getDiscountValue() +
                 ",\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
                 '\n';
     }

@@ -2,7 +2,6 @@ package storage;
 
 import cart.Product;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -21,17 +20,19 @@ import java.util.Map;
  * Method isProductAvailable() - checks if storage map contains needed quantity of such product;
  */
 public interface Storage {
-    Map<String, Product> load() throws IOException;
+    Map<Product, Integer> load();
 
-    void write() throws IOException;
+    void write();
 
     void addProduct(Product product, int quantity);
 
-    void removeProduct(String productName, int quantity);
+    void removeProduct(Product product, int quantity);
 
     List<String> getProductNames();
 
-    BigDecimal getProductPrice(String productName);
+    BigDecimal getProductPrice(Product product);
 
-    boolean isProductAvailable(String productName, int quantity);
+    boolean isProductAvailable(Product product, int quantity);
+
+    Product getProductByName(String productName);
 }

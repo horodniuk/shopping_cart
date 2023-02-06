@@ -6,8 +6,8 @@ import java.util.List;
 
 public class RemoveCommand extends Command {
 
-    private String productName; // name of product
-    private int quantity; // product quantity
+    private String productName;
+    private int quantity;
 
     /**
      * Method receiveArguments() - receives arguments (strings) in method parse() in class ConsoleCommandParser.
@@ -17,6 +17,7 @@ public class RemoveCommand extends Command {
         productName = newArguments.get(1);
         quantity = Integer.parseInt(newArguments.get(2));
     }
+
     /**
      * Method execute() - executes command. In this case - command - remove, which removes product in
      * given quantity from cart Map.
