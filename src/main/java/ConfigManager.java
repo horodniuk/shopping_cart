@@ -2,6 +2,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import runner.FileModeRunner;
 import runner.InteractiveModeRunner;
+import storage.Storage;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,29 +16,30 @@ import java.util.Scanner;
 
 public class ConfigManager {
 
+    /*
+     * Method in endless cycle is asking user to enter file name.
+     *
+     * If user entered in command line only correct name of json file -
+     *  then starts new InteractiveModeRunner#start
+     *
+     * If user entered in command line json file name and through space name of .txt file with commands -
+     *   then starts new FileModeRunner#start
+     */
     public void start() {
         String configPath = "application.properties";
-        String dbType = new ConfigLoader().load(URI.create(String.valueOf(Main.class.getResource(configPath))));
-        if (dbType.equals("STORAGE_JSON")) {
-            printPreviewToConsole();
-            String line = getLineToConsole();
-            String[] strArray = line.split(" ");
-            isPathCorrect(strArray[0], strArray);
-            if (strArray.length == 2) {
-                String pathToStorageProduct = strArray[0] + "/" + strArray[1];
-                File storageProduct = getAccessToFileByCopy(pathToStorageProduct);
-                new InteractiveModeRunner(storageProduct).start();
-            } else if (strArray.length == 3) {
-                String pathToStorageProduct = strArray[0] + "/" + strArray[1];
-                String pathToCommandList = strArray[0] + "/" + strArray[2];   // File separator
-                File storageProduct = getAccessToFileByCopy(pathToStorageProduct);
-                File commandList = getAccessToFileByCopy(pathToCommandList);
-                new FileModeRunner(storageProduct, commandList).start();
-            } else {
-                System.out.println("incorrectly command");
-            }
+        Storage storage = new ConfigLoader().load(URI.create(String.valueOf(Main.class.getResource(configPath))));
+        printPreviewToConsole();
+        String line = getLineToConsole();
+        String[] strArray = line.split(" ");
+        isPathCorrect(strArray[0], strArray);
+        if (strArray[0].equals("interactive")) {
+            new InteractiveModeRunner(storage).start();
+        } else if (strArray.length == 2) {
+            String pathToCommandList = strArray[0] + "/" + strArray[1];   // File separator
+            File commandList = getAccessToFileByCopy(pathToCommandList);
+            new FileModeRunner(storage, commandList).start();
         } else {
-            //start sql db
+            System.out.println("incorrectly command");
         }
     }
 
@@ -90,7 +92,7 @@ public class ConfigManager {
 
     private static void printPreviewToConsole() {
         System.out.println("Choose mode:");
-        System.out.println("Interactive mode - enter \"market storage.json\"");
-        System.out.println("File mode режим - enter \"market storage.json commadsList.txt\"");
+        System.out.println("Interactive mode - enter \"interactive\"");
+        System.out.println("File mode - enter \"market commadsList.txt\"");
     }
 }
