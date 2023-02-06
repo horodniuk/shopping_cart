@@ -24,7 +24,11 @@ public class ConfigLoader {
             property.load(fileReader);
             String dbType = property.getProperty("DB-TYPE");
             if (dbType.equals("STORAGE_JSON")) {
-                File dbPath = getAccessToFileByCopy(property.getProperty("DB-PATH"));
+                String pathToFile = property.getProperty("DB-PATH");
+                String[] strArray = pathToFile.split(" ");
+                isPathCorrect(strArray[0], strArray);
+                pathToFile = strArray[0] + "/" + strArray[1];
+                File dbPath = getAccessToFileByCopy(pathToFile);
                 storage = new StorageWithJson(dbPath);
             }
         } catch (IOException e) {
@@ -38,7 +42,7 @@ public class ConfigLoader {
      * and get access to file
      */
     private File getAccessToFileByCopy(String path) {
-        InputStream in = Main.class.getClassLoader().getResourceAsStream(path);
+        InputStream in = getClass().getResourceAsStream(path);
         try {
             File output = new File(Paths.get("temp/temp_") + FilenameUtils.getName(path));
             FileUtils.copyInputStreamToFile(in, output);
