@@ -5,13 +5,11 @@ public class DataSourceManager {
         this.configReader = configReader;
     }
 
-    void start (){
-    /*    DbType dbType = configReader.parse();
-        if (dbType.name().equals("STORAGE_JSON")){*/
-            AppByJsonStorage.start();
-       /* }
-        if (dbType.name().equals("STORAGE_DATABASE")){
-            AppByDataBaseStorage.start();
-        }*/
-    };
+    void start() {
+        DbType dbType = configReader.parse();
+        switch (dbType) {
+            case STORAGE_JSON -> AppByJsonStorage.start();
+            case STORAGE_DATABASE -> AppByDataBaseStorage.start();
+        }
+    }
 }
