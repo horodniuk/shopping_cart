@@ -15,18 +15,15 @@ public class ConfigReader {
      * Method description
      * This methode is made to parse data from file of properties;
      * First we announce variable dbType;
-     * next in try catch scope we creae FileReader
-     * execute commands which we get after parsing the string of command.
-     * First we create instance of class ConsoleCommandParser;
-     * next we get Optional of class Command with the help of method parse()
-     * Then checking if Optional of Command is empty or not.
-     * If it's empty then we print message to console that user entered unknown command,
-     * because we couldn't parse it with method parse()
-     * IF Optional of Command is not empty: then we get command from instance of Optional ParsedCommand
-     * and assign to a variable command;
-     * after that we start method execute() which executes specified command.
-     * method parse() - parses the received line (from file or from console);
-     * method execute() - executes specified command.
+     * next in try catch scope we create inputStreamReader to read properties file;
+     * after that we create instance of class Properties and with its help load all properties from properties file;
+     * we create stringDBType assign it value of property DB_TYPE;
+     * next we check if value of stringDBType equals STORAGE_JSON;
+     * if true - we reassign new value to DBType - STORAGE_JSON;
+     * if false - we check next statement;
+     * we check if value of stringDBType equals STORAGE_DATABASE;
+     * if true - we reassign new value to DBType - STORAGE_JSON;
+     * if false - we output message to console - that wrong dbType is specified in properties file.
      */
     public DbType parse() {
         DbType dbType = null;
@@ -38,7 +35,7 @@ public class ConfigReader {
                 dbType = DbType.STORAGE_JSON;
             } else if (stringDBType.toUpperCase().equals(DbType.STORAGE_DATABASE.toString())) {
                 dbType = DbType.STORAGE_DATABASE;
-            } else System.out.println("Wrong DB type specified in file app.properties");
+            } else System.out.println("Wrong DB type specified in file app.properties!");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
