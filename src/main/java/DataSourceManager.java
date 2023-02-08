@@ -6,9 +6,10 @@ public class DataSourceManager {
     }
 
     void start (){
+        AppByDataBaseStorage.start();
     /*    DbType dbType = configReader.parse();
         if (dbType.name().equals("STORAGE_JSON")){*/
-            AppByJsonStorage.start();
+            //AppByJsonStorage.start();
        /* }
         if (dbType.name().equals("STORAGE_DATABASE")){
             AppByDataBaseStorage.start();                     ////------DATABASE

@@ -79,7 +79,7 @@ public class StorageWithJson implements Storage {
                     }
                 }
             }
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(tempStorage,jsonNode);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(tempStorage, jsonNode);
         } catch (IOException e) {
             e.printStackTrace();
         }
