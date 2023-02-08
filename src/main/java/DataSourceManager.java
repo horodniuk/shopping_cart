@@ -11,7 +11,7 @@ public class DataSourceManager {
             AppByJsonStorage.start();
        /* }
         if (dbType.name().equals("STORAGE_DATABASE")){
-            AppByDataBaseStorage.start();
+            AppByDataBaseStorage.start();                     ////------DATABASE
         }*/
     };
 }
