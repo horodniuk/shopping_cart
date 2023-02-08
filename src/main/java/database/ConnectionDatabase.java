@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ConnectionDatabase {
-    public static void main(String[] args) throws SQLException {
+
+    public static Map<Product, Integer> extractedProductFromDataBase() {
         Map<Product, Integer> productListDataBase;
         String sql = """
                         SELECT product_id, product_name, product_price, product_quantity
@@ -25,8 +26,10 @@ public class ConnectionDatabase {
                                 executeResult.getBigDecimal("product_price")),
                         executeResult.getInt("product_quantity"));
             }
-            System.out.println(productListDataBase);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+        return productListDataBase;
     }
 }
 

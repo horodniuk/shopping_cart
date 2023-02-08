@@ -47,7 +47,7 @@ public class InteractiveModeRunner implements ModeRunner {
      */
     private void showTooltipWithCommands() {
         System.out.println("\n---------------------------------INSTRUCTION-------------------------------------------" +
-                "-----------------------------------------");
+                           "-----------------------------------------");
         System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"add beer 5\"", "- add item to cart.", "Structure:",
                 "add [product name] [product quantity]");
         System.out.printf("\n%-40s  %-30s  %-10s -> %-30s ", "\"remove beer 5\"", "- remove item from cart.",
@@ -60,6 +60,6 @@ public class InteractiveModeRunner implements ModeRunner {
         System.out.printf("\n%-40s  %-30s ", "\"finish\"", "- grocery shopping completed.");
         System.out.println("");
         System.out.println("\n---------------------------------------------------------------------------------------" +
-                "-----------------------------------------");
+                           "-----------------------------------------");
     }
 }

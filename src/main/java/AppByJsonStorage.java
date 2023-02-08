@@ -51,7 +51,7 @@ public class AppByJsonStorage {
         InputStream in = AppByJsonStorage.class.getClassLoader().getResourceAsStream(path);
         try {
             File output = new File(Paths.get("temp/temp_") + FilenameUtils.getName(path));
-            FileUtils.copyInputStreamToFile(in, output );
+            FileUtils.copyInputStreamToFile(in, output);
             in.close();
             return output;
         } catch (IOException e) {
@@ -62,7 +62,7 @@ public class AppByJsonStorage {
     /*
      * check for the existence of a file and folders
      */
-    private static boolean isPathCorrect(String folder, String... files)  {
+    private static boolean isPathCorrect(String folder, String... files) {
         isDirectoryPathExist(folder);
         for (int i = 1; i < files.length; i++) {
             isFilePathExist(folder + "/" + files[i]);
@@ -70,20 +70,20 @@ public class AppByJsonStorage {
         return true;
     }
 
-    private static boolean isFilePathExist(String path)  {
-            return Files.exists(getPath(path));
+    private static boolean isFilePathExist(String path) {
+        return Files.exists(getPath(path));
     }
 
     private static boolean isDirectoryPathExist(String path) {
-            return Files.isDirectory(getPath(path));
+        return Files.isDirectory(getPath(path));
     }
 
-    private static Path getPath(String path)  {
+    private static Path getPath(String path) {
         final URL url = AppByJsonStorage.class.getResource(path);
-        if (url == null){
+        if (url == null) {
             throw new IllegalArgumentException("Resource " + path + " not found!");
         }
-            return Path.of(path);
+        return Path.of(path);
     }
 
     private static String getLineToConsole() {
