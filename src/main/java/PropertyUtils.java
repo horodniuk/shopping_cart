@@ -3,7 +3,7 @@ import java.util.Properties;
 
 public class PropertyUtils {
     public static final Properties PROPERTIES = new Properties();
-    private static final String FILENAME = "app.properties";
+    private static final String FILENAME = "application.properties";
 
     static {
         readProperties();
