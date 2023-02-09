@@ -14,7 +14,7 @@ public class DataSourceManager {
      * value of DBType;
      */
     void start() {
-        DbType dbType = configReader.parse();
+        DbType dbType = configReader.parseConfig();
         switch (dbType) {
             case STORAGE_JSON -> AppByJsonStorage.start();
             case STORAGE_DATABASE -> AppByDataBaseStorage.start();
