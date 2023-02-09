@@ -3,19 +3,19 @@ import org.apache.commons.io.FilenameUtils;
 import runner.FileModeRunner;
 import runner.InteractiveModeRunner;
 import storage.Storage;
+import storage.StorageWithJson;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
-public class ConfigManager {
 
+public class AppByJsonStorage {
     /*
      * Method in endless cycle is asking user to enter file name.
      *
@@ -25,17 +25,21 @@ public class ConfigManager {
      * If user entered in command line json file name and through space name of .txt file with commands -
      *   then starts new FileModeRunner#start
      */
-    public void start() {
-        String configPath = "application.properties";
-        Storage storage = new ConfigLoader().load(URI.create(String.valueOf(Main.class.getResource(configPath))));
+    static void start() {
         printPreviewToConsole();
         String line = getLineToConsole();
         String[] strArray = line.split(" ");
         isPathCorrect(strArray[0], strArray);
-        if (strArray[0].equals("interactive")) {
+        if (strArray.length == 2) {
+            String pathToStorageProduct = strArray[0] + "/" + strArray[1];
+            File storageProduct = getAccessToFileByCopy(pathToStorageProduct);
+            Storage storage = new StorageWithJson(storageProduct);
             new InteractiveModeRunner(storage).start();
-        } else if (strArray.length == 2) {
-            String pathToCommandList = strArray[0] + "/" + strArray[1];   // File separator
+        } else if (strArray.length == 3) {
+            String pathToStorageProduct = strArray[0] + "/" + strArray[1];
+            String pathToCommandList = strArray[0] + "/" + strArray[2];   // File separator
+            File storageProduct = getAccessToFileByCopy(pathToStorageProduct);
+            Storage storage = new StorageWithJson(storageProduct);
             File commandList = getAccessToFileByCopy(pathToCommandList);
             new FileModeRunner(storage, commandList).start();
         } else {
@@ -48,7 +52,7 @@ public class ConfigManager {
      * and get access to file
      */
     private static File getAccessToFileByCopy(String path) {
-        InputStream in = Main.class.getClassLoader().getResourceAsStream(path);
+        InputStream in = AppByJsonStorage.class.getClassLoader().getResourceAsStream(path);
         try {
             File output = new File(Paths.get("temp/temp_") + FilenameUtils.getName(path));
             FileUtils.copyInputStreamToFile(in, output);
@@ -79,7 +83,7 @@ public class ConfigManager {
     }
 
     private static Path getPath(String path) {
-        final URL url = Main.class.getResource(path);
+        final URL url = AppByJsonStorage.class.getResource(path);
         if (url == null) {
             throw new IllegalArgumentException("Resource " + path + " not found!");
         }
@@ -92,7 +96,16 @@ public class ConfigManager {
 
     private static void printPreviewToConsole() {
         System.out.println("Choose mode:");
-        System.out.println("Interactive mode - enter \"interactive\"");
-        System.out.println("File mode - enter \"market commadsList.txt\"");
+        System.out.println("Interactive mode - enter \"market storage.json\"");
+        System.out.println("File mode режим - enter \"market storage.json commadsList.txt\"");
     }
 }
+
+
+
+
+
+
+
+
+
