@@ -1,7 +1,6 @@
 package database.util;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 public class PropertiesUtilsDatabase {
@@ -16,7 +15,7 @@ public class PropertiesUtilsDatabase {
     }
 
     private static void loadProperties() {
-        try (InputStream inputStream = PropertiesUtilsDatabase.class.getClassLoader().
+        try (var inputStream = PropertiesUtilsDatabase.class.getClassLoader().
                 getResourceAsStream("database.properties")) {
             PROPERTIES.load(inputStream);
         } catch (IOException e) {

@@ -1,9 +1,11 @@
 package storage;
 
 import cart.Product;
-import database.ConnectionDatabase;
+import database.util.Connector;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,6 +14,7 @@ import java.util.stream.Collectors;
  * Realisation of storage with products based from database
  */
 public class StorageDataBase implements Storage {
+    private Connector connector;
     /**
      * map storing products and their quantity which are loaded from database
      */
@@ -30,11 +33,51 @@ public class StorageDataBase implements Storage {
      */
     @Override
     public Map<Product, Integer> load() {
-        return new ConnectionDatabase().extractedProductFromDataBase();
+        Map<Product, Integer> productListDataBase;
+        String sql = """
+                        SELECT product_id, product_name, product_price, product_quantity
+                        FROM storage_database.product.product
+                """;
+
+        try (var connection = connector.open();
+             var statement = connection.createStatement()) {
+            var executeResult = statement.executeQuery(sql);
+            productListDataBase = new HashMap<>();
+            while (executeResult.next()) {
+                productListDataBase.put(new Product(executeResult.getInt("product_id"),
+                                executeResult.getString("product_name"),
+                                executeResult.getBigDecimal("product_price")),
+                        executeResult.getInt("product_quantity"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return productListDataBase;
     }
 
     @Override
     public void write() {
+        String sql = """
+                        DROP TABLE IF EXISTS product.temp_product;
+                        CREATE TABLE product.temp_product
+                        (
+                            product_id       SERIAL PRIMARY KEY,
+                            product_name     VARCHAR(255),
+                            product_price    DECIMAL NOT NULL,
+                            product_quantity INT     NOT NULL
+                        );
+                        INSERT INTO product.temp_product(product_name,
+                        product_price,product_quantity)
+                        VALUES ('beer', 50.0, 30),
+                               ('cola', 20.0, 20),
+                               ('soap', 30.0, 10);
+                """;
+        try (var connection = connector.open();
+             var statement = connection.createStatement()) {
+            var executeResult = statement.execute(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
