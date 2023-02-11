@@ -5,6 +5,7 @@ import database.util.Connector;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,7 @@ public class StorageDataBase implements Storage {
 
     @Override
     public void write() {
+        List<Integer> valueList = new ArrayList<>(storageCache.values());
         String sql = """
                         DROP TABLE IF EXISTS product.temp_product;
                         CREATE TABLE product.temp_product
@@ -68,13 +70,17 @@ public class StorageDataBase implements Storage {
                         );
                         INSERT INTO product.temp_product(product_name,
                         product_price,product_quantity)
-                        VALUES ('beer', 50.0, 30),
-                               ('cola', 20.0, 20),
-                               ('soap', 30.0, 10);
+                        VALUES ('beer', 50.0, ?),
+                               ('cola', 20.0, ?),
+                               ('soap', 30.0, ?);
                 """;
         try (var connection = connector.open();
-             var statement = connection.createStatement()) {
-            var executeResult = statement.execute(sql);
+             var prepareStatement = connection.prepareStatement(sql)) {
+            prepareStatement.setInt(1,valueList.get(0));
+            prepareStatement.setInt(2,valueList.get(1));
+            prepareStatement.setInt(3,valueList.get(2));
+
+            var executeResult = prepareStatement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
