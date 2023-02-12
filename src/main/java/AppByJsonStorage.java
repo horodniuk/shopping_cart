@@ -2,6 +2,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import runner.FileModeRunner;
 import runner.InteractiveModeRunner;
+import storage.Storage;
+import storage.StorageWithJson;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,13 +33,15 @@ public class AppByJsonStorage {
         if (strArray.length == 2) {
             String pathToStorageProduct = strArray[0] + "/" + strArray[1];
             File storageProduct = getAccessToFileByCopy(pathToStorageProduct);
-            new InteractiveModeRunner(storageProduct).start();
+            Storage storage = new StorageWithJson(storageProduct);
+            new InteractiveModeRunner(storage).start();
         } else if (strArray.length == 3) {
             String pathToStorageProduct = strArray[0] + "/" + strArray[1];
             String pathToCommandList = strArray[0] + "/" + strArray[2];   // File separator
             File storageProduct = getAccessToFileByCopy(pathToStorageProduct);
+            Storage storage = new StorageWithJson(storageProduct);
             File commandList = getAccessToFileByCopy(pathToCommandList);
-            new FileModeRunner(storageProduct, commandList).start();
+            new FileModeRunner(storage, commandList).start();
         } else {
             System.out.println("incorrectly command");
         }

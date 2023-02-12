@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>C:/workspase_idea/shopping_cart/src/main/java</OriginalElement>
+  <nodes>
+    <node x="1060.0" y="782.0">commands.PriceCommand</node>
+    <node x="530.0" y="771.0">commands.DiscountCommand</node>
+    <node x="0.0" y="1499.0">DataSourceManager</node>
+    <node x="1332.0" y="0.0">cart.Product</node>
+    <node x="795.0" y="771.0">commands.RemoveCommand</node>
+    <node x="170.5" y="937.0">discount.Discount</node>
+    <node x="285.0" y="258.0">storage.StorageWithJson</node>
+    <node x="0.0" y="258.0">storage.StorageDataBase</node>
+    <node x="257.0" y="1377.5">runner.DataBaseModeRunner</node>
+    <node x="305.0" y="1063.0">discount.Discount_buy_3_get_1_free</node>
+    <node x="631.0" y="937.0">discount.DiscountStorage</node>
+    <node x="595.0" y="629.592768791627">commands.Command</node>
+    <node x="265.0" y="782.0">commands.FinishCommand</node>
+    <node x="477.0" y="1355.0">runner.FileModeRunner</node>
+    <node x="1082.0" y="937.0">AppByJsonStorage</node>
+    <node x="142.5" y="0.0">storage.Storage</node>
+    <node x="1126.0" y="1251.0">ConfigReader</node>
+    <node x="595.0" y="0.0">cart.Cart</node>
+    <node x="687.0" y="1251.0">DbType</node>
+    <node x="529.0" y="1499.0">AppByDataBaseStorage</node>
+    <node x="906.0" y="1251.0">PropertyUtils</node>
+    <node x="288.5" y="1251.0">runner.ModeRunner</node>
+    <node x="0.0" y="771.0">commands.AddCommand</node>
+    <node x="244.0" y="1499.0">runner.TextCommandExecutor</node>
+    <node x="785.0" y="1499.0">Main</node>
+    <node x="0.0" y="1063.0">discount.Discount_buy_1_get_30_percent_off</node>
+    <node x="966.0" y="0.0">cart.ConsoleCommandParser</node>
+    <node x="0.0" y="1355.0">runner.InteractiveModeRunner</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="runner.FileModeRunner" target="runner.ModeRunner" relationship="REALIZATION">
+      <point x="0.0" y="-49.5" />
+      <point x="559.5" y="1330.0" />
+      <point x="357.0" y="1330.0" />
+      <point x="0.0" y="27.0" />
+    </edge>
+    <edge source="commands.PriceCommand" target="commands.Command" relationship="GENERALIZATION">
+      <point x="0.0" y="-49.5" />
+      <point x="1182.5" y="746.0" />
+      <point x="717.5" y="746.0" />
+      <point x="0.0" y="49.5" />
+    </edge>
+    <edge source="commands.DiscountCommand" target="commands.Command" relationship="GENERALIZATION">
+      <point x="0.0" y="-60.5" />
+      <point x="652.5" y="746.0" />
+      <point x="717.5" y="746.0" />
+      <point x="0.0" y="49.5" />
+    </edge>
+    <edge source="storage.StorageDataBase" target="storage.Storage" relationship="REALIZATION">
+      <point x="0.0" y="-104.0" />
+      <point x="132.5" y="233.0" />
+      <point x="275.0" y="233.0" />
+      <point x="0.0" y="104.0" />
+    </edge>
+    <edge source="runner.InteractiveModeRunner" target="runner.ModeRunner" relationship="REALIZATION">
+      <point x="0.0" y="-49.5" />
+      <point x="118.5" y="1330.0" />
+      <point x="357.0" y="1330.0" />
+      <point x="0.0" y="27.0" />
+    </edge>
+    <edge source="storage.StorageWithJson" target="storage.Storage" relationship="REALIZATION">
+      <point x="0.0" y="-159.5" />
+      <point x="417.5" y="233.0" />
+      <point x="275.0" y="233.0" />
+      <point x="0.0" y="104.0" />
+    </edge>
+    <edge source="commands.RemoveCommand" target="commands.Command" relationship="GENERALIZATION">
+      <point x="0.0" y="-60.5" />
+      <point x="917.5" y="746.0" />
+      <point x="717.5" y="746.0" />
+      <point x="0.0" y="49.5" />
+    </edge>
+    <edge source="discount.Discount_buy_3_get_1_free" target="discount.Discount" relationship="REALIZATION">
+      <point x="0.0" y="-71.5" />
+      <point x="445.5" y="1038.0" />
+      <point x="294.0" y="1038.0" />
+      <point x="0.0" y="38.0" />
+    </edge>
+    <edge source="commands.AddCommand" target="commands.Command" relationship="GENERALIZATION">
+      <point x="0.0" y="-60.5" />
+      <point x="122.5" y="746.0" />
+      <point x="717.5" y="746.0" />
+      <point x="0.0" y="49.5" />
+    </edge>
+    <edge source="runner.DataBaseModeRunner" target="runner.ModeRunner" relationship="REALIZATION">
+      <point x="0.0" y="-27.0" />
+      <point x="0.0" y="27.0" />
+    </edge>
+    <edge source="discount.Discount_buy_1_get_30_percent_off" target="discount.Discount" relationship="REALIZATION">
+      <point x="0.0" y="-71.5" />
+      <point x="142.5" y="1038.0" />
+      <point x="294.0" y="1038.0" />
+      <point x="0.0" y="38.0" />
+    </edge>
+    <edge source="commands.FinishCommand" target="commands.Command" relationship="GENERALIZATION">
+      <point x="0.0" y="-49.5" />
+      <point x="387.5" y="746.0" />
+      <point x="717.5" y="746.0" />
+      <point x="0.0" y="49.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.7902255639097744" showDependencies="false" x="794.6117982873454" y="333.57278782112274" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

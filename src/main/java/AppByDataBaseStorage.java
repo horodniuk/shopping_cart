@@ -1,8 +1,12 @@
 import runner.DataBaseModeRunner;
 
 public class AppByDataBaseStorage {
-    static DataBaseModeRunner dataBaseModeRunner=new DataBaseModeRunner();
+
+    /**
+     * Method description
+     *
+     */
     static void start() {
-        dataBaseModeRunner.start();
-    }
+        new DataBaseModeRunner().start();
+    };
 }

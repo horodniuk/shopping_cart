@@ -1,3 +1,4 @@
+
 public class DataSourceManager {
     ConfigReader configReader;
 
@@ -5,14 +6,19 @@ public class DataSourceManager {
         this.configReader = configReader;
     }
 
-    void start (){
-        AppByDataBaseStorage.start();
-    /*    DbType dbType = configReader.parse();
-        if (dbType.name().equals("STORAGE_JSON")){*/
-            //AppByJsonStorage.start();
-       /* }
-        if (dbType.name().equals("STORAGE_DATABASE")){
-            AppByDataBaseStorage.start();                     ////------DATABASE
-        }*/
-    };
+    /**
+     * Method description
+     * This methode is made to start app depending on db type specified in properties file;
+     * We create variable dbType and assign it value with method - parse();
+     * next in switch case, we start AppByJsonStorage.start() or AppByDataBaseStorage.start() depending on
+     * value of DBType;
+     */
+    void start() {
+        DbType dbType = configReader.parseConfig();
+        switch (dbType) {
+            case STORAGE_JSON -> AppByJsonStorage.start();
+            case STORAGE_DATABASE -> AppByDataBaseStorage.start();
+        }
+    }
 }
+

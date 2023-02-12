@@ -1,9 +1,8 @@
 package runner;
 
 import cart.Cart;
-import storage.StorageWithJson;
+import storage.Storage;
 
-import java.io.File;
 import java.util.Scanner;
 
 /**
@@ -11,10 +10,10 @@ import java.util.Scanner;
  * perform them. (look method executeCommand())
  */
 public class InteractiveModeRunner implements ModeRunner {
-    private File pathToStorage;
+    private Storage storage;
 
-    public InteractiveModeRunner(File pathToStorage) {
-        this.pathToStorage = pathToStorage;
+    public InteractiveModeRunner(Storage storage) {
+        this.storage = storage;
     }
 
     /**
@@ -33,7 +32,7 @@ public class InteractiveModeRunner implements ModeRunner {
         System.out.println("Starting Interactive mode.");
         showTooltipWithCommands();
         System.out.println("Enter the command in console:");
-        Cart cart = new Cart(new StorageWithJson(pathToStorage));
+        Cart cart = new Cart(storage);
         TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
         while (true) {
             String line = new Scanner(System.in).nextLine();
