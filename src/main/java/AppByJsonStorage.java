@@ -1,4 +1,4 @@
-import com.sun.tools.javac.Main;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import runner.FileModeRunner;
@@ -53,7 +53,7 @@ public class AppByJsonStorage {
      * and get access to file
      */
     private static File getAccessToFileByCopy(String path) {
-        InputStream in = Main.class.getClassLoader().getResourceAsStream(path);
+        InputStream in = AppByDataBaseStorage.class.getClassLoader().getResourceAsStream(path);
         try {
             File output = new File(Paths.get("temp/temp_") + FilenameUtils.getName(path));
             FileUtils.copyInputStreamToFile(in, output);

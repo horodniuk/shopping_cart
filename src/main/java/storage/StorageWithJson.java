@@ -158,16 +158,6 @@ public class StorageWithJson implements Storage {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Method description
-     * parameters - string name of product
-     * return - we return price of specified product from storageCache map.
-     */
-    @Override
-    public BigDecimal getProductPrice(Product product) {
-        return product.getPrice();
-    }
-
     @Override
     public String toString() {
         return "StorageWithJson{" +

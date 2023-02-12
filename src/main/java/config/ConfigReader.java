@@ -14,7 +14,7 @@ public class ConfigReader {
         try {
             return DbType.valueOf(PropertyUtils.PROPERTIES.getProperty(CORE_CONFIGURATION_DB_TYPE));
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Wrong DB type specified in file config.properties!");
+            throw new IllegalArgumentException("Wrong storage_type specified in file config.properties!");
         }
     }
 }

@@ -3,7 +3,6 @@ package storage;
 import cart.Product;
 import config.Connector;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +13,14 @@ import java.util.stream.Collectors;
  * Realisation of storage with products based from database
  */
 public class StorageDataBase implements Storage {
+    private final String PRODUCT_ID = "product_id";
+    private final String PRODUCT_NAME = "product_name";
+    private final String PRICE = "price";
+    private final String QUANTITY = "quantity";
+    String sql = """
+                        SELECT product_id, product_name, price, quantity
+                        FROM storage_database.public.store
+                """;
     /**
      * map storing products and their quantity which are loaded from database
      */
@@ -33,20 +40,19 @@ public class StorageDataBase implements Storage {
     @Override
     public Map<Product, Integer> load() {
         Map<Product, Integer> productListDataBase;
-        String sql = """
-                        SELECT product_id, product_name, product_price, product_quantity
-                        FROM storage_database.product.product
-                """;
+
 
         try (var connection = Connector.open();
              var statement = connection.createStatement()) {
-            var executeResult = statement.executeQuery(sql);
-            productListDataBase = new HashMap<>();
-            while (executeResult.next()) {
-                productListDataBase.put(new Product(executeResult.getInt("product_id"),
-                                executeResult.getString("product_name"),
-                                executeResult.getBigDecimal("product_price")),
-                        executeResult.getInt("product_quantity"));
+             var executeResult = statement.executeQuery(sql);
+                productListDataBase = new HashMap<>();
+                while (executeResult.next()) {
+                productListDataBase.put(
+                        new Product(executeResult.getInt(PRODUCT_ID),
+                                executeResult.getString(PRODUCT_NAME),
+                                executeResult.getBigDecimal(PRICE)
+                        ),
+                                executeResult.getInt(QUANTITY));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -56,9 +62,9 @@ public class StorageDataBase implements Storage {
 
     @Override
     public void write() {
-      /*  List<Integer> valueList = new ArrayList<>(storageCache.values());
+       /* List<Integer> valueList = new ArrayList<>(storageCache.values());
         String sql = """
-                        DROP TABLE IF EXISTS product.temp_product;
+                        DROP TABLE IF EXISTS public.temp_product;
                         CREATE TABLE product.temp_product
                         (
                             product_id       SERIAL PRIMARY KEY,
@@ -100,11 +106,6 @@ public class StorageDataBase implements Storage {
         return storageCache.keySet().stream()
                 .map(Product::getName)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public BigDecimal getProductPrice(Product product) {
-        return product.getPrice();
     }
 
     private int getQuantity(Product product) {
