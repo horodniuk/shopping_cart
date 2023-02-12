@@ -1,4 +1,4 @@
-package database.util;
+package config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,9 +15,9 @@ public class Connector {
     public static Connection open() {
         try {
             return DriverManager.getConnection(
-                    PropertiesUtilsDatabase.get(URL_KEY),
-                    PropertiesUtilsDatabase.get(USER_KEY),
-                    PropertiesUtilsDatabase.get(PASSWORD_KEY));
+                    PropertyUtils.get(URL_KEY),
+                    PropertyUtils.get(USER_KEY),
+                    PropertyUtils.get(PASSWORD_KEY));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

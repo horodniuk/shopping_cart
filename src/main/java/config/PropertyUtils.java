@@ -1,12 +1,18 @@
+package config;
+
 import java.io.IOException;
 import java.util.Properties;
 
 public class PropertyUtils {
     public static final Properties PROPERTIES = new Properties();
-    private static final String FILENAME = "application.properties";
+    private static final String FILENAME = "config.properties";
 
     static {
         readProperties();
+    }
+
+    public static String get(String key) {
+        return PROPERTIES.getProperty(key);
     }
 
     /**

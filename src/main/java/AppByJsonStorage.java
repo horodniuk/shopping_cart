@@ -1,3 +1,4 @@
+import com.sun.tools.javac.Main;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import runner.FileModeRunner;
@@ -52,7 +53,7 @@ public class AppByJsonStorage {
      * and get access to file
      */
     private static File getAccessToFileByCopy(String path) {
-        InputStream in = AppByJsonStorage.class.getClassLoader().getResourceAsStream(path);
+        InputStream in = Main.class.getClassLoader().getResourceAsStream(path);
         try {
             File output = new File(Paths.get("temp/temp_") + FilenameUtils.getName(path));
             FileUtils.copyInputStreamToFile(in, output);
@@ -83,7 +84,7 @@ public class AppByJsonStorage {
     }
 
     private static Path getPath(String path) {
-        final URL url = AppByJsonStorage.class.getResource(path);
+        final URL url = Main.class.getResource(path);
         if (url == null) {
             throw new IllegalArgumentException("Resource " + path + " not found!");
         }

@@ -1,11 +1,10 @@
 package storage;
 
 import cart.Product;
-import database.util.Connector;
+import config.Connector;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,6 @@ import java.util.stream.Collectors;
  * Realisation of storage with products based from database
  */
 public class StorageDataBase implements Storage {
-    private Connector connector;
     /**
      * map storing products and their quantity which are loaded from database
      */
@@ -40,7 +38,7 @@ public class StorageDataBase implements Storage {
                         FROM storage_database.product.product
                 """;
 
-        try (var connection = connector.open();
+        try (var connection = Connector.open();
              var statement = connection.createStatement()) {
             var executeResult = statement.executeQuery(sql);
             productListDataBase = new HashMap<>();
@@ -58,7 +56,7 @@ public class StorageDataBase implements Storage {
 
     @Override
     public void write() {
-        List<Integer> valueList = new ArrayList<>(storageCache.values());
+      /*  List<Integer> valueList = new ArrayList<>(storageCache.values());
         String sql = """
                         DROP TABLE IF EXISTS product.temp_product;
                         CREATE TABLE product.temp_product
@@ -74,7 +72,7 @@ public class StorageDataBase implements Storage {
                                ('cola', 20.0, ?),
                                ('soap', 30.0, ?);
                 """;
-        try (var connection = connector.open();
+        try (var connection = Connector.open();
              var prepareStatement = connection.prepareStatement(sql)) {
             prepareStatement.setInt(1,valueList.get(0));
             prepareStatement.setInt(2,valueList.get(1));
@@ -84,7 +82,7 @@ public class StorageDataBase implements Storage {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
+*/
     }
 
     @Override
