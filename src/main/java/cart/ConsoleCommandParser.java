@@ -75,19 +75,23 @@ public class ConsoleCommandParser {
      * if we find this command - then we get arguments with the help of method getArgumentsWithMatcher() and passing
      * parameters to each command with method receiveArguments().
      * Then return Optional of class Command.
-     * If command is not found - we return empty optional of class Command.
+     * If command is not found - we return empty optional of class Command and throw IllegalArgumentException.
      * return - we return Optional of class Command.
      */
-    public Optional<Command> parse(String line) {
+    public Command parse(String line) {
         Optional<Command> parsedCommandOptional = Optional.empty();
         for (Command currentCommand : commandsMap.keySet()) {
             if (matches(line, currentCommand)) {
                 final Matcher matcher = commandsMap.get(currentCommand).matcher(line);
                 currentCommand.receiveArguments(getArgumentsWithMatcher(matcher));
-                return Optional.of(currentCommand);
+                parsedCommandOptional = Optional.of(currentCommand);
             }
         }
-        return parsedCommandOptional;
+        if (parsedCommandOptional.isEmpty())
+            throw new IllegalArgumentException("Unknown command, try again, for example \"add beer 5\"");
+        else {
+            return parsedCommandOptional.get();
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 package runner;
 
 import cart.Cart;
-import storage.StorageWithJson;
+import storage.Storage;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,11 +13,11 @@ import java.io.IOException;
  * perform them. (look method executeCommand())
  */
 public class FileModeRunner implements ModeRunner {
-    private File pathToStorage;
+    private Storage storage;
     private File pathToCommand;
 
-    public FileModeRunner(File pathToStorage, File pathToCommand) {
-        this.pathToStorage = pathToStorage;
+    public FileModeRunner(Storage storage, File pathToCommand) {
+        this.storage = storage;
         this.pathToCommand = pathToCommand;
     }
 
@@ -35,7 +35,7 @@ public class FileModeRunner implements ModeRunner {
     @Override
     public void start() {
         System.out.println("Starting File mode." + " Commands will be read from file\" " + pathToCommand);
-        Cart cart = new Cart(new StorageWithJson(pathToStorage));
+        Cart cart = new Cart(storage);
         TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
         try (BufferedReader reader = new BufferedReader(new FileReader(pathToCommand))) {
             String line = reader.readLine();

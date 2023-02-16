@@ -79,7 +79,7 @@ public class StorageWithJson implements Storage {
                     }
                 }
             }
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(tempStorage,jsonNode);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(tempStorage, jsonNode);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -156,16 +156,6 @@ public class StorageWithJson implements Storage {
         return storageCache.keySet().stream()
                 .map(Product::getName)
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * Method description
-     * parameters - string name of product
-     * return - we return price of specified product from storageCache map.
-     */
-    @Override
-    public BigDecimal getProductPrice(Product product) {
-        return product.getPrice();
     }
 
     @Override

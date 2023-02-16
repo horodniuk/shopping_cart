@@ -2,7 +2,6 @@ package storage;
 
 import cart.Product;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -29,8 +28,6 @@ public interface Storage {
     void removeProduct(Product product, int quantity);
 
     List<String> getProductNames();
-
-    BigDecimal getProductPrice(Product product);
 
     boolean isProductAvailable(Product product, int quantity);
 
