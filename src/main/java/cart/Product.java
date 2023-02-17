@@ -1,16 +1,17 @@
 package cart;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
 @EqualsAndHashCode(of = {"product_id"})
 @Setter(AccessLevel.NONE)
 public class Product {
-    private int product_id;
-    private String name;
-    private BigDecimal price;
+    private final int product_id;
+    private final String name;
+    private final BigDecimal price;
 }
