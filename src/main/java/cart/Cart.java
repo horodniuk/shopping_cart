@@ -2,15 +2,19 @@ package cart;
 
 import discount.Discount;
 import discount.DiscountStorage;
+import lombok.Getter;
 import storage.Storage;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Cart {
+    @Getter
     private Storage storage; // Storage containing map of products
     private DiscountStorage discountStorage; // discount register containing discount value and map of discounts
     private Map<Product, Integer> cartMap;         // map of products, which are added in the cart
+    @Getter
     private BigDecimal price = new BigDecimal(00.00).setScale(2); // total price of products (including discount)
 
 
@@ -267,15 +271,6 @@ public class Cart {
         return totalPriceWithoutDiscount().subtract(discountStorage.getDiscountValue());
     }
 
-
-    public Storage getStorage() {
-        return storage;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
     @Override
     public String toString() {
         return "~~~~~~~~~~~~~~~~~  CART (LOG) ~~~~~~~~~~~~~~~~~\n" +
@@ -287,5 +282,4 @@ public class Cart {
                 ",\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
                 '\n';
     }
-
 }

@@ -2,6 +2,7 @@ package storage;
 
 import cart.Product;
 import config.Connector;
+import lombok.ToString;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 /**
  * Realisation of storage with products based from database
  */
+@ToString (onlyExplicitlyIncluded = true)
 public class StorageDataBase implements Storage {
     private final String PRODUCT_ID = "product_id";
     private final String PRODUCT_NAME = "product_name";
@@ -25,10 +27,11 @@ public class StorageDataBase implements Storage {
     /**
      * map storing products and their quantity which are loaded from database
      */
+    @ToString.Include
     private Map<Product, Integer> storageCache;
 
     public StorageDataBase() {
-        this.storageCache = load();            /** filling map with method load() */
+        this.storageCache = load();            // filling map with method load() 
     }
 
     /**
@@ -122,12 +125,5 @@ public class StorageDataBase implements Storage {
         return storageCache.keySet().stream()
                 .filter(product -> product.getName().equals(productName))
                 .findFirst().orElseThrow();
-    }
-
-    @Override
-    public String toString() {
-        return "StorageDataBase{" +
-               "storageCache=" + storageCache +
-               '}';
     }
 }

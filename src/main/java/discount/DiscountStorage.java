@@ -1,14 +1,18 @@
 package discount;
 
 import cart.Product;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+@ToString(onlyExplicitlyIncluded = true)
 public class DiscountStorage {
+    @ToString.Include
     private Map<Product, Discount> discountMap;    // map of discount types, which are applied on products in Cart
-
+    @Getter
     private BigDecimal discountValue = new BigDecimal(00.00).setScale(2); // total amount of discount on products in
     // cart
 
@@ -69,19 +73,5 @@ public class DiscountStorage {
      */
     public Discount getDiscountTypeFromMap(Product product) {
         return discountMap.get(product);
-    }
-
-    /**
-     * getter for total discountValue
-     */
-    public BigDecimal getDiscountValue() {
-        return discountValue;
-    }
-
-    @Override
-    public String toString() {
-        return "DiscountStorage{" +
-                "discountMap=" + discountMap +
-                '}';
     }
 }

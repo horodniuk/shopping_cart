@@ -4,6 +4,7 @@ import cart.Product;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.ToString;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,8 +18,10 @@ import java.util.stream.Collectors;
 /**
  * Realisation of storage with products based on json file
  */
+@ToString (onlyExplicitlyIncluded = true)
 public class StorageWithJson implements Storage {
     private File path; // path in which json file is situated;
+    @ToString.Include
     private Map<Product, Integer> storageCache; // map storing products and their quantity which are loaded from json;
     private final ObjectMapper objectMapper = new ObjectMapper(); // instance of class ObjectMapper
 
@@ -156,12 +159,5 @@ public class StorageWithJson implements Storage {
         return storageCache.keySet().stream()
                 .map(Product::getName)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public String toString() {
-        return "StorageWithJson{" +
-               "storageCache=" + storageCache +
-               '}';
     }
 }
