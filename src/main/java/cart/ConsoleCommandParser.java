@@ -80,18 +80,19 @@ public class ConsoleCommandParser {
      * return - we return Optional of class Command.
      */
     public CommandService parse(String line) {
-        Optional<CommandService> parsedCommandOptional = Optional.empty();
+        Optional<CommandService> optionalCommandService = Optional.empty();
         for (Commands currentCommand : commandsMap.keySet()) {
             if (matches(line, currentCommand)) {
                 final Matcher matcher = commandsMap.get(currentCommand).matcher(line);
-                CommandService commandService = new CommandService(getArgumentsWithMatcher(matcher), currentCommand);
-                parsedCommandOptional = Optional.of(commandService);
+                List<String> arguments = getArgumentsWithMatcher(matcher);
+                CommandService commandService = new CommandService(arguments, currentCommand);
+                optionalCommandService = Optional.of(commandService);
             }
         }
-        if (parsedCommandOptional.isEmpty())
+        if (optionalCommandService.isEmpty())
             throw new IllegalArgumentException("Unknown command, try again, for example \"add beer 5\"");
         else {
-            return parsedCommandOptional.get();
+            return optionalCommandService.get();
         }
     }
 
