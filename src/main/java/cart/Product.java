@@ -11,8 +11,6 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(of = {"product_id"})
 public class Product {
     private int product_id;
-    @Setter
     private String name;
-    @Setter
     private BigDecimal price;
 }
