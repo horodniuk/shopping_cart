@@ -8,9 +8,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-@ToString(onlyExplicitlyIncluded = true)
+@ToString(of = {"discountMap"})
 public class DiscountStorage {
-    @ToString.Include
     private Map<Product, Discount> discountMap;    // map of discount types, which are applied on products in Cart
     @Getter
     private BigDecimal discountValue = new BigDecimal(00.00).setScale(2); // total amount of discount on products in

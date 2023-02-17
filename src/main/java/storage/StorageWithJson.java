@@ -18,10 +18,9 @@ import java.util.stream.Collectors;
 /**
  * Realisation of storage with products based on json file
  */
-@ToString (onlyExplicitlyIncluded = true)
+@ToString(of = {"storageCache"})
 public class StorageWithJson implements Storage {
     private File path; // path in which json file is situated;
-    @ToString.Include
     private Map<Product, Integer> storageCache; // map storing products and their quantity which are loaded from json;
     private final ObjectMapper objectMapper = new ObjectMapper(); // instance of class ObjectMapper
 

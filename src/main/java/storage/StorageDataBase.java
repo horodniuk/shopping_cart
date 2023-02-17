@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 /**
  * Realisation of storage with products based from database
  */
-@ToString (onlyExplicitlyIncluded = true)
+@ToString(of = {"storageCache"})
 public class StorageDataBase implements Storage {
     private final String PRODUCT_ID = "product_id";
     private final String PRODUCT_NAME = "product_name";
@@ -27,7 +27,6 @@ public class StorageDataBase implements Storage {
     /**
      * map storing products and their quantity which are loaded from database
      */
-    @ToString.Include
     private Map<Product, Integer> storageCache;
 
     public StorageDataBase() {
