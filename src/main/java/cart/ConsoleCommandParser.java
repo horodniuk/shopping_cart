@@ -1,6 +1,5 @@
 package cart;
 
-import commands.*;
 import discount.Discount;
 import discount.Discount_buy_1_get_30_percent_off;
 import discount.Discount_buy_3_get_1_free;
@@ -11,10 +10,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static cart.Commands.*;
+
 public class ConsoleCommandParser {
     private List<Discount> discounts; // List of all discounts
     private List<String> products; // List of all product names stored in Storage
-    private Map<Command, Pattern> commandsMap; // Map of all commands (keys) and Patterns for these commands (values)
+    private Map<Commands, Pattern> commandsMap; // Map of all commands (keys) and Patterns for these commands (values)
 
 
     public ConsoleCommandParser(Cart cart) {
@@ -38,8 +39,8 @@ public class ConsoleCommandParser {
      * pricePattern - price.
      * return - returns Map of Commands (keys) and patterns (values).
      */
-    private Map<Command, Pattern> fillCommandsMap() {
-        Map<Command, Pattern> commands = new HashMap<>();
+    private Map<Commands, Pattern> fillCommandsMap() {
+        Map<Commands, Pattern> commands = new HashMap<>();
         final Pattern addPattern = (Pattern.compile("^(add) (" + createRegExValuesProducts(products) + ") " +
                 "([0-9]+)"));
         final Pattern discountPattern = (Pattern.compile("^(discount) (" +
@@ -49,11 +50,11 @@ public class ConsoleCommandParser {
         final Pattern finishPattern = (Pattern.compile("(^finish$)"));
         final Pattern pricePattern = (Pattern.compile("(^price$)"));
 
-        commands.put(new AddCommand(), addPattern);
-        commands.put(new DiscountCommand(), discountPattern);
-        commands.put(new FinishCommand(), finishPattern);
-        commands.put(new PriceCommand(), pricePattern);
-        commands.put(new RemoveCommand(), removePattern);
+        commands.put(ADD, addPattern);
+        commands.put(DISCOUNT, discountPattern);
+        commands.put(FINISH, finishPattern);
+        commands.put(PRICE, pricePattern);
+        commands.put(REMOVE, removePattern);
         return commands;
     }
 
@@ -78,13 +79,13 @@ public class ConsoleCommandParser {
      * If command is not found - we return empty optional of class Command and throw IllegalArgumentException.
      * return - we return Optional of class Command.
      */
-    public Command parse(String line) {
-        Optional<Command> parsedCommandOptional = Optional.empty();
-        for (Command currentCommand : commandsMap.keySet()) {
+    public CommandService parse(String line) {
+        Optional<CommandService> parsedCommandOptional = Optional.empty();
+        for (Commands currentCommand : commandsMap.keySet()) {
             if (matches(line, currentCommand)) {
                 final Matcher matcher = commandsMap.get(currentCommand).matcher(line);
-                currentCommand.receiveArguments(getArgumentsWithMatcher(matcher));
-                parsedCommandOptional = Optional.of(currentCommand);
+                CommandService commandService = new CommandService(getArgumentsWithMatcher(matcher), currentCommand);
+                parsedCommandOptional = Optional.of(commandService);
             }
         }
         if (parsedCommandOptional.isEmpty())
@@ -145,7 +146,7 @@ public class ConsoleCommandParser {
     /**
      * Method description
      * Method parameters - list of instances of discounts
-     * from list instances of discounts we get the names of this commands and add them to new List of discount names,
+     * from list instances of discounts we get the names of these commands and add them to new List of discount names,
      * to apply it in regular expression
      * For example: from List<Discount> discounts we get names of each discount, add them to list of discount names and
      * then make string from them -> "buy_1_get_30_percentage|buy_3_get_1_free"
@@ -165,7 +166,7 @@ public class ConsoleCommandParser {
      * we check if Pattern (which is value found by key - command) matches the string.
      * return - we return true if matches and false if not
      */
-    private Boolean matches(String text, Command command) {
+    private Boolean matches(String text, Commands command) {
         return commandsMap.get(command).matcher(text).find();
     }
 }

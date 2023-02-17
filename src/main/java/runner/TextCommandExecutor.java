@@ -1,8 +1,9 @@
 package runner;
 
 import cart.Cart;
+import cart.CommandService;
+import cart.Commands;
 import cart.ConsoleCommandParser;
-import commands.Command;
 
 public class TextCommandExecutor {
 
@@ -19,8 +20,15 @@ public class TextCommandExecutor {
      */
     public void executeCommand(String line, Cart cart) {
         ConsoleCommandParser consoleCommandParser = new ConsoleCommandParser(cart);
-        Command parsedCommand = consoleCommandParser.parse(line);
-        parsedCommand.execute(cart);
+        CommandService commandService = consoleCommandParser.parse(line);
+        Commands command = commandService.getCommand();
+        switch (command) {
+            case ADD -> commandService.addProductCommand(cart);
+            case REMOVE -> commandService.removeProductCommand(cart);
+            case DISCOUNT -> commandService.applyDiscountCommand(cart);
+            case PRICE -> commandService.priceCommand(cart);
+            case FINISH -> commandService.finishCommand(cart);
+        }
     }
 }
 
