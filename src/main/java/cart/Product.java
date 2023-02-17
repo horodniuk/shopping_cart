@@ -6,9 +6,9 @@ import java.math.BigDecimal;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@Getter
+@Data
 @EqualsAndHashCode(of = {"product_id"})
+@Setter(AccessLevel.NONE)
 public class Product {
     private int product_id;
     private String name;
