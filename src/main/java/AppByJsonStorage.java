@@ -63,7 +63,7 @@ public class AppByJsonStorage {
             File output = new File(Paths.get("temp/temp_") + FilenameUtils.getName(path));
             FileUtils.copyInputStreamToFile(in, output);
             in.close();
-            log.info("The user add and uses: "+output.getName());
+            log.info("Add and uses: "+output.getName());
             return output;
         } catch (IOException e) {
             log.info("User specified an incorrect path to the file.");
