@@ -1,6 +1,8 @@
 import config.ConfigReader;
 import config.DbType;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class DataSourceManager {
     ConfigReader configReader;
 
@@ -16,6 +18,7 @@ public class DataSourceManager {
      * value of DBType;
      */
     public void start() {
+        log.info("Config reader determines which storage we have chosen.");
         DbType dbType = configReader.parseConfig();
         switch (dbType) {
             case STORAGE_JSON -> AppByJsonStorage.start();

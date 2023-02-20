@@ -1,4 +1,5 @@
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import runner.FileModeRunner;
@@ -15,7 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
-
+@Slf4j
 public class AppByJsonStorage {
     /*
      * Method in endless cycle is asking user to enter file name.
@@ -27,16 +28,19 @@ public class AppByJsonStorage {
      *   then starts new FileModeRunner#start
      */
     static void start() {
+        log.info("JSon storage start.");
         printPreviewToConsole();
         String line = getLineToConsole();
         String[] strArray = line.split(" ");
         isPathCorrect(strArray[0], strArray);
         if (strArray.length == 2) {
+            log.info("User choose interactive mode runner.");
             String pathToStorageProduct = strArray[0] + "/" + strArray[1];
             File storageProduct = getAccessToFileByCopy(pathToStorageProduct);
             Storage storage = new StorageWithJson(storageProduct);
             new InteractiveModeRunner(storage).start();
         } else if (strArray.length == 3) {
+            log.info("User choose file mode runner.");
             String pathToStorageProduct = strArray[0] + "/" + strArray[1];
             String pathToCommandList = strArray[0] + "/" + strArray[2];   // File separator
             File storageProduct = getAccessToFileByCopy(pathToStorageProduct);
@@ -44,6 +48,7 @@ public class AppByJsonStorage {
             File commandList = getAccessToFileByCopy(pathToCommandList);
             new FileModeRunner(storage, commandList).start();
         } else {
+            log.info("User entered an invalid command.");
             System.out.println("incorrectly command");
         }
     }
@@ -58,8 +63,10 @@ public class AppByJsonStorage {
             File output = new File(Paths.get("temp/temp_") + FilenameUtils.getName(path));
             FileUtils.copyInputStreamToFile(in, output);
             in.close();
+            log.info("The user add and uses: "+output.getName());
             return output;
         } catch (IOException e) {
+            log.info("User specified an incorrect path to the file.");
             throw new IllegalArgumentException("Incorrect path to file " + path);
         }
     }
@@ -86,6 +93,7 @@ public class AppByJsonStorage {
     private static Path getPath(String path) {
         final URL url = Main.class.getResource(path);
         if (url == null) {
+            log.info("Resource " + path + " not found!");
             throw new IllegalArgumentException("Resource " + path + " not found!");
         }
         return Path.of(path);
