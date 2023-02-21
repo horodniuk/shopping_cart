@@ -63,10 +63,9 @@ public class AppByJsonStorage {
             File output = new File(Paths.get("temp/temp_") + FilenameUtils.getName(path));
             FileUtils.copyInputStreamToFile(in, output);
             in.close();
-            log.info("Add and uses: "+output.getName());
             return output;
         } catch (IOException e) {
-            log.info("User specified an incorrect path to the file.");
+            log.error("User specified an incorrect path to the file.");
             throw new IllegalArgumentException("Incorrect path to file " + path);
         }
     }
@@ -93,7 +92,7 @@ public class AppByJsonStorage {
     private static Path getPath(String path) {
         final URL url = Main.class.getResource(path);
         if (url == null) {
-            log.info("Resource " + path + " not found!");
+            log.error("Resource {} not found!",path);
             throw new IllegalArgumentException("Resource " + path + " not found!");
         }
         return Path.of(path);

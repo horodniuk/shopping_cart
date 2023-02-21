@@ -36,20 +36,20 @@ public class FileModeRunner implements ModeRunner {
      */
     @Override
     public void start() {
-        log.info("Running method start.");
+        log.info("File mode started.");
         System.out.println("Starting File mode." + " Commands will be read from file\" " + pathToCommand);
         Cart cart = new Cart(storage);
         TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
         try (BufferedReader reader = new BufferedReader(new FileReader(pathToCommand))) {
             String line = reader.readLine();
-            log.info("Reading file commands...");
             while (line != null) {
                 if (line.length() > 0) textCommandExecutor.executeCommand(line, cart);
                 line = reader.readLine();
             }
         } catch (IOException e) {
-            log.error("Error when trying to read from file: "+e);
-            e.printStackTrace();
+            String messageError = "Error when trying to read from file: {}.";
+            log.error(messageError,e.getMessage());
+            throw new RuntimeException(messageError+e.getMessage());
         }
         cart.finish();
     }

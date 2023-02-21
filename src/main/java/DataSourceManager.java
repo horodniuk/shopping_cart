@@ -18,7 +18,6 @@ public class DataSourceManager {
      * value of DBType;
      */
     public void start() {
-        log.info("Config reader determines which storage we have chosen.");
         DbType dbType = configReader.parseConfig();
         switch (dbType) {
             case STORAGE_JSON -> AppByJsonStorage.start();

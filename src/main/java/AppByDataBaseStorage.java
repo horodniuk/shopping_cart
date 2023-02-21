@@ -8,7 +8,7 @@ public class AppByDataBaseStorage {
      * Method description
      */
     static void start() {
-        log.info("Start DataBase method.");
+        log.info("Selected storage DataBase postgres.");
         new DataBaseModeRunner().start();
     }
 }

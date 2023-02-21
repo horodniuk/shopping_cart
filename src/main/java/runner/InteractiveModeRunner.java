@@ -31,7 +31,7 @@ public class InteractiveModeRunner implements ModeRunner {
      * method showTooltipWithCommands() - outputs message to console with tips.
      */
     public void start() {
-        log.info("Running method start.");
+        log.info("Interactive mode runner started.");
         System.out.println("Starting Interactive mode.");
         ModeRunner.showTooltipWithCommands();
         System.out.println("Enter the command in console:");
@@ -39,7 +39,7 @@ public class InteractiveModeRunner implements ModeRunner {
         TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
         while (true) {
             String line = new Scanner(System.in).nextLine();
-            log.info("User enter "+line+" command.");
+            log.info("User enter {} command.",line);
             textCommandExecutor.executeCommand(line, cart);
             if (line.equals("finish")){
                 log.info("User enter finish command.");
