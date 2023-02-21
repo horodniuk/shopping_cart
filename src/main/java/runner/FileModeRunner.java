@@ -48,7 +48,7 @@ public class FileModeRunner implements ModeRunner {
                 line = reader.readLine();
             }
         } catch (IOException e) {
-            log.info("Error when trying to read from file: "+e);
+            log.error("Error when trying to read from file: "+e);
             e.printStackTrace();
         }
         cart.finish();
