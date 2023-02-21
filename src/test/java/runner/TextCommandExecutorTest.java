@@ -2,62 +2,100 @@ package runner;
 
 import cart.Cart;
 import cart.ConsoleCommandParser;
-import lombok.extern.slf4j.Slf4j;
+import cart.Product;
+import discount.Discount;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import storage.Storage;
+import storage.StorageWithJson;
 
-import java.util.List;
+import java.io.File;
+import java.net.URISyntaxException;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
 
-@Slf4j
-@ExtendWith(MockitoExtension.class)
 class TextCommandExecutorTest {
 
+    File path = new File(getClass().getClassLoader().getResource("storage.json").toURI());
     TextCommandExecutor textCommandExecutor;
-    @Mock
     Cart cart;
-    @Mock
     Storage storage;
-    ConsoleCommandParser consoleCommandParser;
+
+    TextCommandExecutorTest() throws URISyntaxException {
+    }
 
 
     @BeforeEach
     void beforeEachTestMethod() {
+        storage = new StorageWithJson(path);
+        cart = new Cart(storage);
         textCommandExecutor = new TextCommandExecutor();
     }
 
     @ParameterizedTest
-    @ValueSource(
-            strings = {"add beer 5",
-                    "remove cola 3", "discount buy_3_get_1_free beer",
-                    "discount buy_1_get_30_percentage cola", "remove beer 10", "finish", "price"
-            })
-    void executeCommand_ifOptionalIsPresent(String line) {
-        when(cart.getStorage()).thenReturn(storage);
-        when(storage.getProductNames()).thenReturn(List.of("beer", "cola", "soap"));
-        consoleCommandParser = new ConsoleCommandParser(cart);
-        boolean result = textCommandExecutor.executeCommand(line, cart);
-
-        assertTrue(result);
+    @CsvSource({
+            "add beer 10,beer",
+            "add cola 3,cola",
+            "add soap 3,soap"
+    })
+    void executeCommand_ifCommandAdd(String line, String expectedResult) {
+        //Arrange
+        //Act
+        textCommandExecutor.executeCommand(line, cart);
+        String actualResult = cart.getCartMap().keySet().stream()
+                .filter(product -> product.getName().equals(expectedResult))
+                .findFirst().get().getName();
+        //Assert
+        assertEquals(expectedResult, actualResult);
     }
 
     @ParameterizedTest
-    @ValueSource(
-            strings = {"add bear 5", "remov cola 3", "discount buy_3_get_1_fre beer",
-                    "discount buy_1_get_30 cola", "remove beer ", "finis", "pric", ""})
-    void executeCommand_ifOptionalIsEmpty(String line) {
-        when(cart.getStorage()).thenReturn(storage);
-        when(storage.getProductNames()).thenReturn(List.of("beer", "cola", "soap"));
-        consoleCommandParser = new ConsoleCommandParser(cart);
-        boolean result = textCommandExecutor.executeCommand(line, cart);
+    @ValueSource(strings = {"ad beer 10", "add col 3", "add soap ", " ", ""})
+    void executeCommand_ifCommandIncorrect(String line) {
+        //Arrange
+        //Act
+        textCommandExecutor.executeCommand(line, cart);
+        boolean actualResult = cart.getCartMap().keySet().isEmpty();
+        //Assert
+        assertTrue(actualResult);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "add beer 10,remove beer 10,beer",
+            "add cola 3,remove cola 3,cola",
+            "add soap 3,remove soap 3,soap"
+    })
+    void executeCommand_ifCommandRemove(String addLine, String removeLine, String productName) {
+        //Arrange
+        //Act
+        textCommandExecutor.executeCommand(addLine, cart);
+        textCommandExecutor.executeCommand(removeLine, cart);
+        boolean result = cart.getCartMap().keySet().stream().anyMatch(product -> product.getName().equals(productName));
+        //Assert
         assertFalse(result);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "add beer 10,discount buy_3_get_1_free beer,beer,buy_3_get_1_free",
+            "add cola 3,discount buy_1_get_30_percentage cola,cola,buy_1_get_30_percentage"
+    })
+    void executeCommand_ifCommandDiscount(String addLine, String discountLine, String productName,
+                                          String discountName) {
+        //Arrange
+        //Act
+        textCommandExecutor.executeCommand(addLine, cart);
+        textCommandExecutor.executeCommand(discountLine, cart);
+        Discount discount = ConsoleCommandParser.parseDiscount(discountName);
+        cart.applyDiscount(discount, productName);
+        Product product = cart.getCartMap().keySet().stream()
+                .filter(p -> p.getName().equals(productName))
+                .findFirst().get();
+        boolean actualResult = cart.getDiscountStorage().isDiscountAppliedOnProduct(product);
+        //Assert
+        assertTrue(actualResult);
     }
 }

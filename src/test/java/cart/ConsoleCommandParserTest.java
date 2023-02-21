@@ -28,11 +28,15 @@ class ConsoleCommandParserTest {
     Storage storage;
 
     @ParameterizedTest
-    @ValueSource(
-            strings = {"add beer 5",
-                    "remove cola 3", "discount buy_3_get_1_free beer",
-                    "discount buy_1_get_30_percentage cola", "remove beer 10", "finish", "price"
-            })
+    @ValueSource(strings = {
+            "add beer 5",
+            "remove cola 3",
+            "discount buy_3_get_1_free beer",
+            "discount buy_1_get_30_percentage cola",
+            "remove beer 10",
+            "finish",
+            "price"
+    })
     void testParse_ifOptionalIsPresent(String line) {
         //Arrange
         when(cart.getStorage()).thenReturn(storage);
@@ -54,7 +58,7 @@ class ConsoleCommandParserTest {
             "finish,FINISH",
             "price,PRICE"
     })
-    void testParse_ifMethodWorks(String line, String expectedResult) {
+    void testParse_ifCommandEqualsExpectedCommand(String line, String expectedResult) {
         //Arrange
         when(cart.getStorage()).thenReturn(storage);
         when(storage.getProductNames()).thenReturn(List.of("beer", "cola", "soap"));
@@ -67,9 +71,16 @@ class ConsoleCommandParserTest {
     }
 
     @ParameterizedTest
-    @ValueSource(
-            strings = {"add bear 5", "remov cola 3", "discount buy_3_get_1_fre beer",
-                    "discount buy_1_get_30 cola", "remove beer ", "finis", "pric", ""})
+    @ValueSource(strings = {
+            "add bear 5",
+            "remov cola 3",
+            "discount buy_3_get_1_fre beer",
+            "discount buy_1_get_30 cola",
+            "remove beer ",
+            "finis",
+            "pric",
+            ""
+    })
     void testParse_ifCommandIsNotParsed(String line) {
         //Arrange
         when(cart.getStorage()).thenReturn(storage);
