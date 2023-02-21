@@ -22,12 +22,10 @@ public class TextCommandExecutor {
      * method parse() - parses the received line (from file or from console);
      * method execute() - executes specified command.
      */
-    public boolean executeCommand(String line, Cart cart) {
+    public void executeCommand(String line, Cart cart) {
         ConsoleCommandParser consoleCommandParser = new ConsoleCommandParser(cart);
         Optional<CommandService> optionalCommandService = consoleCommandParser.parse(line);
-        boolean result = true;
         if (optionalCommandService.isEmpty()) {
-            result = false;
             log.warn("Unknown command in line: {}. Try again, for example \"add beer 5\"", line);
         } else {
             CommandService commandService = optionalCommandService.get();
@@ -40,7 +38,6 @@ public class TextCommandExecutor {
                 case FINISH -> commandService.finishCommand(cart);
             }
         }
-        return result;
     }
 }
 
