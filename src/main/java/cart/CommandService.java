@@ -1,20 +1,16 @@
 package cart;
 
 import discount.Discount;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
+@AllArgsConstructor
 public class CommandService {
-
     private List<String> arguments;
     private Commands command;
-
-    public CommandService(List<String> arguments, Commands command) {
-        this.arguments = arguments;
-        this.command = command;
-    }
 
     /**
      * Method addProductCommand() - executes add command, which adds product in given quantity in cart Map.

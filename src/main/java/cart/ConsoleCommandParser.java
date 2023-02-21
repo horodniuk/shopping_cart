@@ -79,7 +79,7 @@ public class ConsoleCommandParser {
      * If command is not found - we return empty optional of class Command and throw IllegalArgumentException.
      * return - we return Optional of class Command.
      */
-    public CommandService parse(String line) {
+    public Optional<CommandService> parse(String line) {
         Optional<CommandService> optionalCommandService = Optional.empty();
         for (Commands currentCommand : commandsMap.keySet()) {
             if (matches(line, currentCommand)) {
@@ -89,11 +89,7 @@ public class ConsoleCommandParser {
                 optionalCommandService = Optional.of(commandService);
             }
         }
-        if (optionalCommandService.isEmpty())
-            throw new IllegalArgumentException("Unknown command, try again, for example \"add beer 5\"");
-        else {
-            return optionalCommandService.get();
-        }
+        return optionalCommandService;
     }
 
     /**
@@ -125,8 +121,9 @@ public class ConsoleCommandParser {
      * return - we return instance of discount.
      */
     public static Discount parseDiscount(String nameCommand) {
-        if (nameCommand.equals("buy_1_get_30_percentage")) {
-            return new Discount_buy_1_get_30_percent_off();
+        Discount discount = new Discount_buy_1_get_30_percent_off();
+        if (nameCommand.equals(discount.getDiscountName())) {
+            return discount;
         } else {
             return new Discount_buy_3_get_1_free();
         }
