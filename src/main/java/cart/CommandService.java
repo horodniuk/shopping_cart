@@ -24,6 +24,7 @@ public class CommandService {
     public void addProductCommand(Cart cart) {
         String product = arguments.get(1);
         int quantity = Integer.parseInt(arguments.get(2));
+        log.debug("command ADD chosen");
         cart.add(product, quantity);
     }
 
@@ -34,6 +35,7 @@ public class CommandService {
     public void removeProductCommand(Cart cart) {
         String product = arguments.get(1);
         int quantity = Integer.parseInt(arguments.get(2));
+        log.debug("command REMOVE chosen");
         cart.remove(product, quantity);
     }
 
@@ -45,6 +47,7 @@ public class CommandService {
     public void applyDiscountCommand(Cart cart) {
         Discount discountName = parseDiscount(arguments.get(1));
         String product = arguments.get(2);
+        log.debug("command DISCOUNT chosen");
         cart.applyDiscount(discountName, product);
     }
 
@@ -54,6 +57,7 @@ public class CommandService {
      * parameters - instance of class Cart.
      */
     public void finishCommand(Cart cart) {
+        log.debug("command FINISH chosen");
         cart.finish();
     }
 
@@ -63,6 +67,7 @@ public class CommandService {
      * parameters - instance of class Cart.
      */
     public void priceCommand(Cart cart) {
+        log.debug("command PRICE chosen");
         cart.price();
     }
 
