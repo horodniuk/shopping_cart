@@ -33,7 +33,7 @@ class FileModeRunnerTest {
     @Test
     void start_IfMethodWorks() throws URISyntaxException {
         //Arrange
-        File path = new File(getClass().getClassLoader().getResource("storage.json").toURI());
+        File path = new File(getClass().getClassLoader().getResource("test_storage.json").toURI());
         String expectedResult = "beer";
         storageReal = new StorageWithJson(path);
         File correctPathToCommands = new File(getClass().getClassLoader().

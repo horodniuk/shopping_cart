@@ -23,6 +23,11 @@ class ConsoleCommandParserTest {
     @Mock
     Storage storage;
 
+    private void executeMockMethods() {
+        when(cart.getStorage()).thenReturn(storage);
+        when(storage.getProductNames()).thenReturn(List.of("beer", "cola", "soap"));
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {
             "add beer 5",
@@ -35,8 +40,7 @@ class ConsoleCommandParserTest {
     })
     void testParse_ifOptionalIsPresent(String line) {
         //Arrange
-        when(cart.getStorage()).thenReturn(storage);
-        when(storage.getProductNames()).thenReturn(List.of("beer", "cola", "soap"));
+        executeMockMethods();
         consoleCommandParser = new ConsoleCommandParser(cart);
         //Act
         Optional<CommandService> actualResult = consoleCommandParser.parse(line);
@@ -56,8 +60,7 @@ class ConsoleCommandParserTest {
     })
     void testParse_ifCommandEqualsExpectedCommand(String line, String expectedResult) {
         //Arrange
-        when(cart.getStorage()).thenReturn(storage);
-        when(storage.getProductNames()).thenReturn(List.of("beer", "cola", "soap"));
+        executeMockMethods();
         consoleCommandParser = new ConsoleCommandParser(cart);
         //Act
         Optional<CommandService> commandService = consoleCommandParser.parse(line);
@@ -79,8 +82,7 @@ class ConsoleCommandParserTest {
     })
     void testParse_ifCommandIsNotParsed(String line) {
         //Arrange
-        when(cart.getStorage()).thenReturn(storage);
-        when(storage.getProductNames()).thenReturn(List.of("beer", "cola", "soap"));
+        executeMockMethods();
         consoleCommandParser = new ConsoleCommandParser(cart);
         //Act
         Optional<CommandService> actualResult = consoleCommandParser.parse(line);

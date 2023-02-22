@@ -25,7 +25,7 @@ class TextCommandExecutorTest {
 
     @BeforeEach
     void beforeEachTestMethod() throws URISyntaxException {
-        File path = new File(getClass().getClassLoader().getResource("storage.json").toURI());
+        File path = new File(getClass().getClassLoader().getResource("test_storage.json").toURI());
         storage = new StorageWithJson(path);
         cart = new Cart(storage);
         textCommandExecutor = new TextCommandExecutor();

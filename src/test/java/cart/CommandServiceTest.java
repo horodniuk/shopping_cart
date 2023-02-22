@@ -22,9 +22,14 @@ class CommandServiceTest {
 
     @BeforeEach
     void beforeEachTestMethod() throws URISyntaxException {
-        File path = new File(getClass().getClassLoader().getResource("storage.json").toURI());
+        File path = new File(getClass().getClassLoader().getResource("test_storage.json").toURI());
         storage = new StorageWithJson(path);
         cart = new Cart(storage);
+    }
+
+    private void addProductBeer(String add, String beer, String quantity) {
+        commandService = new CommandService(List.of(add, beer, quantity), Commands.ADD);
+        commandService.addProductCommand(cart);
     }
 
     @ParameterizedTest
@@ -35,9 +40,7 @@ class CommandServiceTest {
     })
     void addProductCommand_IfArgumentsAreCorrect(String command, String productName, String quantity) {
         //Arrange
-        commandService = new CommandService(List.of(command, productName, quantity), Commands.ADD);
-        //Act
-        commandService.addProductCommand(cart);
+        addProductBeer(command, productName, quantity);
         String actualResult = cart.getCartMap().keySet().stream()
                 .filter(product -> product.getName().equals(productName))
                 .findFirst().get().getName();
@@ -66,8 +69,7 @@ class CommandServiceTest {
     })
     void removeProductCommand_IfArgumentsAreCorrect(String command, String productName, String quantity) {
         //Arrange
-        commandService = new CommandService(List.of(command, productName, quantity), Commands.ADD);
-        commandService.addProductCommand(cart);
+        addProductBeer(command, productName, quantity);
         //Act
         commandService.removeProductCommand(cart);
         boolean result = cart.getCartMap().keySet().stream().anyMatch(product -> product.getName().equals(productName));
@@ -78,9 +80,7 @@ class CommandServiceTest {
     @Test
     void removeProductCommand_IfProductNameIsIncorrect() {
         //Arrange
-        String productName = "beer";
-        commandService = new CommandService(List.of("add", productName, "10"), Commands.ADD);
-        commandService.addProductCommand(cart);
+        addProductBeer("add", "beer", "10");
         commandService = new CommandService(List.of("add", "bearr", "10"), Commands.ADD);
         //Act & Assert
         assertThrows(NoSuchElementException.class, () -> commandService.addProductCommand(cart));
@@ -89,8 +89,7 @@ class CommandServiceTest {
     @Test
     void applyDiscountCommand_IfArgumentsAreCorrect_discountBuy3Get1Free() {
         //Arrange
-        commandService = new CommandService(List.of("add","beer","5"), Commands.ADD);
-        commandService.addProductCommand(cart);
+        addProductBeer("add", "beer", "5");
         commandService = new CommandService(List.of("discount", "buy_3_get_1_free", "beer"), Commands.DISCOUNT);
         //Act
         commandService.applyDiscountCommand(cart);
@@ -104,8 +103,7 @@ class CommandServiceTest {
     @Test
     void applyDiscountCommand_IfArgumentsAreCorrect_discountBuy1Get30Percent() {
         //Arrange
-        commandService = new CommandService(List.of("add","beer","5"), Commands.ADD);
-        commandService.addProductCommand(cart);
+        addProductBeer("add", "beer", "5");
         commandService = new CommandService(List.of("discount", "buy_1_get_30_percentage", "beer"), Commands.DISCOUNT);
         //Act
         commandService.applyDiscountCommand(cart);
@@ -119,8 +117,7 @@ class CommandServiceTest {
     @Test
     void applyDiscountCommand_IfProductNameIsIncorrect_discountBuy3Get1Free() {
         //Arrange
-        commandService = new CommandService(List.of("add","beer","5"), Commands.ADD);
-        commandService.addProductCommand(cart);
+        addProductBeer("add", "beer", "5");
         commandService = new CommandService(List.of("discount", "buy_3_get_1_free", "bear"), Commands.DISCOUNT);
         //Act & Assert
         assertThrows(NoSuchElementException.class, () -> commandService.applyDiscountCommand(cart));
@@ -129,8 +126,7 @@ class CommandServiceTest {
     @Test
     void applyDiscountCommand_IfDiscountIsIncorrect_discountBuy3Get1Free() {
         //Arrange
-        commandService = new CommandService(List.of("add","beer","5"), Commands.ADD);
-        commandService.addProductCommand(cart);
+        addProductBeer("add", "beer", "5");
         commandService = new CommandService(List.of("discount", "buy_3_get_1", "beer"), Commands.DISCOUNT);
         //Act & Assert
         assertThrows(NoSuchElementException.class, () -> commandService.applyDiscountCommand(cart));

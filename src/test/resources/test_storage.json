@@ -4,19 +4,19 @@
       "product_id": 1,
       "name": "beer",
       "price": 50.0,
-      "quantity": 30
+      "quantity": 100
     },
     {
       "product_id": 2,
       "name": "cola",
       "price": 20.0,
-      "quantity": 20
+      "quantity": 100
     },
     {
       "product_id": 3,
       "name": "soap",
       "price": 30.0,
-      "quantity": 10
+      "quantity": 100
     }
   ]
 }
