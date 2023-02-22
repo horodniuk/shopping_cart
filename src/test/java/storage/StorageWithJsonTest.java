@@ -1,19 +1,6 @@
 package storage;
 
-import cart.Product;
 import org.junit.Ignore;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Ignore
 public class StorageWithJsonTest {
@@ -32,7 +19,7 @@ public class StorageWithJsonTest {
     @Test
     void testLoad_whenFileIsParsed() throws IOException {
         //Arrange
-        URI file = URI.create("src/test/resources/storage.json");
+        URI file = URI.create("src/test/resources/test_storage.json");
         Product product = new Product(name, price, quantity);
         Map<String, Product> expectedMap = new HashMap<>();
         expectedMap.put(product.getName(), product);
