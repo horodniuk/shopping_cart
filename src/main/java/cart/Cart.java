@@ -13,6 +13,7 @@ public class Cart {
     @Getter
     private Storage storage; // Storage containing map of products
     private DiscountStorage discountStorage; // discount register containing discount value and map of discounts
+    @Getter
     private Map<Product, Integer> cartMap;         // map of products, which are added in the cart
     @Getter
     private BigDecimal price = new BigDecimal(00.00).setScale(2); // total price of products (including discount)
@@ -91,7 +92,7 @@ public class Cart {
         if (quantityInCart > quantity) reduceProductAndDiscount(product, quantity);
         else if (quantityInCart == quantity) deleteProductAndDiscount(product, quantity);
         else System.out.printf("Cart doesn't contain %s " +
-                    "in quantity %d right now there is only next quantity: %d%n", product, quantity, quantityInCart);
+                               "in quantity %d right now there is only next quantity: %d%n", product, quantity, quantityInCart);
     }
 
     /**
@@ -203,7 +204,7 @@ public class Cart {
      * calculates total price of products without discounts;
      * return - BigDecimal value of total price of all products in Cart.
      */
-    public BigDecimal totalPriceWithoutDiscount() {
+    private BigDecimal totalPriceWithoutDiscount() {
         Integer sum = cartMap.entrySet().stream()
                 .mapToInt(product -> product.getKey().getPrice()
                         .multiply(new BigDecimal(product.getValue())).intValue())
@@ -274,12 +275,12 @@ public class Cart {
     @Override
     public String toString() {
         return "~~~~~~~~~~~~~~~~~  CART (LOG) ~~~~~~~~~~~~~~~~~\n" +
-                "cartMap=" + cartMap +
-                ",\n storage=" + storage +
-                ",\n discountStorage=" + discountStorage +
-                ",\n price=" + price +
-                ",\n discount=" + discountStorage.getDiscountValue() +
-                ",\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
-                '\n';
+               "cartMap=" + cartMap +
+               ",\n storage=" + storage +
+               ",\n discountStorage=" + discountStorage +
+               ",\n price=" + price +
+               ",\n discount=" + discountStorage.getDiscountValue() +
+               ",\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
+               '\n';
     }
 }
