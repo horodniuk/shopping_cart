@@ -4,7 +4,11 @@ import cart.Cart;
 import cart.CommandService;
 import cart.Commands;
 import cart.ConsoleCommandParser;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.Optional;
+
+@Slf4j
 public class TextCommandExecutor {
 
     /**
@@ -20,14 +24,19 @@ public class TextCommandExecutor {
      */
     public void executeCommand(String line, Cart cart) {
         ConsoleCommandParser consoleCommandParser = new ConsoleCommandParser(cart);
-        CommandService commandService = consoleCommandParser.parse(line);
-        Commands command = commandService.getCommand();
-        switch (command) {
-            case ADD -> commandService.addProductCommand(cart);
-            case REMOVE -> commandService.removeProductCommand(cart);
-            case DISCOUNT -> commandService.applyDiscountCommand(cart);
-            case PRICE -> commandService.priceCommand(cart);
-            case FINISH -> commandService.finishCommand(cart);
+        Optional<CommandService> optionalCommandService = consoleCommandParser.parse(line);
+        if (optionalCommandService.isEmpty()) {
+            log.warn("Unknown command in line: {}. Try again, for example \"add beer 5\"", line);
+        } else {
+            CommandService commandService = optionalCommandService.get();
+            Commands command = commandService.getCommand();
+            switch (command) {
+                case ADD -> commandService.addProductCommand(cart);
+                case REMOVE -> commandService.removeProductCommand(cart);
+                case DISCOUNT -> commandService.applyDiscountCommand(cart);
+                case PRICE -> commandService.priceCommand(cart);
+                case FINISH -> commandService.finishCommand(cart);
+            }
         }
     }
 }

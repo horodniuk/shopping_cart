@@ -9,13 +9,13 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Getter
 public class Cart {
-    @Getter
+
     private Storage storage; // Storage containing map of products
     private DiscountStorage discountStorage; // discount register containing discount value and map of discounts
     @Getter
     private Map<Product, Integer> cartMap;         // map of products, which are added in the cart
-    @Getter
     private BigDecimal price = new BigDecimal(00.00).setScale(2); // total price of products (including discount)
 
 

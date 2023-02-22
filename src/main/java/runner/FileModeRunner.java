@@ -1,6 +1,7 @@
 package runner;
 
 import cart.Cart;
+import lombok.extern.slf4j.Slf4j;
 import storage.Storage;
 
 import java.io.BufferedReader;
@@ -12,6 +13,7 @@ import java.io.IOException;
  * Reading commands line by line from file and if such commands exist -
  * perform them. (look method executeCommand())
  */
+@Slf4j
 public class FileModeRunner implements ModeRunner {
     private Storage storage;
     private File pathToCommand;
@@ -44,7 +46,9 @@ public class FileModeRunner implements ModeRunner {
                 line = reader.readLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            String messageError = "Error when trying to read from file: {}.";
+            log.error(messageError,e.getMessage());
+            throw new RuntimeException(messageError+e.getMessage());
         }
         cart.finish();
     }
