@@ -114,23 +114,6 @@ public class ConsoleCommandParser {
 
     /**
      * Method description
-     * Method parameters - string name of command
-     * depending on discount name we create discount object
-     * buy_1_get_30_percentage -> Discount_BUY_1_GET_30_PERCENT_OFF();
-     * buy_3_get_1_free -> Discount_BUY_3_GET_1_FREE();
-     * return - we return instance of discount.
-     */
-    public static Discount parseDiscount(String nameCommand) {
-        Discount discount = new Discount_buy_1_get_30_percent_off();
-        if (nameCommand.equals(discount.getDiscountName())) {
-            return discount;
-        } else {
-            return new Discount_buy_3_get_1_free();
-        }
-    }
-
-    /**
-     * Method description
      * Method parameters - list of string name of products
      * from list converting to String, to apply in regular expression
      * For example: List.of("beer", "soap", "cola") ->

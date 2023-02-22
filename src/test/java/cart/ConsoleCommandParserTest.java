@@ -1,9 +1,5 @@
 package cart;
 
-import discount.Discount;
-import discount.Discount_buy_1_get_30_percent_off;
-import discount.Discount_buy_3_get_1_free;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -90,27 +86,5 @@ class ConsoleCommandParserTest {
         Optional<CommandService> actualResult = consoleCommandParser.parse(line);
         //Assert
         assertFalse(actualResult.isPresent());
-    }
-
-    @Test
-    void parseDiscount_ifDiscountIs_buy_3_get_1_free() {
-        //Arrange
-        String line = "buy_3_get_1_free";
-        Class<Discount_buy_3_get_1_free> expectedResult = Discount_buy_3_get_1_free.class;
-        //Act
-        Discount actualResult = ConsoleCommandParser.parseDiscount(line);
-        //Assert
-        assertEquals(expectedResult, actualResult.getClass());
-    }
-
-    @Test
-    void parseDiscount_ifDiscountIs_buy_1_get_30_percent_off() {
-        //Arrange
-        String line = "buy_1_get_30_percentage";
-        Class<Discount_buy_1_get_30_percent_off> expectedResult = Discount_buy_1_get_30_percent_off.class;
-        //Act
-        Discount actualResult = ConsoleCommandParser.parseDiscount(line);
-        //Assert
-        assertEquals(expectedResult, actualResult.getClass());
     }
 }

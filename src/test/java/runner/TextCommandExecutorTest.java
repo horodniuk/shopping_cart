@@ -1,9 +1,10 @@
 package runner;
 
 import cart.Cart;
-import cart.ConsoleCommandParser;
 import cart.Product;
 import discount.Discount;
+import discount.Discount_buy_1_get_30_percent_off;
+import discount.Discount_buy_3_get_1_free;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -18,17 +19,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TextCommandExecutorTest {
 
-    File path = new File(getClass().getClassLoader().getResource("storage.json").toURI());
     TextCommandExecutor textCommandExecutor;
     Cart cart;
     Storage storage;
 
-    TextCommandExecutorTest() throws URISyntaxException {
-    }
-
-
     @BeforeEach
-    void beforeEachTestMethod() {
+    void beforeEachTestMethod() throws URISyntaxException {
+        File path = new File(getClass().getClassLoader().getResource("storage.json").toURI());
         storage = new StorageWithJson(path);
         cart = new Cart(storage);
         textCommandExecutor = new TextCommandExecutor();
@@ -44,9 +41,8 @@ class TextCommandExecutorTest {
         //Arrange
         //Act
         textCommandExecutor.executeCommand(line, cart);
-        String actualResult = cart.getCartMap().keySet().stream()
-                .filter(product -> product.getName().equals(expectedResult))
-                .findFirst().get().getName();
+        String actualResult = cart.getCartMap().keySet().stream().
+                filter(product -> product.getName().equals(expectedResult)).findFirst().get().getName();
         //Assert
         assertEquals(expectedResult, actualResult);
     }
@@ -70,8 +66,8 @@ class TextCommandExecutorTest {
     })
     void executeCommand_ifCommandRemove(String addLine, String removeLine, String productName) {
         //Arrange
-        //Act
         textCommandExecutor.executeCommand(addLine, cart);
+        //Act
         textCommandExecutor.executeCommand(removeLine, cart);
         boolean result = cart.getCartMap().keySet().stream().anyMatch(product -> product.getName().equals(productName));
         //Assert
@@ -79,23 +75,35 @@ class TextCommandExecutorTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
-            "add beer 10,discount buy_3_get_1_free beer,beer,buy_3_get_1_free",
-            "add cola 3,discount buy_1_get_30_percentage cola,cola,buy_1_get_30_percentage"
-    })
-    void executeCommand_ifCommandDiscount(String addLine, String discountLine, String productName,
-                                          String discountName) {
+    @CsvSource({"add beer 10,discount buy_3_get_1_free beer,beer"})
+    void executeCommand_ifCommandDiscount_Buy3Get1Free(String addLine, String discountLine, String productName) {
         //Arrange
-        //Act
         textCommandExecutor.executeCommand(addLine, cart);
         textCommandExecutor.executeCommand(discountLine, cart);
-        Discount discount = ConsoleCommandParser.parseDiscount(discountName);
+        Discount discount = new Discount_buy_3_get_1_free();
+        //Act
         cart.applyDiscount(discount, productName);
-        Product product = cart.getCartMap().keySet().stream()
-                .filter(p -> p.getName().equals(productName))
+        Product product = cart.getCartMap().keySet().stream().filter(p -> p.getName().equals(productName))
                 .findFirst().get();
         boolean actualResult = cart.getDiscountStorage().isDiscountAppliedOnProduct(product);
         //Assert
         assertTrue(actualResult);
     }
+
+    @ParameterizedTest
+    @CsvSource({"add cola 3,discount buy_1_get_30_percentage cola,cola"})
+    void executeCommand_ifCommandDiscount_Buy1Get30Percent(String addLine, String discountLine, String productName) {
+        //Arrange
+        textCommandExecutor.executeCommand(addLine, cart);
+        textCommandExecutor.executeCommand(discountLine, cart);
+        Discount discount = new Discount_buy_1_get_30_percent_off();
+        //Act
+        cart.applyDiscount(discount, productName);
+        Product product = cart.getCartMap().keySet().stream().filter(p -> p.getName().equals(productName))
+                .findFirst().get();
+        boolean actualResult = cart.getDiscountStorage().isDiscountAppliedOnProduct(product);
+        //Assert
+        assertTrue(actualResult);
+    }
+
 }
