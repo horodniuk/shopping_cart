@@ -3,19 +3,19 @@ package cart;
 import discount.Discount;
 import discount.DiscountStorage;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import storage.Storage;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Slf4j
 @Getter
 public class Cart {
-
-    private Storage storage; // Storage containing map of products
-    private DiscountStorage discountStorage; // discount register containing discount value and map of discounts
-    @Getter
-    private Map<Product, Integer> cartMap;         // map of products, which are added in the cart
+    private Storage storage;                                          // Storage containing map of products
+    private DiscountStorage discountStorage;                          // discount register containing discount value and map of discounts
+    private Map<Product, Integer> cartMap;                            // map of products, which are added in the cart
     private BigDecimal price = new BigDecimal(00.00).setScale(2); // total price of products (including discount)
 
 
@@ -42,6 +42,7 @@ public class Cart {
      */
     public void add(String productName, int quantity) {
         Product product = storage.getProductByName(productName);
+        log.trace("Try add {} {} in cart", quantity, productName);
         if (storage.isProductAvailable(product, quantity)) {
             cartMap.put(product, isProductExistInCart(product) ? cartMap.get(product) + quantity : quantity);
             addPrintToConsole(product, quantity);
@@ -73,10 +74,14 @@ public class Cart {
      */
     public void remove(String productName, int quantity) {
         Product product = storage.getProductByName(productName);
+        log.trace("Try remove {} {} in cart", quantity, productName);
         if (isProductExistInCart(product)) {
             int quantityProductInCart = cartMap.get(product);
             remove(product, quantity, quantityProductInCart);
-        } else System.out.println("You don't have " + product + " in cart. Please enter another Product.");
+        } else {
+            log.debug("Product {} not in cart", productName);
+            System.out.println("You don't have " + product + " in cart. Please enter another Product.");
+        }
     }
 
     /**
@@ -91,8 +96,12 @@ public class Cart {
     private void remove(Product product, int quantity, int quantityInCart) {
         if (quantityInCart > quantity) reduceProductAndDiscount(product, quantity);
         else if (quantityInCart == quantity) deleteProductAndDiscount(product, quantity);
-        else System.out.printf("Cart doesn't contain %s " +
-                               "in quantity %d right now there is only next quantity: %d%n", product, quantity, quantityInCart);
+        else {
+            log.debug("Cart doesn't contain {} in quantity {} right now there is only next quantity: {}",
+                    product, quantity, quantityInCart);
+            System.out.printf("Cart doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
+                    product, quantity, quantityInCart);
+        }
     }
 
     /**
@@ -129,6 +138,7 @@ public class Cart {
      * in the end we start method updateAndPrintToConsole().
      */
     private void reduceProductAndDiscount(Product product, int quantity) {
+        log.trace("Try reduce {} in cart", product.getName());
         if (discountStorage.isDiscountAppliedOnProduct(product)) {
             Discount tempDiscount = discountStorage.getDiscountTypeFromMap(product);
             int oldQuantity = cartMap.get(product);
@@ -138,6 +148,9 @@ public class Cart {
             BigDecimal newDiscountProductValue = tempDiscount.getDiscount(product, newQuantity);
             BigDecimal difference = oldDiscountProductValue.subtract(newDiscountProductValue);
             discountStorage.updateDiscountValueAndType(product, difference, tempDiscount);
+
+            log.debug("discount changed. Details: apply {} by  {}. Discount value - {} $ %n",
+                    tempDiscount.getClass().getSimpleName(), product, newDiscountProductValue);
             System.out.printf("discount changed. Details: apply %s by  %s. Discount value - %s $ %n",
                     tempDiscount.getClass().getSimpleName(), product, newDiscountProductValue);
         } else {
@@ -171,6 +184,7 @@ public class Cart {
      */
     private void removePrintToConsole(Product product, int quantity) {
         System.out.println(quantity + " " + product.getName() + "(s) vas removed");
+        log.debug("Remove {} in cart", product.getName());
     }
 
 
@@ -179,6 +193,7 @@ public class Cart {
      */
     private void addPrintToConsole(Product product, int quantity) {
         System.out.println(quantity + " " + product.getName() + "(s) vas added");
+        log.debug("Add {} {} in cart", quantity, product.getName());
     }
 
     /**
@@ -197,6 +212,7 @@ public class Cart {
     public void finish() {
         storage.write();
         System.out.println("Done!");
+        log.debug("Finish program whithout error");
     }
 
     /**
@@ -224,6 +240,7 @@ public class Cart {
      * if product not fount in cart - than we output message to console - that such product doesn't exist in cart.
      */
     public void applyDiscount(Discount discountType, String productName) {
+        log.trace("Try apply discount  {} on product {} in cart", discountType.getDiscountName(), productName);
         Product product = storage.getProductByName(productName);
         if (isProductExistInCart(product)) {
             int quantity = cartMap.get(product);
@@ -231,7 +248,10 @@ public class Cart {
             if (newDiscountProductValue.intValue() != 0) {
                 applyDiscount(discountType, product, newDiscountProductValue);
             }
-        } else System.out.println("Discount cannot be added, because there is no such product in cart!");
+        } else{
+            log.debug("Discount cannot be added, because there is no such product {} in cart!", productName);
+            System.out.println("Discount cannot be added, because there is no such product in cart!");
+        }
     }
 
     /**
@@ -258,7 +278,10 @@ public class Cart {
             discountStorage.addDiscountValueAndType(product, newDiscountProductValue, discountType);
         }
         price = updatePrice();
+
         System.out.printf("discount added. Details: apply %s by  %s. Discount value - %s $ %n",
+                discountType.getClass().getSimpleName(), product, newDiscountProductValue);
+        log.debug("discount added. Details: apply {} by  {}. Discount value - {} $ %n",
                 discountType.getClass().getSimpleName(), product, newDiscountProductValue);
     }
 
