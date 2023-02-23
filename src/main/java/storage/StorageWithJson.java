@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Realisation of storage with products based on json file
  */
+@Slf4j
 @ToString(of = {"storageCache"})
 public class StorageWithJson implements Storage {
     private File path; // path in which json file is situated;
@@ -54,6 +56,7 @@ public class StorageWithJson implements Storage {
                 productMap.put(tempProduct, quantity);
             }
         } catch (IOException exception) {
+            log.error("The path or file is invalid or missing : ",exception);
             exception.printStackTrace();
         }
         return productMap;
@@ -83,6 +86,7 @@ public class StorageWithJson implements Storage {
             }
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(tempStorage, jsonNode);
         } catch (IOException e) {
+            log.error("The path or file is invalid or missing : ",e);
             e.printStackTrace();
         }
     }

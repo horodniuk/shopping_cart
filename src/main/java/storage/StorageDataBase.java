@@ -3,6 +3,7 @@ package storage;
 import cart.Product;
 import config.Connector;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 /**
  * Realisation of storage with products based from database
  */
+@Slf4j
 @ToString(of = {"storageCache"})
 public class StorageDataBase implements Storage {
     private final String PRODUCT_ID = "product_id";
@@ -51,11 +53,11 @@ public class StorageDataBase implements Storage {
                 productListDataBase.put(
                         new Product(executeResult.getInt(PRODUCT_ID),
                                 executeResult.getString(PRODUCT_NAME),
-                                executeResult.getBigDecimal(PRICE)
-                        ),
+                                executeResult.getBigDecimal(PRICE)),
                                 executeResult.getInt(QUANTITY));
             }
         } catch (SQLException e) {
+            log.warn("Incorrect table column parameters or no connection to the database :",e);
             throw new RuntimeException(e);
         }
         return productListDataBase;
@@ -74,6 +76,7 @@ public class StorageDataBase implements Storage {
             }
             statement.executeBatch();
         } catch (SQLException e) {
+            log.warn("No connection or database : ",e);
             throw new RuntimeException(e);
         }
     }
