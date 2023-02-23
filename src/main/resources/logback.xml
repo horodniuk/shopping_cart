@@ -4,7 +4,7 @@
             <pattern>%date [%thread] %highlight(%-5level) %logger{40} - %message%n</pattern>
         </encoder>
     </appender>
-    <logger name="org.example" level="DEBUG"/>
+    <logger name="org.example" />
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
