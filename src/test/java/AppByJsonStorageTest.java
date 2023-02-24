@@ -1,94 +1,95 @@
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import runner.FileModeRunner;
+import runner.InteractiveModeRunner;
+import runner.ModeRunner;
+import storage.Storage;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import static org.junit.jupiter.api.Assertions.*;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class AppByJsonStorageTest {
-/*
-    @TempDir
-    Path tempDir;
+    private static final String TEST_ROOT_PATH_RESOURCES = "src/test/resources/";
+    Map<String, ModeRunner> map = new HashMap<>();
+    Storage storage;
+    File file;
 
-    @Test
-    void testStartWithInteractiveMode() throws IOException {
-        File storageFile = new File(tempDir.toFile(), "storage.json");
-        assertTrue(storageFile.createNewFile());
-        byte[] input = "market storage.json\nexit\n".getBytes();
-        System.setIn(new ByteArrayInputStream(input));
-        assertDoesNotThrow(() -> AppByJsonStorage.start());
+    @BeforeEach
+    void init() throws URISyntaxException {
+        file = new File(getClass().getClassLoader().getResource("test_storage.json").toURI());
+        map.put("market_test storage_test.json", new InteractiveModeRunner(storage));
+        map.put("market_test storage_test.json commadsList_test.txt", new FileModeRunner(storage, file));
     }
 
-    @Test
-    void testStartWithFileMode() throws IOException {
-        File storageFile = new File(tempDir.toFile(), "storage.json");
-        assertTrue(storageFile.createNewFile());
-        File commandsFile = new File(tempDir.toFile(), "commands.txt");
-        assertTrue(commandsFile.createNewFile());
-        byte[] input = "market storage.json commands.txt\nexit\n".getBytes();
-        System.setIn(new ByteArrayInputStream(input));
-        assertDoesNotThrow(() -> AppByJsonStorage.start());
+    private static Stream<Arguments> addMarketPath() {
+        return Stream.of(
+                arguments("market storage.json", true),
+                arguments("market storage.json commadsList.txt", true),
+                arguments("market storagejson", false),
+                arguments("market storage", false),
+                arguments("market", false),
+                arguments("commandsList.txt", false),
+                arguments("", false)
+        );
     }
 
-    @Test
-    void testStartWithInvalidCommand() {
-        byte[] input = "invalid command\nexit\n".getBytes();
-        System.setIn(new ByteArrayInputStream(input));
-        assertDoesNotThrow(() -> AppByJsonStorage.start());
+    @ParameterizedTest
+    @MethodSource("addMarketPath")
+    void checkMarket(String query, boolean result) {
+        boolean expected = result;
+        Optional<ModeRunner> s = Optional.ofNullable(map.get(query));
+        boolean actual = s.isPresent();
+        assertEquals(expected, actual);
     }
 
-    @Test
-    void testGetAccessToFileByCopy() throws IOException {
-        String fileName = "storage.json";
-        File file = new File(tempDir.toFile(), fileName);
-        assertTrue(file.createNewFile());
-        String path = fileName;
-        File resultFile = AppByJsonStorage.getAccessToFileByCopy(path);
-        assertTrue(resultFile.exists());
+    private static Stream<Arguments> aPath() {
+        return Stream.of(
+                arguments("market_test storage_test.json", true), //first arg-enter console, second arg-we check valid
+                arguments("market_test storage_test.json commadsList_test.txt", true),
+                arguments("market storage.xml", false),
+                arguments("market storage", false),
+                arguments("market", false),
+                arguments("commandsList.txt", false),
+                arguments("", false)
+        );
     }
 
-    @Test
-    void testIsFilePathExist() throws IOException {
-        String fileName = "storage.json";
-        File file = new File(tempDir.toFile(), fileName);
-        assertTrue(file.createNewFile());
-        assertTrue(AppByJsonStorage.isFilePathExist(tempDir.toString() + File.separator + fileName));
+    @ParameterizedTest
+    @MethodSource("aPath")
+    void checkMarketPath(String line, boolean result) {
+        boolean expected = result;
+        String[] strArray = line.split(" ");
+        boolean actual = isPathCorrect(strArray[0], strArray);
+        assertEquals(expected, actual);
     }
 
-    @Test
-    void testIsDirectoryPathExist() {
-        assertTrue(AppByJsonStorage.isDirectoryPathExist(tempDir.toString()));
+    private static boolean isPathCorrect(String folder, String... files) {
+        boolean isCorrect = files.length > 1;
+        if (!isCorrect) return false;
+        isCorrect = isDirectoryPathExist(folder);
+        for (int i = 1; i < files.length; i++) {
+            isCorrect = isFilePathExist(folder + "/" + files[i]);
+            if (!isCorrect) return false;
+        }
+        return isCorrect;
     }
 
-    @Test
-    void testIsPathCorrectWithValidFiles() throws IOException {
-        String fileName1 = "storage.json";
-        String fileName2 = "commands.txt";
-        File file1 = new File(tempDir.toFile(), fileName1);
-        File file2 = new File(tempDir.toFile(), fileName2);
-        assertTrue(file1.createNewFile());
-        assertTrue(file2.createNewFile());
-        assertTrue(AppByJsonStorage.isPathCorrect(tempDir.toString(), fileName1, fileName2));
+    private static boolean isFilePathExist(String path) {
+        File file = new File(TEST_ROOT_PATH_RESOURCES + path);
+        return file.exists();
     }
 
-    @Test
-    void testIsPathCorrectWithInvalidFiles() {
-        String fileName = "invalid_file.json";
-        assertThrows(IllegalArgumentException.class, () -> AppByJsonStorage.isPathCorrect(tempDir.toString(), fileName));
+    private static boolean isDirectoryPathExist(String path) {
+        File file = new File(TEST_ROOT_PATH_RESOURCES + path);
+        return file.isDirectory();
     }
-
-    @Test
-    void testGetPath() {
-        String fileName = "storage.json";
-        assertNotNull(AppByJsonStorage.getPath(File.separator + fileName));
-    }
-
-    @Test
-    void testGetLineToConsole() {
-        String input = "market storage.json\nexit\n";
-        System.setIn(input.getBytes());
-        assertEquals("market storage.json", AppByJsonStorage.getLineToConsole());
-    }*/
 }
