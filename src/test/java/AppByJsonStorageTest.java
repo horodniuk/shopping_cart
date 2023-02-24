@@ -30,9 +30,10 @@ public class AppByJsonStorageTest {
         map.put("market_test storage_test.json commadsList_test.txt", new FileModeRunner(storage, file));
     }
 
+    //parameterized parameters for checkMarket()
     private static Stream<Arguments> addMarketPath() {
         return Stream.of(
-                arguments("market storage.json", true),
+                arguments("market storage.json", true),//first arg-enter console, second arg-we check valid
                 arguments("market storage.json commadsList.txt", true),
                 arguments("market storagejson", false),
                 arguments("market storage", false),
@@ -42,6 +43,7 @@ public class AppByJsonStorageTest {
         );
     }
 
+    //Testing whether a market exists on a given path
     @ParameterizedTest
     @MethodSource("addMarketPath")
     void checkMarket(String query, boolean result) {
@@ -51,7 +53,8 @@ public class AppByJsonStorageTest {
         assertEquals(expected, actual);
     }
 
-    private static Stream<Arguments> aPath() {
+    //parameterized parameters for checkCorrectedMarketPath()
+    private static Stream<Arguments> addCorrectedMarketPath() {
         return Stream.of(
                 arguments("market_test storage_test.json", true), //first arg-enter console, second arg-we check valid
                 arguments("market_test storage_test.json commadsList_test.txt", true),
@@ -63,15 +66,18 @@ public class AppByJsonStorageTest {
         );
     }
 
+    //Test for the correctness of the existence of a path
+    //When passing the path, the market should issue the correct or incorrectly entered path
     @ParameterizedTest
-    @MethodSource("aPath")
-    void checkMarketPath(String line, boolean result) {
+    @MethodSource("addCorrectedMarketPath")
+    void checkCorrectedMarketPath(String line, boolean result) {
         boolean expected = result;
         String[] strArray = line.split(" ");
         boolean actual = isPathCorrect(strArray[0], strArray);
         assertEquals(expected, actual);
     }
 
+    //check for the existence of a file and folders
     private static boolean isPathCorrect(String folder, String... files) {
         boolean isCorrect = files.length > 1;
         if (!isCorrect) return false;
