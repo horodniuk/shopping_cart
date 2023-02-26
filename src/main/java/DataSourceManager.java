@@ -19,7 +19,8 @@ public class DataSourceManager {
         DbType dbType = configReader.parseConfig();
         switch (dbType) {
             case STORAGE_JSON -> AppByJsonStorage.start();
-            case STORAGE_DATABASE -> AppByDataBaseStorage.start();
+            case STORAGE_DATABASE_JDBC -> AppByDataBaseStorage.start();
+            case STORAGE_DATABASE_HIBERNATE -> AppByDataBaseStorageHibernate.start();
         }
     }
 }
