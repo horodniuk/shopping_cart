@@ -22,16 +22,27 @@ public class StorageDataBaseHibernate implements Storage {
     @Override
     public Map<Product, Integer> load() {
         Session session = HibernateSession.getSessionFactory().openSession();
-session.
-
-
-        Transaction transaction = session.beginTransaction();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery criteriaQuery = criteriaBuilder.createQuery(Product.class);
         Root root = criteriaQuery.from(Product.class);
         CriteriaQuery all = criteriaQuery.select(root);
         TypedQuery typedQuery = session.createQuery(all);
-        return typedQuery.п();
+        List<Product> productList = typedQuery.getResultList();
+        System.out.println(productList);
+//                .stream().sorted().toList();
+//        System.out.println(productList);
+//        List<Integer> quantityList = session.createQuery("SELECT quantity FROM store").stream().sorted().toList();
+//        System.out.println(quantityList);
+//        Transaction transaction = session.beginTransaction();
+
+//        CriteriaBuilder criteriaBuilder = session.createSQLQuery();
+//
+//
+//        createQuery(Product.class);
+//        Root root = criteriaQuery.from(Product.class);
+//        CriteriaQuery all = criteriaQuery.select(root);
+//        TypedQuery typedQuery = session.createQuery(all);
+//        return typedQuery.п();
 
         return null;
     }
