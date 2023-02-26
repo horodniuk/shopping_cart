@@ -21,12 +21,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class StorageWithJsonTest {
-
+    File path;
     Storage storage;
 
     @BeforeEach
     void beforeEachTestMethod() throws URISyntaxException {
-        File path = new File(getClass().getClassLoader().getResource("test_storage.json").toURI());
+        path = new File(getClass().getClassLoader().getResource("test_storage.json").toURI());
         storage = new StorageWithJson(path);
     }
 
@@ -58,7 +58,7 @@ class StorageWithJsonTest {
         File tempPath = new File("temp/temp_storage.json");
         //Act
         storage.write();
-        Map<Product, Integer> tempStorage = new StorageWithJson(tempPath).load();
+        Map<Product, Integer> tempStorage = new StorageWithJson(path).load();
         //Assert
         assertEquals(productMap.keySet(), tempStorage.keySet());
     }
