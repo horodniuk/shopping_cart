@@ -143,7 +143,7 @@ class CartTest {
      *   ("beer",price:50, quantity 10);
      *   ("cola", price:20, quantity 10);
      *   ("soap", price:30, quantity 10);
-     *   Price: 1000
+     *    Price: 1000
      */
     // Testing the apply discount on a product
     // Check the price of the cart, taking into this discount.
