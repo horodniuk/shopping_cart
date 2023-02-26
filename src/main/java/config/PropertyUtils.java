@@ -37,7 +37,7 @@ public class PropertyUtils {
         } catch (IOException e) {
             String messageError = "Could not read properties from file:";
             log.error(messageError,FILENAME,e.getMessage());
-            throw new RuntimeException(messageError + " [" + FILENAME + "].", e);
+            throw new RuntimeException(messageError + " [" + FILENAME + "]."+ e.getMessage());
         }
     }
 

@@ -57,11 +57,13 @@ public class StorageDataBase implements Storage {
                                 executeResult.getInt(QUANTITY));
             }
         } catch (SQLException e) {
-            log.warn("Incorrect table column parameters or no connection to the database :",e);
-            throw new RuntimeException(e);
+            String messageError = "Error when trying to read from file: {}.";
+            log.error(messageError,e.getMessage());
+            throw new RuntimeException(messageError + e.getMessage());
         }
         return productListDataBase;
     }
+
 
     @Override
     public void write() {
@@ -76,8 +78,9 @@ public class StorageDataBase implements Storage {
             }
             statement.executeBatch();
         } catch (SQLException e) {
-            log.warn("No connection or database : ",e);
-            throw new RuntimeException(e);
+            String messageError = "Error when trying to read from file: {}.";
+            log.error(messageError,e.getMessage());
+            throw new RuntimeException(messageError + e.getMessage());
         }
     }
 
@@ -116,7 +119,7 @@ public class StorageDataBase implements Storage {
     public boolean isProductAvailable(Product product, int quantity) {
         final var qetQuantityProductInStorage = getQuantity(product);
         if (qetQuantityProductInStorage < quantity) {
-            System.out.printf("Storage doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
+            log.info("Storage doesn't contain {} in quantity {} right now there is only next quantity: {}",
                     product.getName(), quantity, qetQuantityProductInStorage);
         }
         return qetQuantityProductInStorage >= quantity;

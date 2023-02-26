@@ -24,8 +24,8 @@ public class ConfigReaderTest {
 
 
         assertNotNull(result);
-        assertEquals(DbType.STORAGE_DATABASE, result);
         assertEquals(DbType.STORAGE_JSON, result);
+
     }
 
     @Test

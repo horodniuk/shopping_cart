@@ -55,8 +55,10 @@ public class StorageWithJson implements Storage {
                 Product tempProduct = new Product(product_id, name, price);
                 productMap.put(tempProduct, quantity);
             }
+
         } catch (IOException exception) {
-            log.error("The path or file is invalid or missing : ",exception);
+            String messageError = "Error when trying to read from file: {}. : ";
+            log.error(messageError,exception);
             exception.printStackTrace();
         }
         return productMap;
@@ -137,7 +139,7 @@ public class StorageWithJson implements Storage {
     public boolean isProductAvailable(Product product, int quantity) {
         final var qetQuantityProductInStorage = getQuantity(product);
         if (qetQuantityProductInStorage < quantity) {
-            System.out.printf("Storage doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
+            log.info("Storage doesn't contain {} in quantity {} right now there is only next quantity: {}",
                     product.getName(), quantity, qetQuantityProductInStorage);
         }
         return qetQuantityProductInStorage >= quantity;

@@ -21,8 +21,9 @@ public class Connector {
                     PropertyUtils.get(USER_KEY),
                     PropertyUtils.get(PASSWORD_KEY));
         } catch (SQLException e) {
-            log.error("Incorrect password,username or url entered " + e.getMessage());
-            throw new RuntimeException(e);
+            String messageError = "Error when trying to read from file: {}. ";
+            log.error(messageError,e.getMessage());
+            throw new RuntimeException(messageError + e.getMessage());
         }
     }
 }
