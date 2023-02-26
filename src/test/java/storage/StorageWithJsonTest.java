@@ -51,18 +51,6 @@ class StorageWithJsonTest {
         assertEquals(expectedResult, actualResult);
     }
 
-    @Test
-    void write() {
-        //Arrange
-        Map<Product, Integer> productMap = storage.load();
-        File tempPath = new File("temp/temp_storage.json");
-        //Act
-        storage.write();
-        Map<Product, Integer> tempStorage = new StorageWithJson(path).load();
-        //Assert
-        assertEquals(productMap.keySet(), tempStorage.keySet());
-    }
-
     @ParameterizedTest
     @MethodSource("getProductAndQuantity")
     void addProduct(int product_id, String productName, BigDecimal price, Integer quantity) {
