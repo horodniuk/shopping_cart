@@ -4,6 +4,7 @@ import cart.Product;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.io.File;
@@ -21,12 +22,12 @@ import java.util.stream.Collectors;
 @ToString(of = {"storageCache"})
 public class StorageWithJson implements Storage {
     private File path; // path in which json file is situated;
-    private Map<Product, Integer> storageCache; // map storing products and their quantity which are loaded from json;
+    @Getter
+    private Map<Product, Integer> storageCache = new HashMap<>(); // map storing products and their quantity which are loaded from json;
     private final ObjectMapper objectMapper = new ObjectMapper(); // instance of class ObjectMapper
 
     public StorageWithJson(File path) {
         this.path = path;
-        this.storageCache = load();  // filling map with method load()
     }
 
     /**
@@ -39,8 +40,7 @@ public class StorageWithJson implements Storage {
      * return - map of instances of class Product and Integers (theirs quantity).
      */
     @Override
-    public Map<Product, Integer> load() {
-        Map<Product, Integer> productMap = new HashMap<>();
+    public void load() {
         try {
             System.out.println("SRR " + path);
             JsonNode jsonNode = objectMapper.readTree(path);
@@ -51,12 +51,11 @@ public class StorageWithJson implements Storage {
                 BigDecimal price = new BigDecimal(node.get("price").asText());
                 int quantity = Integer.parseInt(node.get("quantity").asText());
                 Product tempProduct = new Product(product_id, name, price);
-                productMap.put(tempProduct, quantity);
+                storageCache.put(tempProduct, quantity);
             }
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-        return productMap;
     }
 
     /**

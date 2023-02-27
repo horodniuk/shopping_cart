@@ -3,18 +3,11 @@ package storage;
 import cart.Product;
 
 import java.util.List;
-import java.util.Map;
 
 public abstract class StorageDataBase implements Storage {
 
-    /**
-     * map storing products and their quantity which are loaded from database
-     */
-    private Map<Product, Integer> storageCache;
-
     @Override
-    public Map<Product, Integer> load() {
-        return null;
+    public void load() {
     }
 
     @Override
@@ -41,6 +34,10 @@ public abstract class StorageDataBase implements Storage {
 
     @Override
     public Product getProductByName(String productName) {
+        return null;
+    }
+
+    public String getConnectionType() {
         return null;
     }
 }

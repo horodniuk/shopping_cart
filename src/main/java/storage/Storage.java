@@ -3,7 +3,6 @@ package storage;
 import cart.Product;
 
 import java.util.List;
-import java.util.Map;
 
 /*
  * Method load() loads data in our Map
@@ -19,7 +18,7 @@ import java.util.Map;
  * Method isProductAvailable() - checks if storage map contains needed quantity of such product;
  */
 public interface Storage {
-    Map<Product, Integer> load();
+    void load();
 
     void write();
 

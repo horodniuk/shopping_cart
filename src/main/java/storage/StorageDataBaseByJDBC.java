@@ -1,6 +1,9 @@
 package storage;
+
 import cart.Product;
 import config.Connector;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.sql.SQLException;
@@ -13,24 +16,23 @@ import java.util.stream.Collectors;
 /**
  * Realisation of storage with products based from database
  */
+@NoArgsConstructor
 @ToString(of = {"storageCache"})
 public class StorageDataBaseByJDBC extends StorageDataBase {
+    private final String connectionType = "by_jdbc";
     private final String PRODUCT_ID = "product_id";
     private final String PRODUCT_NAME = "product_name";
     private final String PRICE = "price";
     private final String QUANTITY = "quantity";
     String sql = """
-                        SELECT product_id, product_name, price, quantity
-                        FROM storage_database.public.store
-                """;
+                    SELECT product_id, product_name, price, quantity
+                    FROM storage_database.public.store
+            """;
     /**
      * map storing products and their quantity which are loaded from database
      */
-    private Map<Product, Integer> storageCache;
-
-    public StorageDataBaseByJDBC() {
-        this.storageCache = load();            // filling map with method load()
-    }
+    @Getter
+    private Map<Product, Integer> storageCache = new HashMap<>();
 
     /**
      * Method description
@@ -40,14 +42,12 @@ public class StorageDataBaseByJDBC extends StorageDataBase {
      * return - map of instances of class Product and Integers (theirs quantity).
      */
     @Override
-    public Map<Product, Integer> load() {
-        Map<Product, Integer> productListDataBase;
+    public void load() {
         try (var connection = Connector.open();
              var statement = connection.createStatement()) {
             var executeResult = statement.executeQuery(sql);
-            productListDataBase = new HashMap<>();
             while (executeResult.next()) {
-                productListDataBase.put(
+                storageCache.put(
                         new Product(executeResult.getInt(PRODUCT_ID),
                                 executeResult.getString(PRODUCT_NAME),
                                 executeResult.getBigDecimal(PRICE)
@@ -57,7 +57,6 @@ public class StorageDataBaseByJDBC extends StorageDataBase {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return productListDataBase;
     }
 
     @Override
@@ -81,7 +80,7 @@ public class StorageDataBaseByJDBC extends StorageDataBase {
         List<String> list = new ArrayList<>();
         storageCache.forEach((product, quantity) ->
                 list.add(String.format("insert into temp_store (%s, %s, %s, %s) VALUES ( %s, '%s',  %s,  %s)",
-                        PRODUCT_ID,PRODUCT_NAME, PRICE,QUANTITY,
+                        PRODUCT_ID, PRODUCT_NAME, PRICE, QUANTITY,
                         product.getProduct_id(), product.getName(), product.getPrice().intValue(), quantity))
         );
         return list;
@@ -123,5 +122,9 @@ public class StorageDataBaseByJDBC extends StorageDataBase {
         return storageCache.keySet().stream()
                 .filter(product -> product.getName().equals(productName))
                 .findFirst().orElseThrow();
+    }
+
+    public String getConnectionType() {
+        return connectionType;
     }
 }

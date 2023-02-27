@@ -2,26 +2,30 @@ package storage;
 
 import cart.Product;
 import config.HibernateSession;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor
 public class StorageDataBaseByHibernate extends StorageDataBase {
-    private Map<Product, Integer> storageCache;
+    @Getter
+    private final String connectionType = "by_hibernate";
+    @Getter
+    private Map<Product, Integer> storageCache = new HashMap<>();
+    private String sqlQueryForProduct = "FROM Product";
 
-
-    public StorageDataBaseByHibernate() {
-        this.storageCache = load();            // filling map with method load()
-    }
 
     @Override
-    public Map<Product, Integer> load() {
+    public void load() {
         Session session = HibernateSession.getSessionFactory().openSession();
-        Query query = session.createQuery("FROM Product");
-        List <Product> productList = (List<Product>) query.getResultList();
+        Query query = session.createQuery(sqlQueryForProduct);
+        List<Product> productList = (List<Product>) query.getResultList();
 //        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
 //        CriteriaQuery criteriaQuery = criteriaBuilder.createQuery(Product.class);
 //        Root root = criteriaQuery.from(Product.class);
@@ -43,8 +47,6 @@ public class StorageDataBaseByHibernate extends StorageDataBase {
 //        CriteriaQuery all = criteriaQuery.select(root);
 //        TypedQuery typedQuery = session.createQuery(all);
 //        return typedQuery.п();
-
-        return null;
     }
 
     @Override
