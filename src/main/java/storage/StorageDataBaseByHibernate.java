@@ -5,8 +5,8 @@ import config.HibernateSession;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,36 +18,21 @@ public class StorageDataBaseByHibernate extends StorageDataBase {
     private final String connectionType = "by_hibernate";
     @Getter
     private Map<Product, Integer> storageCache = new HashMap<>();
-    private String sqlQueryForProduct = "FROM Product";
+    private final String sqlQueryForProduct = "SELECT * FROM store";
 
 
     @Override
     public void load() {
         Session session = HibernateSession.getSessionFactory().openSession();
-        Query query = session.createQuery(sqlQueryForProduct);
-        List<Product> productList = (List<Product>) query.getResultList();
-
-//        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-//        CriteriaQuery criteriaQuery = criteriaBuilder.createQuery(Product.class);
-//        Root root = criteriaQuery.from(Product.class);
-//        CriteriaQuery all = criteriaQuery.select(root);
-//        TypedQuery typedQuery = session.createQuery(all);
-//        List<Product> productList = typedQuery.getResultList();
-        System.out.println(productList);
-//                .stream().sorted().toList();
-//        System.out.println(productList);
-//        List<Integer> quantityList = session.createQuery("SELECT quantity FROM store").stream().sorted().toList();
-//        System.out.println(quantityList);
-//        Transaction transaction = session.beginTransaction();
-
-//        CriteriaBuilder criteriaBuilder = session.createSQLQuery();
-//
-//
-//        createQuery(Product.class);
-//        Root root = criteriaQuery.from(Product.class);
-//        CriteriaQuery all = criteriaQuery.select(root);
-//        TypedQuery typedQuery = session.createQuery(all);
-//        return typedQuery.п();
+        List<Object[]> products = session.createSQLQuery(sqlQueryForProduct).list();
+        for (Object[] product : products) {
+            int id = (int) product[0];
+            String productName = (String) product[1];
+            BigDecimal price = (BigDecimal) product[2];
+            Integer quantity = (Integer) product[3];
+            storageCache.put(new Product(id, productName, price), quantity);
+        }
+        session.close();
     }
 
     @Override
