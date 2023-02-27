@@ -4,6 +4,7 @@ import cart.Product;
 import config.HibernateSession;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.Session;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
+@ToString(of = {"storageCache"})
 public class StorageDataBaseByHibernate extends StorageDataBase {
     @Getter
     private final String connectionType = "by_hibernate";
