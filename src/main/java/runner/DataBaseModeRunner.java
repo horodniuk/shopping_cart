@@ -22,7 +22,8 @@ public class DataBaseModeRunner implements ModeRunner {
         public void start() {
             System.out.println("Starting DataBase mode.");
             ModeRunner.showTooltipWithCommands();
-            Cart cart = new Cart(new StorageDataBase());
+            StorageDataBase storageDataBase = null;
+            Cart cart = new Cart(storageDataBase);
             TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
             while (true) {
                 String line = new Scanner(System.in).nextLine();

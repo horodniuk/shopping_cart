@@ -3,31 +3,31 @@ package storage;
 import cart.Product;
 import config.HibernateSession;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class StorageDataBaseHibernate implements Storage {
+public class StorageDataBaseByHibernate extends StorageDataBase {
     private Map<Product, Integer> storageCache;
 
-    public StorageDataBaseHibernate() {
+
+    public StorageDataBaseByHibernate() {
         this.storageCache = load();            // filling map with method load()
     }
 
     @Override
     public Map<Product, Integer> load() {
         Session session = HibernateSession.getSessionFactory().openSession();
-        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery criteriaQuery = criteriaBuilder.createQuery(Product.class);
-        Root root = criteriaQuery.from(Product.class);
-        CriteriaQuery all = criteriaQuery.select(root);
-        TypedQuery typedQuery = session.createQuery(all);
-        List<Product> productList = typedQuery.getResultList();
+        Query query = session.createQuery("FROM Product");
+        List <Product> productList = (List<Product>) query.getResultList();
+//        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+//        CriteriaQuery criteriaQuery = criteriaBuilder.createQuery(Product.class);
+//        Root root = criteriaQuery.from(Product.class);
+//        CriteriaQuery all = criteriaQuery.select(root);
+//        TypedQuery typedQuery = session.createQuery(all);
+//        List<Product> productList = typedQuery.getResultList();
         System.out.println(productList);
 //                .stream().sorted().toList();
 //        System.out.println(productList);

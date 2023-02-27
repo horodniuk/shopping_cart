@@ -1,4 +1,4 @@
-import runner.DataBaseHibernateModeRunner;
+import runner.DataBaseModeRunner;
 
 public class AppByDataBaseStorage {
 
@@ -7,6 +7,6 @@ public class AppByDataBaseStorage {
      *
      */
     static void start() {
-        new DataBaseHibernateModeRunner().start();
+        new DataBaseModeRunner().start();
     }
 }

@@ -2,10 +2,7 @@ package cart;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
@@ -14,10 +11,12 @@ import java.math.BigDecimal;
 @Setter(AccessLevel.NONE)
 @NoArgsConstructor
 @AllArgsConstructor
+@Table (name = "store")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int product_id;
+    @Column(name = "product_name")
     private String name;
     private BigDecimal price;
 
