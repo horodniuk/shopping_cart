@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @ToString(of = {"storageCache"})
 public class StorageDataBaseByJDBC extends StorageDataBase {
+    @Getter
     private final String connectionType = "by_jdbc";
     private final String PRODUCT_ID = "product_id";
     private final String PRODUCT_NAME = "product_name";
@@ -122,9 +123,5 @@ public class StorageDataBaseByJDBC extends StorageDataBase {
         return storageCache.keySet().stream()
                 .filter(product -> product.getName().equals(productName))
                 .findFirst().orElseThrow();
-    }
-
-    public String getConnectionType() {
-        return connectionType;
     }
 }

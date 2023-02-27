@@ -32,6 +32,7 @@ public class InteractiveModeRunner implements ModeRunner {
         System.out.println("Starting Interactive mode.");
         ModeRunner.showTooltipWithCommands();
         System.out.println("Enter the command in console:");
+        storage.load();
         Cart cart = new Cart(storage);
         TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
         while (true) {

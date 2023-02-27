@@ -1,6 +1,7 @@
 package config;
 
 import cart.Product;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -9,6 +10,7 @@ import org.hibernate.service.ServiceRegistry;
 
 import java.util.Properties;
 
+@Slf4j
 public class HibernateSession {
     private static SessionFactory sessionFactory;
     private static final String DRIVER = PropertyUtils.get("db.driver");
@@ -38,7 +40,9 @@ public class HibernateSession {
                         applySettings(configuration.getProperties()).build();
                 sessionFactory = configuration.buildSessionFactory(serviceRegistry);
             } catch (Exception e) {
-                System.out.println("Couldn't get session factory. " + e.getMessage());
+                String messageError = "Couldn't get session factory. {}";
+                log.error(messageError, e.getMessage());
+                throw new RuntimeException(messageError + e.getMessage());
             }
         }
         return sessionFactory;

@@ -2,6 +2,7 @@ package runner;
 
 import cart.Cart;
 import config.PropertyUtils;
+import lombok.extern.slf4j.Slf4j;
 import storage.StorageDataBase;
 import storage.StorageDataBaseByHibernate;
 import storage.StorageDataBaseByJDBC;
@@ -9,6 +10,7 @@ import storage.StorageDataBaseByJDBC;
 import java.util.List;
 import java.util.Scanner;
 
+@Slf4j
 public class DataBaseModeRunner implements ModeRunner {
     private final List<StorageDataBase> dataBaseList =
             List.of(new StorageDataBaseByHibernate(), new StorageDataBaseByJDBC());
@@ -30,13 +32,16 @@ public class DataBaseModeRunner implements ModeRunner {
         System.out.println("Starting DataBase mode.");
         ModeRunner.showTooltipWithCommands();
         String connectionType = PropertyUtils.get("db.connection_type");
-        Cart cart;
+        Cart cart = null;
         for (StorageDataBase currentStorage : dataBaseList) {
-            if (currentStorage.getConnectionType().equals(connectionType)) {
+            if (currentStorage.getConnectionType().intern().equals(connectionType.intern())) {
+                currentStorage.load();
                 cart = new Cart(currentStorage);
-            } else {
-
             }
+        }
+        if (cart == null) {
+            log.error("Wrong db.connection_type specified in config file!");
+            throw new RuntimeException("Wrong db.connection_type specified in config file!");
         }
         TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
         while (true) {

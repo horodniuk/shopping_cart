@@ -26,6 +26,7 @@ public class StorageDataBaseByHibernate extends StorageDataBase {
         Session session = HibernateSession.getSessionFactory().openSession();
         Query query = session.createQuery(sqlQueryForProduct);
         List<Product> productList = (List<Product>) query.getResultList();
+
 //        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
 //        CriteriaQuery criteriaQuery = criteriaBuilder.createQuery(Product.class);
 //        Root root = criteriaQuery.from(Product.class);
