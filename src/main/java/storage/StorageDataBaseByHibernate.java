@@ -5,6 +5,8 @@ import config.HibernateSession;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
 import java.math.BigDecimal;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @NoArgsConstructor
 @ToString(of = {"storageCache"})
 public class StorageDataBaseByHibernate extends StorageDataBase {
@@ -25,21 +28,42 @@ public class StorageDataBaseByHibernate extends StorageDataBase {
 
     @Override
     public void load() {
-        Session session = HibernateSession.getSessionFactory().openSession();
-        List<Object[]> products = session.createSQLQuery(sqlQueryForProduct).list();
-        for (Object[] product : products) {
-            int id = (int) product[0];
-            String productName = (String) product[1];
-            BigDecimal price = (BigDecimal) product[2];
-            Integer quantity = (Integer) product[3];
-            storageCache.put(new Product(id, productName, price), quantity);
+        try (Session session = HibernateSession.getSessionFactory().openSession()) {
+            List<Object[]> products = session.createSQLQuery(sqlQueryForProduct).list();
+            for (Object[] product : products) {
+                int id = (int) product[0];
+                String productName = (String) product[1];
+                BigDecimal price = (BigDecimal) product[2];
+                Integer quantity = (Integer) product[3];
+                storageCache.put(new Product(id, productName, price), quantity);
+            }
+        } catch (HibernateException e) {
+            String errorMessage = "Couldn't get data from sql table with hibernate! {}";
+            log.error(errorMessage, e.getMessage());
+            throw new RuntimeException(errorMessage + e.getMessage());
         }
-        session.close();
     }
 
+    //method not ready
     @Override
     public void write() {
-
+//        try (Session session = HibernateSession.getSessionFactory().openSession()) {
+//            session.getTransaction().begin();
+//            for (Product product : storageCache.keySet()) {
+//                Integer quantity = storageCache.get(product);
+//                int id = product.getProduct_id();
+//                session.createQuery("UPDATE product SET quantity =:quantity where id = :id")
+//                        .setParameter("quantity", quantity)
+//                        .setParameter("id", id)
+//                        .executeUpdate();
+//                session.getTransaction().commit();
+//            }
+//            session.close();
+//        } catch (HibernateException e) {
+//            String errorMessage = "Couldn't update data in sql table with hibernate! {}";
+//            log.error(errorMessage, e.getMessage());
+//            throw new RuntimeException(errorMessage + e.getMessage());
+//        }
     }
 
     @Override
