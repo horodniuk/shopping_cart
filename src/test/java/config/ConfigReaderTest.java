@@ -33,9 +33,9 @@ class ConfigReaderTest {
     @ParameterizedTest
     @MethodSource("getArguments")
     void parseConfig(String dbType, DbType expectedResult, Class<Exception> expectedException) {
-        //Arrange
+
         PropertyUtils.PROPERTIES.setProperty("storage_type", dbType);
-        //Act & Assert
+
         if (expectedException != null) {
             Assertions.assertThrows(expectedException, () -> configReader.parseConfig());
         } else {
