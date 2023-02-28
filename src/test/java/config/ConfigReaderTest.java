@@ -18,7 +18,6 @@ public class ConfigReaderTest {
     }
     @Test
     public void testParseConfigWithValidDbType() {
-        // Arrange
         PropertyUtils.PROPERTIES.setProperty("core.configuration.db.type", "FILE_NAME");
 
 
