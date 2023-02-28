@@ -3,6 +3,7 @@ package storage;
 import cart.Product;
 import config.Connector;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 /**
  * Realisation of storage with products based from database
  */
+@Slf4j
 @ToString(of = {"storageCache"})
 public class StorageDataBase implements Storage {
     private final String PRODUCT_ID = "product_id";
@@ -51,15 +53,17 @@ public class StorageDataBase implements Storage {
                 productListDataBase.put(
                         new Product(executeResult.getInt(PRODUCT_ID),
                                 executeResult.getString(PRODUCT_NAME),
-                                executeResult.getBigDecimal(PRICE)
-                        ),
+                                executeResult.getBigDecimal(PRICE)),
                                 executeResult.getInt(QUANTITY));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            String messageError = "Error when trying to read from file: {}.";
+            log.error(messageError,e.getMessage());
+            throw new RuntimeException(messageError + e.getMessage());
         }
         return productListDataBase;
     }
+
 
     @Override
     public void write() {
@@ -74,7 +78,9 @@ public class StorageDataBase implements Storage {
             }
             statement.executeBatch();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            String messageError = "Error when trying to read from file: {}.";
+            log.error(messageError,e.getMessage());
+            throw new RuntimeException(messageError + e.getMessage());
         }
     }
 
@@ -113,7 +119,7 @@ public class StorageDataBase implements Storage {
     public boolean isProductAvailable(Product product, int quantity) {
         final var qetQuantityProductInStorage = getQuantity(product);
         if (qetQuantityProductInStorage < quantity) {
-            System.out.printf("Storage doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
+            log.info("Storage doesn't contain {} in quantity {} right now there is only next quantity: {}",
                     product.getName(), quantity, qetQuantityProductInStorage);
         }
         return qetQuantityProductInStorage >= quantity;

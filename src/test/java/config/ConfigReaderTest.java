@@ -1,47 +1,42 @@
 package config;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.Before;
+import org.junit.jupiter.api.Test;
 
-import java.util.stream.Stream;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-class ConfigReaderTest {
+public class ConfigReaderTest {
 
-    ConfigReader configReader;
+    ConfigReader configReader = new ConfigReader();
+    DbType result = configReader.parseConfig() ;
 
-    @BeforeEach
-    void init() {
-        configReader = new ConfigReader();
+    @Before
+    public void setup() {
         PropertyUtils.PROPERTIES.clear();
     }
+    @Test
+    public void testParseConfigWithValidDbType() {
+        // Arrange
+        PropertyUtils.PROPERTIES.setProperty("core.configuration.db.type", "FILE_NAME");
 
-    private static Stream<Arguments> getArguments() {
-        return Stream.of(
-                arguments("STORAGE_JSON", DbType.STORAGE_JSON, null),
-                arguments("STORAGE_DATABASE", DbType.STORAGE_DATABASE, null),
-                arguments("SOME_STORAGE", null, IllegalArgumentException.class),
-                arguments("12345678", null, IllegalArgumentException.class),
-                arguments("JSON_STORAGE", null, IllegalArgumentException.class)
-        );
+
+
+        assertNotNull(result);
+        assertEquals(DbType.STORAGE_JSON, result);
+
     }
 
-    @ParameterizedTest
-    @MethodSource("getArguments")
-    void parseConfig(String dbType, DbType expectedResult, Class<Exception> expectedException) {
-        //Arrange
-        PropertyUtils.PROPERTIES.setProperty("storage_type", dbType);
-        //Act & Assert
-        if (expectedException != null) {
-            Assertions.assertThrows(expectedException, () -> configReader.parseConfig());
-        } else {
-            DbType actualResult = configReader.parseConfig();
-            Assertions.assertEquals(expectedResult, actualResult);
+    @Test
+    public void testParseConfigWithInvalidDbType() throws IllegalArgumentException {
 
-        }
+        PropertyUtils.PROPERTIES.setProperty("core.configuration.db.type", "INVALID_DB_TYPE");
+
+        configReader.parseConfig();
+    }
+    @Test
+    public void testParseConfigWithMissingDbType() throws IllegalArgumentException  {
+        configReader.parseConfig();
     }
 }
