@@ -1,5 +1,8 @@
 package config;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ConfigReader {
     private final static String CORE_CONFIGURATION_DB_TYPE = "storage_type";
 
@@ -14,7 +17,10 @@ public class ConfigReader {
         try {
             return DbType.valueOf(PropertyUtils.PROPERTIES.getProperty(CORE_CONFIGURATION_DB_TYPE));
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Wrong storage_type specified in file config.properties!");
+            String messageError = "Error when trying to read from file: {}.";
+            log.error(messageError ,e.getMessage());
+            throw new IllegalArgumentException(messageError + e.getMessage());
+
         }
     }
 }
