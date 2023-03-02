@@ -28,19 +28,19 @@ public class AppByJsonStorage {
      *   then starts new FileModeRunner#start
      */
     static void start() {
-        log.info("JSon storage start.");
+        log.info("App started by json storage");
         printPreviewToConsole();
         String line = getLineToConsole();
         String[] strArray = line.split(" ");
         isPathCorrect(strArray[0], strArray);
         if (strArray.length == 2) {
-            log.info("User choose interactive mode runner.");
+            log.debug("User choose interactive mode runner.");
             String pathToStorageProduct = strArray[0] + "/" + strArray[1];
             File storageProduct = getAccessToFileByCopy(pathToStorageProduct);
             Storage storage = new StorageWithJson(storageProduct);
             new InteractiveModeRunner(storage).start();
         } else if (strArray.length == 3) {
-            log.info("User choose file mode runner.");
+            log.debug("User choose file mode runner.");
             String pathToStorageProduct = strArray[0] + "/" + strArray[1];
             String pathToCommandList = strArray[0] + "/" + strArray[2];   // File separator
             File storageProduct = getAccessToFileByCopy(pathToStorageProduct);
@@ -48,7 +48,7 @@ public class AppByJsonStorage {
             File commandList = getAccessToFileByCopy(pathToCommandList);
             new FileModeRunner(storage, commandList).start();
         } else {
-            log.info("User entered an invalid command.");
+            log.debug("User entered an invalid command.");
             System.out.println("incorrectly command");
         }
     }
@@ -105,7 +105,7 @@ public class AppByJsonStorage {
     private static void printPreviewToConsole() {
         System.out.println("Choose mode:");
         System.out.println("Interactive mode - enter \"market storage.json\"");
-        System.out.println("File mode режим - enter \"market storage.json commadsList.txt\"");
+        System.out.println("File mode - enter \"market storage.json commadsList.txt\"");
     }
 }
 

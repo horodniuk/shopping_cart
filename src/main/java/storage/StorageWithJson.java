@@ -44,7 +44,6 @@ public class StorageWithJson implements Storage {
     public Map<Product, Integer> load() {
         Map<Product, Integer> productMap = new HashMap<>();
         try {
-            System.out.println("SRR " + path);
             JsonNode jsonNode = objectMapper.readTree(path);
             JsonNode storage = jsonNode.get("storage");
             for (JsonNode node : storage) {
@@ -89,7 +88,7 @@ public class StorageWithJson implements Storage {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(tempStorage, jsonNode);
         } catch (IOException e) {
             log.error("The path or file is invalid or missing : ",e);
-            e.printStackTrace();
+            throw new RuntimeException("The path or file is invalid or missing : ",e);
         }
     }
 

@@ -42,8 +42,12 @@ public class FileModeRunner implements ModeRunner {
         TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
         try (BufferedReader reader = new BufferedReader(new FileReader(pathToCommand))) {
             String line = reader.readLine();
+            log.debug("Program read line {} ",line);
             while (line != null) {
-                if (line.length() > 0) textCommandExecutor.executeCommand(line, cart);
+                if (line.length() > 0){
+                    log.info("Program execute {} command.",line);
+                    textCommandExecutor.executeCommand(line, cart);
+                }
                 line = reader.readLine();
             }
         } catch (IOException e) {
