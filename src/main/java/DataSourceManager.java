@@ -1,6 +1,8 @@
 import config.ConfigReader;
 import config.DbType;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class DataSourceManager {
     ConfigReader configReader;
 

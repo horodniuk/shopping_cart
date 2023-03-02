@@ -36,6 +36,7 @@ public class FileModeRunner implements ModeRunner {
      */
     @Override
     public void start() {
+        log.info("File mode started.");
         System.out.println("Starting File mode." + " Commands will be read from file\" " + pathToCommand);
         Cart cart = new Cart(storage);
         TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
