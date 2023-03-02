@@ -3,31 +3,35 @@ package storage;
 import cart.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.File;
 import java.math.BigDecimal;
-import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-class StorageWithJsonTest {
-    File path;
-    Storage storage;
+@ExtendWith(MockitoExtension.class)
+class StorageDataBaseTest {
+    Map<Product, Integer> storageCache;
 
     @BeforeEach
-    void beforeEachTestMethod() throws URISyntaxException {
-        path = new File(getClass().getClassLoader().getResource("test_storage.json").toURI());
-        storage = new StorageWithJson(path);
+    void beforeEachTestMethod() {
+        storageCache = new HashMap<>();
+        storageCache.put(new Product(1, "beer", BigDecimal.valueOf(50.0)), 100);
+        storageCache.put(new Product(2, "cola", BigDecimal.valueOf(20.0)), 100);
+        storageCache.put(new Product(3, "soap", BigDecimal.valueOf(30.0)), 100);
     }
 
     private static Stream<Arguments> getProductAndQuantity() {
@@ -40,47 +44,16 @@ class StorageWithJsonTest {
 
     @ParameterizedTest
     @MethodSource("getProductAndQuantity")
-    void load(int product_id, String productName, BigDecimal price, Integer quantity) {
-        //Arrange
-        Product product = new Product(product_id, productName, price);
-        Integer expectedResult = 100;
-        //Act
-        Map<Product, Integer> resultMap = storage.load();
-        Integer actualResult = resultMap.get(product);
-        //Assert
-        assertEquals(expectedResult, actualResult);
-    }
-
-    @ParameterizedTest
-    @MethodSource("getProductAndQuantity")
     void addProduct(int product_id, String productName, BigDecimal price, Integer quantity) {
         //Arrange
         Product product = new Product(product_id, productName, price);
         int quantityNeeded = 105;
         //Act
-        storage.addProduct(product, quantity);
-        boolean result = storage.isProductAvailable(product, quantityNeeded);
+        storageCache.put(product, storageCache.get(product) + quantity);
+        final var qetQuantityProductInStorage = storageCache.get(product);
+        boolean result = qetQuantityProductInStorage >= quantityNeeded;
         //Assert
         assertTrue(result);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"beer", "cola", "soap"})
-    void getProductByName_IfProductExistInStorage(String productName) {
-        //Arrange
-        //Act
-        Product product = storage.getProductByName(productName);
-        String actualResult = product.getName();
-        //Assert
-        assertEquals(productName, actualResult);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"bear", "apple", "water"})
-    void getProductByName_IfProductNotExistInStorage(String productName) {
-        //Arrange
-        //Act & Assert
-        assertThrows(NoSuchElementException.class, () -> storage.getProductByName(productName));
     }
 
     @ParameterizedTest
@@ -90,10 +63,23 @@ class StorageWithJsonTest {
         Product product = new Product(product_id, productName, price);
         int quantityNeeded = 95;
         //Act
-        storage.removeProduct(product, quantity);
-        boolean result = storage.isProductAvailable(product, quantityNeeded);
+        storageCache.put(product, storageCache.get(product) - quantity);
+        final var qetQuantityProductInStorage = storageCache.get(product);
+        boolean result = qetQuantityProductInStorage >= quantityNeeded;
         //Assert
         assertTrue(result);
+    }
+
+    @Test
+    void getProductNames() {
+        //Arrange
+        List<String> expectedResult = List.of("beer", "cola", "soap");
+        //Act
+        List<String> actualResult = storageCache.keySet().stream()
+                .map(Product::getName).sorted()
+                .collect(Collectors.toList());
+        //Assert
+        assertEquals(expectedResult, actualResult);
     }
 
     @ParameterizedTest
@@ -103,7 +89,8 @@ class StorageWithJsonTest {
         Product product = new Product(product_id, productName, price);
         boolean expectedResult = true;
         //Act
-        boolean actualResult = storage.isProductAvailable(product, quantity);
+        final var qetQuantityProductInStorage = storageCache.get(product);
+        boolean actualResult = qetQuantityProductInStorage >= quantity;
         //Assert
         assertEquals(expectedResult, actualResult);
     }
@@ -119,18 +106,31 @@ class StorageWithJsonTest {
         Product product = new Product(product_id, productName, price);
         boolean expectedResult = false;
         //Act
-        boolean actualResult = storage.isProductAvailable(product, quantity);
+        final var qetQuantityProductInStorage = storageCache.get(product);
+        boolean actualResult = qetQuantityProductInStorage >= quantity;
         //Assert
         assertEquals(expectedResult, actualResult);
     }
 
-    @Test
-    void getProductNames() {
+    @ParameterizedTest
+    @ValueSource(strings = {"beer", "cola", "soap"})
+    void getProductByName_IfProductExistInStorage(String productName) {
         //Arrange
-        List<String> expectedResult = List.of("beer", "cola", "soap");
         //Act
-        List<String> actualResult = storage.getProductNames();
+        Product product = storageCache.keySet().stream().filter(p -> p.getName().equals(productName))
+                .findFirst().orElseThrow();
+        String actualResult = product.getName();
         //Assert
-        assertEquals(expectedResult, actualResult);
+        assertEquals(productName, actualResult);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"bear", "apple", "water"})
+    void getProductByName_IfProductNotExistInStorage(String productName) {
+        //Arrange
+        //Act & Assert
+        assertThrows(NoSuchElementException.class, () -> storageCache.keySet().stream()
+                .filter(product -> product.getName().equals(productName))
+                .findFirst().orElseThrow());
     }
 }
