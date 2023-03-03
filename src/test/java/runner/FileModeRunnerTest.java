@@ -36,6 +36,7 @@ class FileModeRunnerTest {
         File path = new File(getClass().getClassLoader().getResource("test_storage.json").toURI());
         String expectedResult = "beer";
         storageReal = new StorageWithJson(path);
+        storageReal.load();
         File correctPathToCommands = new File(getClass().getClassLoader().
                 getResource("commandsList.txt").toURI());
         //Act
