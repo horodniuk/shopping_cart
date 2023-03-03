@@ -110,7 +110,7 @@ public class Cart {
      * first we check if discount is applied on this product with method isDiscountAppliedOnProduct();
      * if true - we create int quantity of this product, type of discount and value of discount on this product;
      * next we remove discount and reduce discount value with method removeDiscountValueAndType();
-     * next we remove product and it's quantity from cartMap;
+     * next we remove product, and it's quantity from cartMap;
      * after that we update storage and output data to console with updateAndPrintToConsole();
      */
     private void deleteProductAndDiscount(Product product, int quantity) {
@@ -184,7 +184,7 @@ public class Cart {
      */
     private void removePrintToConsole(Product product, int quantity) {
         System.out.println(quantity + " " + product.getName() + "(s) vas removed");
-        log.debug("Remove {} in cart", product.getName());
+        log.debug("Remove {} {} in cart", quantity, product.getName());
     }
 
 
@@ -212,7 +212,7 @@ public class Cart {
     public void finish() {
         storage.write();
         System.out.println("Done!");
-        log.debug("Finish program whithout error");
+        log.debug("Finish program without error");
     }
 
     /**
@@ -248,7 +248,7 @@ public class Cart {
             if (newDiscountProductValue.intValue() != 0) {
                 applyDiscount(discountType, product, newDiscountProductValue);
             }
-        } else{
+        } else {
             log.debug("Discount cannot be added, because there is no such product {} in cart!", productName);
             System.out.println("Discount cannot be added, because there is no such product in cart!");
         }
@@ -298,12 +298,12 @@ public class Cart {
     @Override
     public String toString() {
         return "~~~~~~~~~~~~~~~~~  CART (LOG) ~~~~~~~~~~~~~~~~~\n" +
-               "cartMap=" + cartMap +
-               ",\n storage=" + storage +
-               ",\n discountStorage=" + discountStorage +
-               ",\n price=" + price +
-               ",\n discount=" + discountStorage.getDiscountValue() +
-               ",\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
-               '\n';
+                "cartMap=" + cartMap +
+                ",\n storage=" + storage +
+                ",\n discountStorage=" + discountStorage +
+                ",\n price=" + price +
+                ",\n discount=" + discountStorage.getDiscountValue() +
+                ",\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
+                '\n';
     }
 }

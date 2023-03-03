@@ -19,6 +19,11 @@ public class DataBaseModeRunner implements ModeRunner {
      * Method description
      * starts reading and executing commands line by line from console;
      * first we output message to console with method - showTooltipWithCommands().
+     * next we get property (db.connection_type) and assign it to variable connectionType;
+     * after that we check if any of storageDataBase has the same connection type as specified in properties;
+     * if true - we start method load in this storage and pass on this storage to Cart, if false - we go further;
+     * after that we check - if cart equals null;
+     * if true - we throw RuntimeException, if false we go further;
      * next we create instance of Class TextCommandExecutor
      * after that we create instance of class Cart;
      * next we start endless cycle in which we receive read commands from console;

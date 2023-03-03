@@ -40,7 +40,7 @@ public class InteractiveModeRunner implements ModeRunner {
         TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
         while (true) {
             String line = new Scanner(System.in).nextLine();
-            log.debug("User enter {} command.",line);
+//            log.debug("User enter {} command.",line);
             textCommandExecutor.executeCommand(line, cart);
             if (line.equals("finish")){
                 log.info("User enter finish command.");
