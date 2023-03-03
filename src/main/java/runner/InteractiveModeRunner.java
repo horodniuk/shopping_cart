@@ -1,6 +1,7 @@
 package runner;
 
 import cart.Cart;
+import lombok.extern.slf4j.Slf4j;
 import storage.Storage;
 
 import java.util.Scanner;
@@ -9,6 +10,7 @@ import java.util.Scanner;
  * Reading commands line by line from console and if such commands exist -
  * perform them. (look method executeCommand())
  */
+@Slf4j
 public class InteractiveModeRunner implements ModeRunner {
     private Storage storage;
 
@@ -29,6 +31,7 @@ public class InteractiveModeRunner implements ModeRunner {
      * method showTooltipWithCommands() - outputs message to console with tips.
      */
     public void start() {
+        log.info("Interactive mode runner started.");
         System.out.println("Starting Interactive mode.");
         ModeRunner.showTooltipWithCommands();
         System.out.println("Enter the command in console:");
@@ -37,8 +40,12 @@ public class InteractiveModeRunner implements ModeRunner {
         TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
         while (true) {
             String line = new Scanner(System.in).nextLine();
+            log.debug("User enter {} command.",line);
             textCommandExecutor.executeCommand(line, cart);
-            if (line.equals("finish")) return;
+            if (line.equals("finish")){
+                log.info("User enter finish command.");
+                return;
+            }
         }
     }
 

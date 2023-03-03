@@ -1,8 +1,10 @@
 package config;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.util.Properties;
-
+@Slf4j
 public class PropertyUtils {
     public static final Properties PROPERTIES = new Properties();
     private static final String FILENAME = "config.properties";
@@ -27,11 +29,15 @@ public class PropertyUtils {
     private static void readProperties() {
         try (var inputStream = ConfigReader.class.getClassLoader().getResourceAsStream(FILENAME)) {
             if (inputStream == null) {
-                throw new RuntimeException("Could not find property file: [" + FILENAME + "].");
+                String messageError = "Could not find property file:{}";
+                log.error(messageError,FILENAME);
+                throw new RuntimeException( messageError +" [ "+ FILENAME +" ] " );
             }
             PROPERTIES.load(inputStream);
         } catch (IOException e) {
-            throw new RuntimeException("Could not read properties from file: [" + FILENAME + "].", e);
+            String messageError = "Could not read properties from file:";
+            log.error(messageError,FILENAME,e.getMessage());
+            throw new RuntimeException(messageError + " [" + FILENAME + "]."+ e.getMessage());
         }
     }
 

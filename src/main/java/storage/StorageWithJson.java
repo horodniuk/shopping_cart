@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 /**
  * Realisation of storage with products based on json file
  */
+@Slf4j
 @ToString(of = {"storageCache"})
 public class StorageWithJson implements Storage {
     private File path; // path in which json file is situated;
@@ -42,7 +44,6 @@ public class StorageWithJson implements Storage {
     @Override
     public void load() {
         try {
-            System.out.println("SRR " + path);
             JsonNode jsonNode = objectMapper.readTree(path);
             JsonNode storage = jsonNode.get("storage");
             for (JsonNode node : storage) {
@@ -53,7 +54,10 @@ public class StorageWithJson implements Storage {
                 Product tempProduct = new Product(product_id, name, price);
                 storageCache.put(tempProduct, quantity);
             }
+
         } catch (IOException exception) {
+            String messageError = "Error when trying to read from file: {}. : ";
+            log.error(messageError,exception);
             exception.printStackTrace();
         }
     }
@@ -82,7 +86,8 @@ public class StorageWithJson implements Storage {
             }
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(tempStorage, jsonNode);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("The path or file is invalid or missing : ",e);
+            throw new RuntimeException("The path or file is invalid or missing : ",e);
         }
     }
 
@@ -132,7 +137,7 @@ public class StorageWithJson implements Storage {
     public boolean isProductAvailable(Product product, int quantity) {
         final var qetQuantityProductInStorage = getQuantity(product);
         if (qetQuantityProductInStorage < quantity) {
-            System.out.printf("Storage doesn't contain %s in quantity %d right now there is only next quantity: %d%n",
+            log.info("Storage doesn't contain {} in quantity {} right now there is only next quantity: {}",
                     product.getName(), quantity, qetQuantityProductInStorage);
         }
         return qetQuantityProductInStorage >= quantity;
