@@ -23,13 +23,11 @@ public class StorageDataBaseByHibernate extends StorageDataBase {
     private final String connectionType = "by_hibernate";
     @Getter
     private Map<Product, Integer> storageCache = new HashMap<>();
-    private final String sqlQueryForProduct = "SELECT * FROM store";
-
 
     @Override
     public void load() {
         try (Session session = HibernateSession.getSessionFactory().openSession()) {
-            List<Object[]> products = session.createSQLQuery(sqlQueryForProduct).list();
+            List<Object[]> products = session.createSQLQuery("SELECT * FROM store").list();
             for (Object[] product : products) {
                 int id = (int) product[0];
                 String productName = (String) product[1];

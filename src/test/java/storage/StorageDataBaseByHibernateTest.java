@@ -1,6 +1,7 @@
 package storage;
 
 import cart.Product;
+import config.HibernateSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,6 +39,21 @@ class StorageDataBaseByHibernateTest {
                 arguments(3, "soap", BigDecimal.valueOf(30.0), 5)
         );
     }
+
+    @Test
+    public void testHibernateConnection() {
+        try (var sessionFactory = HibernateSession.getSessionFactory();
+             var session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            for (Product product : storageCache.keySet()) {
+                session.save(product);
+            }
+            List<Product> products = session.createQuery("FROM Product", Product.class).list();
+            System.out.println(products);
+            session.getTransaction().commit();
+        }
+    }
+
 
     @ParameterizedTest
     @MethodSource("getProductAndQuantity")
