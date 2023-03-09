@@ -24,7 +24,6 @@ public class StorageDataBaseByHibernate extends StorageDataBase {
     private final String connectionType = "by_hibernate";
     private Map<Product, Integer> storageCache = new HashMap<>();
 
-
     @Override
     public void load() {
         try (Session session = HibernateSession.getSessionFactory().openSession()) {

@@ -143,7 +143,6 @@ public class StorageWithJson implements Storage {
         return qetQuantityProductInStorage >= quantity;
     }
 
-
     /**
      * Method description
      * parameters - instance of class Product;

@@ -12,7 +12,6 @@ public abstract class StorageDataBase implements Storage {
     @Getter
     private Map<Product, Integer> storageCache;
 
-
     @Override
     public abstract void load();
 
