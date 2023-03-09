@@ -1,43 +1,36 @@
 package storage;
 
 import cart.Product;
+import lombok.Getter;
 
 import java.util.List;
+import java.util.Map;
 
 public abstract class StorageDataBase implements Storage {
+    @Getter
+    private final String connectionType = "type";
+    @Getter
+    private Map<Product, Integer> storageCache;
+
 
     @Override
-    public void load() {
-    }
+    public abstract void load();
 
     @Override
-    public void write() {
-    }
+    public abstract void write();
 
     @Override
-    public void addProduct(Product product, int quantity) {
-    }
+    public abstract void addProduct(Product product, int quantity);
 
     @Override
-    public void removeProduct(Product product, int quantity) {
-    }
+    public abstract void removeProduct(Product product, int quantity);
 
     @Override
-    public List<String> getProductNames() {
-        return null;
-    }
+    public abstract List<String> getProductNames();
 
     @Override
-    public boolean isProductAvailable(Product product, int quantity) {
-        return false;
-    }
+    public abstract boolean isProductAvailable(Product product, int quantity);
 
     @Override
-    public Product getProductByName(String productName) {
-        return null;
-    }
-
-    public String getConnectionType() {
-        return null;
-    }
+    public abstract Product getProductByName(String productName);
 }

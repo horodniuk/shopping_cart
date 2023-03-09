@@ -35,6 +35,7 @@ public class StorageDataBaseByJDBC extends StorageDataBase {
     @Getter
     private Map<Product, Integer> storageCache = new HashMap<>();
 
+
     /**
      * Method description
      * First we create empty Map for containing instances of class Product and Integers (theirs quantity);
@@ -107,7 +108,6 @@ public class StorageDataBaseByJDBC extends StorageDataBase {
     private int getQuantity(Product product) {
         return storageCache.get(product);
     }
-
     @Override
     public boolean isProductAvailable(Product product, int quantity) {
         final var qetQuantityProductInStorage = getQuantity(product);

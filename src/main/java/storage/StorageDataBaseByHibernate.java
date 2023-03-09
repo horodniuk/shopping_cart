@@ -18,11 +18,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @NoArgsConstructor
 @ToString(of = {"storageCache"})
+@Getter
 public class StorageDataBaseByHibernate extends StorageDataBase {
-    @Getter
+
     private final String connectionType = "by_hibernate";
-    @Getter
     private Map<Product, Integer> storageCache = new HashMap<>();
+
 
     @Override
     public void load() {
@@ -81,6 +82,10 @@ public class StorageDataBaseByHibernate extends StorageDataBase {
                 .collect(Collectors.toList());
     }
 
+    private int getQuantity(Product product) {
+        return storageCache.get(product);
+    }
+
     @Override
     public boolean isProductAvailable(Product product, int quantity) {
         final var qetQuantityProductInStorage = getQuantity(product);
@@ -89,10 +94,6 @@ public class StorageDataBaseByHibernate extends StorageDataBase {
                     product.getName(), quantity, qetQuantityProductInStorage);
         }
         return qetQuantityProductInStorage >= quantity;
-    }
-
-    private int getQuantity(Product product) {
-        return storageCache.get(product);
     }
 
     @Override
