@@ -29,30 +29,23 @@ public class StorageDataBaseByJDBC extends StorageDataBase {
                     SELECT product_id, product_name, price, quantity
                     FROM storage_database.public.store
             """;
-    /**
-     * map storing products and their quantity which are loaded from database
-     */
+
     @Getter
     private Map<Product, Integer> storageCache = new HashMap<>();
 
-
-    /**
-     * Method description
-     * First we create empty Map for containing instances of class Product and Integers (theirs quantity);
-     * then we create instance of class ConnectionDatabase, which contains all the data from database
-     * extractedProductFromDataBase() method extracted mapProduct from database get data for each product, and it's quantity;
-     * return - map of instances of class Product and Integers (theirs quantity).
+    /***
+     * trying to populate the map from the database
      */
     @Override
     public void load() {
         try (var connection = Connector.open();
              var statement = connection.createStatement()) {
-            var executeResult = statement.executeQuery(sql);
-            while (executeResult.next()) {
+             var executeResult = statement.executeQuery(sql);
+             while (executeResult.next()) {
                 storageCache.put(
                         new Product(executeResult.getInt(PRODUCT_ID),
-                                executeResult.getString(PRODUCT_NAME),
-                                executeResult.getBigDecimal(PRICE)
+                                    executeResult.getString(PRODUCT_NAME),
+                                    executeResult.getBigDecimal(PRICE)
                         ),
                         executeResult.getInt(QUANTITY));
             }
@@ -61,6 +54,10 @@ public class StorageDataBaseByJDBC extends StorageDataBase {
         }
     }
 
+    /***
+     * when program finish
+     * trying to  the map from the database
+     */
     @Override
     public void write() {
         List<String> queries = convertStoragetoQueries(storageCache);
@@ -70,7 +67,7 @@ public class StorageDataBaseByJDBC extends StorageDataBase {
             statement.addBatch("DROP TABLE IF EXISTS public.temp_store cascade");
             statement.addBatch("CREATE TABLE public.temp_store (LIKE public.store INCLUDING ALL)");
             for (String query : queries) {
-                statement.addBatch(query);
+                 statement.addBatch(query);
             }
             statement.executeBatch();
         } catch (SQLException e) {
@@ -78,6 +75,11 @@ public class StorageDataBaseByJDBC extends StorageDataBase {
         }
     }
 
+    /***
+     * convert storage to queries
+     * @param storageCache
+     * @return list queries
+     */
     private List<String> convertStoragetoQueries(Map<Product, Integer> storageCache) {
         List<String> list = new ArrayList<>();
         storageCache.forEach((product, quantity) ->
@@ -108,6 +110,7 @@ public class StorageDataBaseByJDBC extends StorageDataBase {
     private int getQuantity(Product product) {
         return storageCache.get(product);
     }
+
     @Override
     public boolean isProductAvailable(Product product, int quantity) {
         final var qetQuantityProductInStorage = getQuantity(product);

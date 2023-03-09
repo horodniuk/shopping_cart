@@ -3,11 +3,14 @@ package runner;
 import cart.Cart;
 import config.PropertyUtils;
 import lombok.extern.slf4j.Slf4j;
+import storage.Storage;
 import storage.StorageDataBase;
 import storage.StorageDataBaseByHibernate;
 import storage.StorageDataBaseByJDBC;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 @Slf4j
@@ -37,22 +40,27 @@ public class DataBaseModeRunner implements ModeRunner {
         System.out.println("Starting DataBase mode.");
         ModeRunner.showTooltipWithCommands();
         String connectionType = PropertyUtils.get("db.connection_type");
-        Cart cart = null;
-        for (StorageDataBase currentStorage : dataBaseList) {
-            if (currentStorage.getConnectionType().intern().equals(connectionType.intern())) {
-                currentStorage.load();
-                cart = new Cart(currentStorage);
-            }
-        }
-        if (cart == null) {
-            log.error("Wrong db.connection_type specified in config file!");
-            throw new RuntimeException("Wrong db.connection_type specified in config file!");
-        }
+        Cart cart = new Cart(parseStorage(connectionType));
         TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
         while (true) {
             String line = new Scanner(System.in).nextLine();
             textCommandExecutor.executeCommand(line, cart);
             if (line.equals("finish")) return;
+        }
+    }
+
+    private Storage parseStorage(String connectionType) {
+        Map<String, StorageDataBase> dataBaseMap = new HashMap<>();
+        for (StorageDataBase currentStorage : dataBaseList) {
+            dataBaseMap.put(currentStorage.getConnectionType(), currentStorage);
+        }
+        var currentStorage = dataBaseMap.get(connectionType);
+        if (currentStorage != null) {
+            currentStorage.load();
+            return currentStorage;
+        } else {
+            log.error("Wrong db.connection_type specified in config file!");
+            throw new RuntimeException("Wrong db.connection_type specified in config file!");
         }
     }
 }

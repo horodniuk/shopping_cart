@@ -12,7 +12,7 @@ public class DataSourceManager {
 
     /**
      * Method description
-     * This methode is made to start app depending on db type specified in properties file;
+     * This method is made to start app depending on db type specified in properties file;
      * We create variable dbType and assign it value with method - parse();
      * next in switch case, we start config.AppByJsonStorage.start() or config.AppByDataBaseStorage.start() depending on
      * value of DBType;

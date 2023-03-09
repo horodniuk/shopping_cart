@@ -222,8 +222,11 @@ public class Cart {
      */
     private BigDecimal totalPriceWithoutDiscount() {
         Integer sum = cartMap.entrySet().stream()
-                .mapToInt(product -> product.getKey().getPrice()
-                        .multiply(new BigDecimal(product.getValue())).intValue())
+                .mapToInt(product ->
+                          product.getKey().getPrice()
+                          .multiply(new BigDecimal(product.getValue()))
+                          .intValue()
+                )
                 .sum();
         return new BigDecimal(sum).setScale(2);
     }

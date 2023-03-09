@@ -16,7 +16,7 @@ public class Connector {
 
     public static Connection open() {
         try {
-            return DriverManager.getConnection(
+            return  DriverManager.getConnection(
                     PropertyUtils.get(URL_KEY),
                     PropertyUtils.get(USER_KEY),
                     PropertyUtils.get(PASSWORD_KEY));
