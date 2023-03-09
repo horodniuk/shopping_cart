@@ -1,0 +1,6 @@
+package storage;
+
+
+class StorageDataBaseByJDBCTest {
+
+}

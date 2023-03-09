@@ -38,6 +38,7 @@ public class FileModeRunner implements ModeRunner {
     public void start() {
         log.info("File mode started.");
         System.out.println("Starting File mode." + " Commands will be read from file\" " + pathToCommand);
+        storage.load();
         Cart cart = new Cart(storage);
         TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
         try (BufferedReader reader = new BufferedReader(new FileReader(pathToCommand))) {
@@ -52,8 +53,8 @@ public class FileModeRunner implements ModeRunner {
             }
         } catch (IOException e) {
             String messageError = "Error when trying to read from file: {}.";
-            log.error(messageError,e.getMessage());
-            throw new RuntimeException(messageError+e.getMessage());
+            log.error(messageError, e.getMessage());
+            throw new RuntimeException(messageError + e.getMessage());
         }
         cart.finish();
     }

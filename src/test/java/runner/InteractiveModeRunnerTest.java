@@ -23,6 +23,7 @@ class InteractiveModeRunnerTest {
     void beforeEachTestMethod() throws URISyntaxException {
         path = new File(getClass().getClassLoader().getResource("test_storage.json").toURI());
         storage = new StorageWithJson(path);
+        storage.load();
         interactiveModeRunner = new InteractiveModeRunner(storage);
     }
 

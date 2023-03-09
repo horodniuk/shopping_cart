@@ -13,7 +13,6 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
@@ -28,6 +27,7 @@ class StorageWithJsonTest {
     void beforeEachTestMethod() throws URISyntaxException {
         path = new File(getClass().getClassLoader().getResource("test_storage.json").toURI());
         storage = new StorageWithJson(path);
+        storage.load();
     }
 
     private static Stream<Arguments> getProductAndQuantity() {
@@ -36,19 +36,6 @@ class StorageWithJsonTest {
                 arguments(2, "cola", BigDecimal.valueOf(20.0), 5),
                 arguments(3, "soap", BigDecimal.valueOf(30.0), 5)
         );
-    }
-
-    @ParameterizedTest
-    @MethodSource("getProductAndQuantity")
-    void load(int product_id, String productName, BigDecimal price, Integer quantity) {
-        //Arrange
-        Product product = new Product(product_id, productName, price);
-        Integer expectedResult = 100;
-        //Act
-        Map<Product, Integer> resultMap = storage.load();
-        Integer actualResult = resultMap.get(product);
-        //Assert
-        assertEquals(expectedResult, actualResult);
     }
 
     @ParameterizedTest

@@ -1,17 +1,27 @@
 package cart;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
+import lombok.*;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Entity
 @Data
 @EqualsAndHashCode(of = {"product_id"})
 @Setter(AccessLevel.NONE)
+@NoArgsConstructor
+@AllArgsConstructor
+@Table (name = "store")
 public class Product {
-    private final int product_id;
-    private final String name;
-    private final BigDecimal price;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int product_id;
+    @Column(name = "product_name")
+    private String name;
+    private BigDecimal price;
+
+    public Product(String name, BigDecimal price) {
+        this.name = name;
+        this.price = price;
+    }
 }

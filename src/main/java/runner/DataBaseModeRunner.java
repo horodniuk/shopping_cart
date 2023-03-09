@@ -1,17 +1,29 @@
 package runner;
 
 import cart.Cart;
+import config.PropertyUtils;
 import lombok.extern.slf4j.Slf4j;
 import storage.StorageDataBase;
+import storage.StorageDataBaseByHibernate;
+import storage.StorageDataBaseByJDBC;
 
+import java.util.List;
 import java.util.Scanner;
 
 @Slf4j
 public class DataBaseModeRunner implements ModeRunner {
+    private final List<StorageDataBase> dataBaseList =
+            List.of(new StorageDataBaseByHibernate(), new StorageDataBaseByJDBC());
+
     /**
      * Method description
      * starts reading and executing commands line by line from console;
      * first we output message to console with method - showTooltipWithCommands().
+     * next we get property (db.connection_type) and assign it to variable connectionType;
+     * after that we check if any of storageDataBase has the same connection type as specified in properties;
+     * if true - we start method load in this storage and pass on this storage to Cart, if false - we go further;
+     * after that we check - if cart equals null;
+     * if true - we throw RuntimeException, if false we go further;
      * next we create instance of Class TextCommandExecutor
      * after that we create instance of class Cart;
      * next we start endless cycle in which we receive read commands from console;
@@ -22,10 +34,20 @@ public class DataBaseModeRunner implements ModeRunner {
      */
     @Override
     public void start() {
-        log.info("DataBase mode runner started.");
-        System.out.println("DataBase mode runner started.");
+        System.out.println("Starting DataBase mode.");
         ModeRunner.showTooltipWithCommands();
-        Cart cart = new Cart(new StorageDataBase());
+        String connectionType = PropertyUtils.get("db.connection_type");
+        Cart cart = null;
+        for (StorageDataBase currentStorage : dataBaseList) {
+            if (currentStorage.getConnectionType().intern().equals(connectionType.intern())) {
+                currentStorage.load();
+                cart = new Cart(currentStorage);
+            }
+        }
+        if (cart == null) {
+            log.error("Wrong db.connection_type specified in config file!");
+            throw new RuntimeException("Wrong db.connection_type specified in config file!");
+        }
         TextCommandExecutor textCommandExecutor = new TextCommandExecutor();
         while (true) {
             String line = new Scanner(System.in).nextLine();

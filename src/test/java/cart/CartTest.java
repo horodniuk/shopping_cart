@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import storage.Storage;
 import storage.StorageWithJson;
 
 import java.io.File;
@@ -17,18 +18,20 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class CartTest {
     static final String pathTestSoreage = "src/test/resources/test_storage.json";
-    static Cart cartByTestingAddMethod =  new Cart(new StorageWithJson(new File(pathTestSoreage)));
-    static Cart cartByTestingRemoveMethod =  new Cart(new StorageWithJson(new File(pathTestSoreage)));
-    static Cart cartByTestingDiscount30Persent =  new Cart(new StorageWithJson(new File(pathTestSoreage)));
-    static Cart cartByTestringDiscaunt3Buy1Free =  new Cart(new StorageWithJson(new File(pathTestSoreage)));
-    static Cart cartByTestringrRemoveAllPrduct =  new Cart(new StorageWithJson(new File(pathTestSoreage)));
+    static final Storage storage = new StorageWithJson(new File(pathTestSoreage));
+    static Cart cartByTestingAddMethod = new Cart(storage);
+    static Cart cartByTestingRemoveMethod = new Cart(storage);
+    static Cart cartByTestingDiscount30Persent = new Cart(storage);
+    static Cart cartByTestringDiscaunt3Buy1Free = new Cart(storage);
+    static Cart cartByTestringrRemoveAllPrduct = new Cart(storage);
 
-    static  {
-       fillCartTemplate(cartByTestingAddMethod);
-       fillCartTemplate(cartByTestingRemoveMethod);
-       fillCartTemplate(cartByTestingDiscount30Persent);
-       fillCartTemplate(cartByTestringDiscaunt3Buy1Free);
-       fillCartTemplate(cartByTestringrRemoveAllPrduct);
+    static {
+        storage.load();
+        fillCartTemplate(cartByTestingAddMethod);
+        fillCartTemplate(cartByTestingRemoveMethod);
+        fillCartTemplate(cartByTestingDiscount30Persent);
+        fillCartTemplate(cartByTestringDiscaunt3Buy1Free);
+        fillCartTemplate(cartByTestringrRemoveAllPrduct);
     }
 
     private static void fillCartTemplate(Cart cart) {
@@ -37,13 +40,11 @@ class CartTest {
         cart.add("soap", 10);
     }
 
-
-
     /**
-     *    cartByTestingAddMethod
-     *    ("beer", 10);
-     *    ("cola", 10);
-     *    ("soap", 10);
+     * cartByTestingAddMethod
+     * ("beer", 10);
+     * ("cola", 10);
+     * ("soap", 10);
      */
     private static Stream<Arguments> addProduct() {
         return Stream.of(
@@ -74,10 +75,10 @@ class CartTest {
 
 
     /**
-     *    cartByTestingRemoveMethod
-     *    ("beer", 10);
-     *    ("cola", 10);
-     *    ("soap", 10);
+     * cartByTestingRemoveMethod
+     * ("beer", 10);
+     * ("cola", 10);
+     * ("soap", 10);
      */
     private static Stream<Arguments> removeProduct() {
         return Stream.of(
@@ -108,11 +109,11 @@ class CartTest {
 
 
     /**
-     *   cartByTestingDiscount30Persent
-     *   ("beer",price:50, quantity 10);
-     *   ("cola", price:20, quantity 10);
-     *   ("soap", price:30, quantity 10);
-     *   Price: 1000
+     * cartByTestingDiscount30Persent
+     * ("beer",price:50, quantity 10);
+     * ("cola", price:20, quantity 10);
+     * ("soap", price:30, quantity 10);
+     * Price: 1000
      */
     // Testing the apply discount on a product
     // Check the price of the cart, taking into this discount.
@@ -130,20 +131,20 @@ class CartTest {
     @ParameterizedTest
     @MethodSource("applyDiscount30Persent")
     @Order(3)
-    void checkProductApplyDiscount30PersentInShoppngCart(String productName,  BigDecimal priceCartAfterApplyDiscount) {
-            cartByTestingDiscount30Persent.applyDiscount(new Discount_buy_1_get_30_percent_off(), productName);
-            double expected  = priceCartAfterApplyDiscount.doubleValue();
-            double actual = cartByTestingDiscount30Persent.getPrice().doubleValue();
-            assertEquals(expected, actual, 0.01);
+    void checkProductApplyDiscount30PersentInShoppngCart(String productName, BigDecimal priceCartAfterApplyDiscount) {
+        cartByTestingDiscount30Persent.applyDiscount(new Discount_buy_1_get_30_percent_off(), productName);
+        double expected = priceCartAfterApplyDiscount.doubleValue();
+        double actual = cartByTestingDiscount30Persent.getPrice().doubleValue();
+        assertEquals(expected, actual, 0.01);
     }
 
 
     /**
-     *   cartByTestingDiscount30Persent
-     *   ("beer",price:50, quantity 10);
-     *   ("cola", price:20, quantity 10);
-     *   ("soap", price:30, quantity 10);
-     *    Price: 1000
+     * cartByTestingDiscount30Persent
+     * ("beer",price:50, quantity 10);
+     * ("cola", price:20, quantity 10);
+     * ("soap", price:30, quantity 10);
+     * Price: 1000
      */
     // Testing the apply discount on a product
     // Check the price of the cart, taking into this discount.
@@ -161,19 +162,19 @@ class CartTest {
     @ParameterizedTest
     @MethodSource("applyDiscount3Buy1Free")
     @Order(4)
-    void checkProductApplyDiscount3Buy1FreeInShoppngCart(String productName,  BigDecimal priceCartAfterApplyDiscount) {
+    void checkProductApplyDiscount3Buy1FreeInShoppngCart(String productName, BigDecimal priceCartAfterApplyDiscount) {
         cartByTestringDiscaunt3Buy1Free.applyDiscount(new Discount_buy_3_get_1_free(), productName);
-        double expected  = priceCartAfterApplyDiscount.doubleValue();
+        double expected = priceCartAfterApplyDiscount.doubleValue();
         double actual = cartByTestringDiscaunt3Buy1Free.getPrice().doubleValue();
         assertEquals(expected, actual, 0.01);
     }
 
 
     /**
-     *   cartByTestingDiscount30Persent
-     *   ("beer", 10);
-     *   ("cola", 10);
-     *   ("soap", 10);
+     * cartByTestingDiscount30Persent
+     * ("beer", 10);
+     * ("cola", 10);
+     * ("soap", 10);
      */
     // Testing the removal of a different quantity of products from cart
     private static Stream<Arguments> removeAllPrductQuantity() {
@@ -181,19 +182,19 @@ class CartTest {
                 arguments("beer", 11, true),  // 10 < 11 command not working, remains the same quantity beer
                 arguments("beer", 9, true),   // 10 < 9 command working, remains 1 product beer
                 arguments("beer", 1, false),  // 1 = 1 we remove last beer. Cart contains beer - false.
-                arguments("soap",9, true),    // 10 < 9 command working, remains 1 product soap
-                arguments("soap",1, false),   // 1 = 1 we remove last beer. Cart contains soap - false.
-                arguments("cola",10, false),  // 10 = 10 we remove all cola. Cart contains cala - false.
-                arguments("cola",11, false)   // 0 < 11 we don't have cola in cart. We cannot remove it.
+                arguments("soap", 9, true),    // 10 < 9 command working, remains 1 product soap
+                arguments("soap", 1, false),   // 1 = 1 we remove last beer. Cart contains soap - false.
+                arguments("cola", 10, false),  // 10 = 10 we remove all cola. Cart contains cala - false.
+                arguments("cola", 11, false)   // 0 < 11 we don't have cola in cart. We cannot remove it.
         );
     }
 
     @ParameterizedTest
     @MethodSource("removeAllPrductQuantity")
     @Order(5)
-    void checkRemoveAllPrductQuantity(String productName,  int quantity, boolean isProductContainsInProductCart) {
+    void checkRemoveAllPrductQuantity(String productName, int quantity, boolean isProductContainsInProductCart) {
         cartByTestringrRemoveAllPrduct.remove(productName, quantity);
-        boolean expected  = isProductContainsInProductCart;
+        boolean expected = isProductContainsInProductCart;
         Product product = cartByTestingRemoveMethod.getStorage().getProductByName(productName);
         boolean actual = cartByTestringrRemoveAllPrduct.getCartMap().containsKey(product);
         assertEquals(expected, actual);
